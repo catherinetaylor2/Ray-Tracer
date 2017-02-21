@@ -12,12 +12,16 @@ using namespace std;
 const int RED[] = {255,0,0};
 const int GREEN[] ={0,255,0};
 const int BLUE[] = {0,0,255};
+const int PURPLE[]= {255,0,255};
+const int YELLOW[]={255,255,0};
+
 
 int main(){
 
 // initial inputs
-    sphere sphere1(0,0,0,1,GREEN);
+    sphere sphere1(0,0,0,1,RED);
     sphere1.set_lighting_constants(0.6, 0.7*255, 0.1, 600);
+    vector3 centre(sphere1.get_centre_x(),sphere1.get_centre_y(),sphere1.get_centre_z());
     
     vector3 eye(0,0,-5);
     vector3 lookup(0,1,-5);
@@ -25,9 +29,9 @@ int main(){
 
     Light sun(4,3,-5,1);
     vector3 light = sun.get_position();
-    vector3 centre(sphere1.get_centre_x(),sphere1.get_centre_y(),sphere1.get_centre_z());
-    float d = 3;
+
     scene myscene(1000,1000,90,3);
+    float d = myscene.get_distance_to_image();
     
 //set up eye coord system
     vector3 w = eye.vec_add(eye, eye.vec_scal_mult(-1, lookat));

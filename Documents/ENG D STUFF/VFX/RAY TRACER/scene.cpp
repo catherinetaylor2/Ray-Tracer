@@ -10,6 +10,7 @@ scene::scene(int x, int y, int fov, int d){
     y_res= y;
     height = 2*d*tan((float)fov/360.0f *PI/2.0f );
     width = ((float)x/(float)y)*height;
+    distance_to_image = d;
 }
 int scene::get_x_res(void){
     return x_res;
@@ -22,6 +23,9 @@ float scene::get_width(void){
 }
 float scene::get_height(void){
     return height;
+}
+float scene::get_distance_to_image(void){
+    return distance_to_image;
 }
 double scene::DiffuseValue( vector3 normal, vector3 light_direction){
     if (normal.dotproduct(normal,light_direction)>0){        

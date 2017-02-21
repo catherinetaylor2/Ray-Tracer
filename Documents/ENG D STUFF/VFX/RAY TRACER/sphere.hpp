@@ -34,4 +34,38 @@ class sphere{
         float AmbientCoeff;
         float SpecularPower;
 };
+class plane{
+    public:
+        vector3 get_plane_normal(void);
+    private:
+        float normal_x;
+        float normal_y;
+        float normal_z;
+
+};
+class triangle{
+    public:
+        vector3 get_triangle_normal(vector3 V1, vector3 V2, vector3 V3);
+        triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z );
+        vector3 get_vertex1(void);
+        vector3 get_vertex2(void);
+        vector3 get_vertex3(void);
+        float ray_plane_intersection(vector3 ray_point, vector3 ray_direction);
+        float ray_triangle_intersection(vector3 ray_point, vector3 ray_direction);
+        vector3 barycentric_coords(vector3 intersection_point);
+    private:
+       float vertex1_x;
+       float vertex1_y;
+       float vertex1_z;
+       float vertex2_x;
+       float vertex2_y;
+       float vertex2_z;
+       float vertex3_x;
+       float vertex3_y;
+       float vertex3_z;
+       float normal_x;
+       float normal_y;
+       float normal_z;
+       float point_D;
+};
 #endif
