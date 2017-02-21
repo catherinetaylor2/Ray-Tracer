@@ -19,6 +19,12 @@ sphere::sphere(int sphere_x, int sphere_y, int sphere_z, int sphere_radius,  con
     colour_y=sphere_colour[1];
     colour_z= sphere_colour[2];
 }
+ void sphere::set_lighting_constants(float DC, float SC, float AC, float SP){
+    DiffuseCoeff=DC;
+    SpecularCoeff=SC;
+    AmbientCoeff=AC;
+    SpecularPower=SP;
+ }
 vector3 sphere::get_colour(void){
     vector3 colour(colour_x, colour_y, colour_z);
     return colour;
@@ -34,6 +40,18 @@ int sphere::get_centre_y(void){
 }
 int sphere::get_centre_z(void){
     return centre_z;
+}
+float sphere::get_DiffuseCoeff(void){
+    return DiffuseCoeff;
+}
+float sphere::get_SpecularCoeff(void){
+    return SpecularCoeff;
+}
+float sphere::get_AmbientCoeff(void){
+    return AmbientCoeff;
+}
+float sphere::get_SpecularPower(void){
+    return SpecularPower;
 }
 vector3 sphere::find_normal(vector3 point){     
     vector3 centre(centre_x, centre_y, centre_z);

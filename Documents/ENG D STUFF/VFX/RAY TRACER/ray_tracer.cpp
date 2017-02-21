@@ -16,16 +16,17 @@ const int BLUE[] = {0,0,255};
 int main(){
 
 // initial inputs
-    sphere sphere1(0,0,0,1,RED);
+    sphere sphere1(0,0,0,1,GREEN);
+    sphere1.set_lighting_constants(0.6, 0.7*255, 0.1, 600);
     
     vector3 eye(0,0,-5);
     vector3 lookup(0,1,-5);
     vector3 lookat(0,0,1);
 
-    Light lt(4,3,-5);
-    vector3 light = lt.get_position();
+    Light sun(4,3,-5,1);
+    vector3 light = sun.get_position();
     vector3 centre(sphere1.get_centre_x(),sphere1.get_centre_y(),sphere1.get_centre_z());
-    float d = 3, DiffuseCoeff=0.6, AmbientCoeff = 0.1, n=600,  SpecularCoeff=0.7*255;
+    float d = 3;
     scene myscene(1000,1000,90,3);
     
 //set up eye coord system
@@ -54,13 +55,14 @@ int main(){
         if (t != 0){
             vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d)); 
             vector3 normal=sphere1.find_normal(point);   
-            vector3 l = lt.get_light_direction(point);
+            vector3 l = sun.get_light_direction(point);
             D = myscene.DiffuseValue(normal, l);
             DD = myscene.SpecularValue(normal,l,d);
 
-            Red_term = (DiffuseCoeff*D+AmbientCoeff)*(sphere1.get_colour()).get_x()+pow(DD,n)*SpecularCoeff;
-            Green_term =(DiffuseCoeff*D+AmbientCoeff)*(sphere1.get_colour()).get_y()+pow(DD,n)*SpecularCoeff;
-            Blue_term =(DiffuseCoeff*D+AmbientCoeff)*(sphere1.get_colour()).get_z()+pow(DD,n)*SpecularCoeff;
+            Red_term = (sun.get_light_intensity())*(sphere1.get_DiffuseCoeff()*D+sphere1.get_AmbientCoeff())*(sphere1.get_colour()).get_x()+pow(DD,sphere1.get_SpecularPower())*sphere1.get_SpecularCoeff();
+            Green_term =(sun.get_light_intensity())*(sphere1.get_DiffuseCoeff()*D+sphere1.get_AmbientCoeff())*(sphere1.get_colour()).get_y()+pow(DD,sphere1.get_SpecularPower())*sphere1.get_SpecularCoeff();
+            Blue_term =(sun.get_light_intensity())*(sphere1.get_DiffuseCoeff()*D+sphere1.get_AmbientCoeff())*(sphere1.get_colour()).get_z()+pow(DD,sphere1.get_SpecularPower())*sphere1.get_SpecularCoeff();
+           
             if (Red_term > 255){
                 Red_term =255;
             }

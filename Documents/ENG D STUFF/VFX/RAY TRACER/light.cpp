@@ -5,10 +5,14 @@
 
 using namespace std;
 
-Light::Light(int x, int y, int z){
+Light::Light(int x, int y, int z, float I){
     light_x=x;
     light_y=y;
     light_z=z;
+    light_intensity=I;
+}
+float Light::get_light_intensity(void){
+    return light_intensity;
 }
 vector3 Light::get_position(void){
     vector3 V(light_x, light_y, light_z);
