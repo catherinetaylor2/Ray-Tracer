@@ -5,6 +5,7 @@
 #include "vec3.hpp"
 #include "scene.hpp"
 #include "sphere.hpp"
+#include "light.hpp"
 
 using namespace std;
 
@@ -12,17 +13,17 @@ const int RED[] = {255,0,0};
 const int GREEN[] ={0,255,0};
 const int BLUE[] = {0,0,255};
 
-
- 
-
 int main(){
 
 // initial inputs
     sphere sphere1(0,0,0,1,RED);
+    
     vector3 eye(0,0,-5);
     vector3 lookup(0,1,-5);
     vector3 lookat(0,0,1);
-    vector3 light(4,3,-5);
+
+    Light lt(4,3,-5);
+    vector3 light = lt.get_position();
     vector3 centre(sphere1.get_centre_x(),sphere1.get_centre_y(),sphere1.get_centre_z());
     float d = 3, DiffuseCoeff=0.6, AmbientCoeff = 0.1, n=600,  SpecularCoeff=0.7*255;
     scene myscene(1000,1000,90,3);
@@ -34,23 +35,18 @@ int main(){
     u.normalize();
     vector3 v = w.crossproduct(w,u); 
     vector3 C = w.vec_add(eye,w.vec_scal_mult(-d,w)); 
-    float Lx,Ly,Lz;  
-    Lx = C.get_x()+u.get_x()*myscene.get_width()/2+v.get_x()*myscene.get_height()/2;
-    Ly = C.get_y()+u.get_y()*myscene.get_width()/2+v.get_y()*myscene.get_height()/2;
-    Lz = C.get_z()+u.get_z()*myscene.get_width()/2+v.get_z()*myscene.get_height()/2;
-    vector3 L(Lx,Ly,Lz);
-  
+    
+    float half_width= (float)myscene.get_width()/2.0f, half_height = (float)myscene.get_height()/2.0f;
+    vector3 L = C.vec_add3(C, C.vec_scal_mult(half_width,u), C.vec_scal_mult(half_height,v) );
+    float ratio = (myscene.get_width())/((float)myscene.get_x_res());
+   
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
-    float sx, sy,sz;
     double D, DD, Red_term, Green_term, Blue_term;
     for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
         int i, j;
         i=(x/(3))%(myscene.get_x_res());
         j=(x/(3))/(myscene.get_x_res());
-        sx = L.get_x() - u.get_x()*(myscene.get_width())/((float)myscene.get_x_res())*i - v.get_x()*(myscene.get_height())/((float)myscene.get_y_res())*j;
-        sy = L.get_y() - u.get_y()*(myscene.get_width())/((float)myscene.get_x_res())*i - v.get_y()*(myscene.get_height())/((float)myscene.get_y_res())*j;
-        sz = L.get_z()- u.get_z()*(myscene.get_width())/((float)myscene.get_x_res())*i - v.get_z()*(myscene.get_height())/((float)myscene.get_y_res())*j;
-        vector3 s(sx,sy,sz);
+        vector3 s = C.vec_add3(L, C.vec_scal_mult(-1*i*ratio,u), C.vec_scal_mult(-1*j*ratio,v) );
         vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
         d.normalize();
 
@@ -58,10 +54,10 @@ int main(){
         if (t != 0){
             vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d)); 
             vector3 normal=sphere1.find_normal(point);   
-            vector3 l = d.vec_add(light, d.vec_scal_mult(-1,point));
-            l.normalize();   
-          D = myscene.DiffuseValue(normal, l);
+            vector3 l = lt.get_light_direction(point);
+            D = myscene.DiffuseValue(normal, l);
             DD = myscene.SpecularValue(normal,l,d);
+
             Red_term = (DiffuseCoeff*D+AmbientCoeff)*(sphere1.get_colour()).get_x()+pow(DD,n)*SpecularCoeff;
             Green_term =(DiffuseCoeff*D+AmbientCoeff)*(sphere1.get_colour()).get_y()+pow(DD,n)*SpecularCoeff;
             Blue_term =(DiffuseCoeff*D+AmbientCoeff)*(sphere1.get_colour()).get_z()+pow(DD,n)*SpecularCoeff;

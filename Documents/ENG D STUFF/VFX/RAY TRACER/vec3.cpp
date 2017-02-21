@@ -43,7 +43,15 @@ vector3 vector3::vec_add(vector3 v1, vector3 v2){
     vector3 vec(x,y,z);
     return vec;
 }
-vector3 vector3::vec_scal_mult(int c, vector3 v){
+vector3 vector3::vec_add3(vector3 v1, vector3 v2, vector3 v3){
+float x,y,z;
+    x = v1.get_x()+v2.get_x()+v3.get_x();
+    y=v1.get_y()+v2.get_y()+v3.get_y();
+    z=v1.get_z()+v2.get_z()+v3.get_z();
+    vector3 vec(x,y,z);
+    return vec;
+}
+vector3 vector3::vec_scal_mult(float c, vector3 v){
     float x,y,z;
     x = c*v.get_x();
     y=c*v.get_y();
