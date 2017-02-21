@@ -75,7 +75,7 @@ float sphere::Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction){
     }
     return 0;
  }
-triangle::triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z ){
+triangle::triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z,const int* sphere_colour ){
     vertex1_x = v1x;
     vertex1_y = v1y;
     vertex1_z = v1z;
@@ -96,6 +96,9 @@ triangle::triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float 
     normal_z=N.get_z();
 
     point_D = N.dotproduct(N, V1);
+    colour_x=sphere_colour[0];
+    colour_y=sphere_colour[1];
+    colour_z= sphere_colour[2];
 }
  vector3 triangle::get_vertex1(void){
      vector3 V1(vertex1_x,vertex1_y,vertex1_z);
@@ -112,6 +115,10 @@ vector3 triangle::get_vertex3(void){
 vector3 triangle::get_triangle_normal(vector3 V1, vector3 V2, vector3 V3){
     vector3 N (normal_x, normal_y, normal_z);
     return N;
+}
+vector3 triangle::get_colour(void){
+    vector3 C(colour_x, colour_y, colour_z);
+    return C;
 }
 float triangle::ray_plane_intersection(vector3 ray_point, vector3 ray_direction){
     vector3 normal(normal_x, normal_y, normal_z);
@@ -151,6 +158,26 @@ vector3 triangle::barycentric_coords(vector3 intersection_point){
     vector3 B(a/d, b/d, c/d);
     return B;
 }
+ void triangle::set_lighting_constants(float DC, float SC, float AC, float SP){
+    DiffuseCoeff=DC;
+    SpecularCoeff=SC;
+    AmbientCoeff=AC;
+    SpecularPower=SP;
+ }
+ float triangle::get_DiffuseCoeff(void){
+    return DiffuseCoeff;
+}
+float triangle::get_SpecularCoeff(void){
+    return SpecularCoeff;
+}
+float triangle::get_AmbientCoeff(void){
+    return AmbientCoeff;
+}
+float triangle::get_SpecularPower(void){
+    return SpecularPower;
+}
+ 
+ 
 vector3 plane::get_plane_normal(void){
     vector3 normal(normal_x, normal_y, normal_z);
     return normal;
