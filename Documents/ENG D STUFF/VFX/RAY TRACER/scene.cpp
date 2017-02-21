@@ -23,3 +23,21 @@ float scene::get_width(void){
 float scene::get_height(void){
     return height;
 }
+double scene::DiffuseValue( vector3 normal, vector3 light_direction){
+    if (normal.dotproduct(normal,light_direction)>0){        
+        return normal.dotproduct(normal,light_direction);
+    }
+    else{
+        return 0;
+    }
+}
+double scene::SpecularValue(vector3 normal, vector3 light_direction, vector3 ray_direction){
+    vector3 H =normal.vec_add(light_direction, normal.vec_scal_mult(-1,ray_direction));
+    H.normalize();
+    if (normal.dotproduct(normal, H)<0){
+        return 0;
+    }
+    else{
+        return normal.dotproduct(normal, H);
+    }   
+}

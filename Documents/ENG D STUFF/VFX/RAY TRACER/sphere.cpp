@@ -42,3 +42,18 @@ vector3 sphere::find_normal(vector3 point){
     normal.normalize();
     return normal;
 }
+float sphere::Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction){
+    float a,b,c, det ;
+    vector3 centre(centre_x, centre_y, centre_z);
+    a = centre.dotproduct(ray_direction,ray_direction);
+    b=2*(centre.dotproduct(ray_direction,ray_point));
+    c=centre.dotproduct(ray_point,ray_point)-radius*radius;
+    det = b*b - 4*a*c;
+    if (det >= 0){     
+        float  t1,t2;
+        t1 = (-1*b -sqrt(det))/(2*a);
+        t2 = (-1*b +sqrt(det))/(2*a);
+        return (t1>t2)*t2 + (t2>t1)*t1;
+    }
+    return 0;
+ }

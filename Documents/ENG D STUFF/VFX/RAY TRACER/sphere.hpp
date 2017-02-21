@@ -15,6 +15,7 @@ class sphere{
         int get_centre_z(void);
         vector3 get_colour(void);
         vector3 find_normal(vector3 point);
+        float Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction);
     private:
         int centre_x;
         int centre_y;
