@@ -23,7 +23,6 @@ int main(){
     triangle triangle1(0,3,3,-4,0,3,4,0,3,BLUE);
     sphere1.set_lighting_constants(0.6, 0.7*255, 0.1, 600);
     triangle1.set_lighting_constants(0.6, 0.5*255, 0.1, 800);
-    //vector3 centre(sphere1.get_centre_x(),sphere1.get_centre_y(),sphere1.get_centre_z());
     
     vector3 eye(0,0,-5);
     vector3 lookup(0,1,-5);
@@ -48,7 +47,7 @@ int main(){
     float ratio = (myscene.get_width())/((float)myscene.get_x_res());
    
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
-    double D, DD, Red_term, Green_term, Blue_term;
+   
     for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
         int i, j;
         i=(x/(3))%(myscene.get_x_res());
@@ -59,162 +58,48 @@ int main(){
 
         float t1 = sphere1.Sphere_ray_intersection( eye, d);
         float t2 = triangle1.ray_triangle_intersection(eye,d);
-        if ((t1 != 0)&&(t2!=0)){
-            
-            //t1 smaller 
+        if ((t1 != 0)&&(t2!=0)){            
             if (t1<t2){
                 float t=t1;
                 vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d));
-            vector3 l = sun.get_light_direction(point); 
+                vector3 l = sun.get_light_direction(point); 
                 vector3 normal=sphere1.find_normal(point); 
-                D = myscene.DiffuseValue(normal, l);
-                DD = myscene.SpecularValue(normal,l,d);
-                Red_term = (sun.get_light_intensity())*(sphere1.get_DiffuseCoeff()*D+sphere1.get_AmbientCoeff())*(sphere1.get_colour()).get_x()+pow(DD,sphere1.get_SpecularPower())*sphere1.get_SpecularCoeff();
-                Green_term =(sun.get_light_intensity())*(sphere1.get_DiffuseCoeff()*D+sphere1.get_AmbientCoeff())*(sphere1.get_colour()).get_y()+pow(DD,sphere1.get_SpecularPower())*sphere1.get_SpecularCoeff();
-                Blue_term =(sun.get_light_intensity())*(sphere1.get_DiffuseCoeff()*D+sphere1.get_AmbientCoeff())*(sphere1.get_colour()).get_z()+pow(DD,sphere1.get_SpecularPower())*sphere1.get_SpecularCoeff();
-           if (Red_term > 255){
-                Red_term =255;
+                vector3 RGB = sphere1.determine_colour(point, l, d, sun, normal, myscene);
+                img[x] = RGB.get_x();
+                img[x+1]=RGB.get_y();
+                img[x+2]=RGB.get_z();  
             }
-            if(Red_term < 0){
-                cout<<"This should never happen \n";
-                break;
+            else if(t2<t1){
+                float t=t2;
+                vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d));
+                vector3 l = sun.get_light_direction(point); 
+                vector3 normal=triangle1.get_triangle_normal(triangle1.get_vertex1(), triangle1.get_vertex2(), triangle1.get_vertex3());  
+                vector3 RGB = triangle1.determine_colour(point, l, d, sun, normal, myscene);
+                img[x] = RGB.get_x();
+                img[x+1]=RGB.get_y();
+                img[x+2]=RGB.get_z();    
             }
-            if (Blue_term>255){
-                Blue_term=255;
-            }
-            if(Blue_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            if (Green_term >255){
-                Green_term = 255;
-            }
-             if(Green_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            img[x] = Red_term;
-            img[x+1]=Green_term;
-            img[x+2]=Blue_term;  
-           
-            }
-           else if(t2<t1){
-             float t=t2;
-             vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d));
-            vector3 l = sun.get_light_direction(point); 
-           vector3 normal=triangle1.get_triangle_normal(triangle1.get_vertex1(), triangle1.get_vertex2(), triangle1.get_vertex3());  
-           
-            D = myscene.DiffuseValue(normal, l);
-            DD = myscene.SpecularValue(normal,l,d);
-
-             Red_term = (sun.get_light_intensity())*(triangle1.get_DiffuseCoeff()*D+triangle1.get_AmbientCoeff())*(triangle1.get_colour()).get_x()+pow(DD,triangle1.get_SpecularPower())*triangle1.get_SpecularCoeff();
-            Green_term =(sun.get_light_intensity())*(triangle1.get_DiffuseCoeff()*D+triangle1.get_AmbientCoeff())*(triangle1.get_colour()).get_y()+pow(DD,triangle1.get_SpecularPower())*triangle1.get_SpecularCoeff();
-            Blue_term =(sun.get_light_intensity())*(triangle1.get_DiffuseCoeff()*D+triangle1.get_AmbientCoeff())*(triangle1.get_colour()).get_z()+pow(DD,triangle1.get_SpecularPower())*triangle1.get_SpecularCoeff();
-           
-
-            
-            if (Red_term > 255){
-                Red_term =255;
-            }
-            if(Red_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            if (Blue_term>255){
-                Blue_term=255;
-            }
-            if(Blue_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            if (Green_term >255){
-                Green_term = 255;
-            }
-             if(Green_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            img[x] = Red_term;
-            img[x+1]=Green_term;
-            img[x+2]=Blue_term;    
-        }
         }
         else if ((t1 != 0)&&(t2==0)){
             float t=t1;
             vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d));
             vector3 l = sun.get_light_direction(point); 
             vector3 normal=sphere1.find_normal(point); 
-                D = myscene.DiffuseValue(normal, l);
-                DD = myscene.SpecularValue(normal,l,d);
-                Red_term = (sun.get_light_intensity())*(sphere1.get_DiffuseCoeff()*D+sphere1.get_AmbientCoeff())*(sphere1.get_colour()).get_x()+pow(DD,sphere1.get_SpecularPower())*sphere1.get_SpecularCoeff();
-                Green_term =(sun.get_light_intensity())*(sphere1.get_DiffuseCoeff()*D+sphere1.get_AmbientCoeff())*(sphere1.get_colour()).get_y()+pow(DD,sphere1.get_SpecularPower())*sphere1.get_SpecularCoeff();
-                Blue_term =(sun.get_light_intensity())*(sphere1.get_DiffuseCoeff()*D+sphere1.get_AmbientCoeff())*(sphere1.get_colour()).get_z()+pow(DD,sphere1.get_SpecularPower())*sphere1.get_SpecularCoeff();
-           if (Red_term > 255){
-                Red_term =255;
-            }
-            if(Red_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            if (Blue_term>255){
-                Blue_term=255;
-            }
-            if(Blue_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            if (Green_term >255){
-                Green_term = 255;
-            }
-             if(Green_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            img[x] = Red_term;
-            img[x+1]=Green_term;
-            img[x+2]=Blue_term;  
-
+            vector3 RGB = sphere1.determine_colour(point, l, d, sun, normal, myscene);
+            img[x] = RGB.get_x();
+            img[x+1]=RGB.get_y();
+            img[x+2]=RGB.get_z();  
         }
-         else if ((t1 == 0)&&(t2!=0)){
-             float t=t2;
-             vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d));
+        else if ((t1 == 0)&&(t2!=0)){
+            float t=t2;
+            vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d));
             vector3 l = sun.get_light_direction(point); 
-           vector3 normal=triangle1.get_triangle_normal(triangle1.get_vertex1(), triangle1.get_vertex2(), triangle1.get_vertex3());  
-           
-            D = myscene.DiffuseValue(normal, l);
-            DD = myscene.SpecularValue(normal,l,d);
-
-             Red_term = (sun.get_light_intensity())*(triangle1.get_DiffuseCoeff()*D+triangle1.get_AmbientCoeff())*(triangle1.get_colour()).get_x()+pow(DD,triangle1.get_SpecularPower())*triangle1.get_SpecularCoeff();
-            Green_term =(sun.get_light_intensity())*(triangle1.get_DiffuseCoeff()*D+triangle1.get_AmbientCoeff())*(triangle1.get_colour()).get_y()+pow(DD,triangle1.get_SpecularPower())*triangle1.get_SpecularCoeff();
-            Blue_term =(sun.get_light_intensity())*(triangle1.get_DiffuseCoeff()*D+triangle1.get_AmbientCoeff())*(triangle1.get_colour()).get_z()+pow(DD,triangle1.get_SpecularPower())*triangle1.get_SpecularCoeff();
-           
-
-            
-            if (Red_term > 255){
-                Red_term =255;
-            }
-            if(Red_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            if (Blue_term>255){
-                Blue_term=255;
-            }
-            if(Blue_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            if (Green_term >255){
-                Green_term = 255;
-            }
-             if(Green_term < 0){
-                cout<<"This should never happen \n";
-                break;
-            }
-            img[x] = Red_term;
-            img[x+1]=Green_term;
-            img[x+2]=Blue_term;   
-         }
+            vector3 normal=triangle1.get_triangle_normal(triangle1.get_vertex1(), triangle1.get_vertex2(), triangle1.get_vertex3());  
+            vector3 RGB = triangle1.determine_colour(point, l, d, sun, normal, myscene);
+            img[x] = RGB.get_x();
+            img[x+1]=RGB.get_y();
+            img[x+2]=RGB.get_z();  
+        }
         else{
             img[x]=0;
             img[x+1]=0;

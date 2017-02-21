@@ -3,6 +3,8 @@
 #include <cmath>
 #include"sphere.hpp"
 #include"vec3.hpp"
+#include"light.hpp"
+#include"scene.hpp"
 
 using namespace std;
 
@@ -64,8 +66,8 @@ float sphere::Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction){
     float a,b,c, det ;
     vector3 centre(centre_x, centre_y, centre_z);
     a = centre.dotproduct(ray_direction,ray_direction);
-    b=2*(centre.dotproduct(ray_direction,ray_point));
-    c=centre.dotproduct(ray_point,ray_point)-radius*radius;
+    b=2*(centre.dotproduct(ray_direction,centre.vec_add(ray_point, centre.vec_scal_mult(-1, centre))));
+    c=centre.dotproduct(centre.vec_add(ray_point, centre.vec_scal_mult(-1, centre)),centre.vec_add(ray_point, centre.vec_scal_mult(-1, centre)))-radius*radius;
     det = b*b - 4*a*c;
     if (det >= 0){     
         float  t1,t2;
@@ -75,6 +77,33 @@ float sphere::Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction){
     }
     return 0;
  }
+vector3 sphere::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene){
+    float D, DD, Red_term, Green_term, Blue_term;
+    D = myscene.DiffuseValue(normal, light_direction);
+    DD = myscene.SpecularValue(normal,light_direction,ray_direction);
+    Red_term = (source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_x+pow(DD,SpecularPower)*SpecularCoeff;
+    Green_term =(source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_y+pow(DD,SpecularPower)*SpecularCoeff;
+    Blue_term =(source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_z+pow(DD,SpecularPower)*SpecularCoeff;
+    if (Red_term > 255){
+        Red_term =255;
+    }
+    if (Blue_term>255){
+        Blue_term=255;
+    }
+    if (Green_term >255){
+        Green_term = 255;
+    }
+    if((Green_term < 0)|(Red_term < 0)|(Blue_term < 0)){
+        cout<<"This should never happen \n";              
+    }
+    vector3 RGB(Red_term, Green_term, Blue_term);
+    return RGB;
+}
+
+
+
+
+
 triangle::triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z,const int* sphere_colour ){
     vertex1_x = v1x;
     vertex1_y = v1y;
@@ -175,6 +204,28 @@ float triangle::get_AmbientCoeff(void){
 }
 float triangle::get_SpecularPower(void){
     return SpecularPower;
+}
+vector3 triangle::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene){
+   float D, DD, Red_term, Green_term, Blue_term;
+    D = myscene.DiffuseValue(normal, light_direction);
+    DD = myscene.SpecularValue(normal,light_direction,ray_direction);
+    Red_term = (source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_x+pow(DD,SpecularPower)*SpecularCoeff;
+    Green_term =(source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_y+pow(DD,SpecularPower)*SpecularCoeff;
+    Blue_term =(source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_z+pow(DD,SpecularPower)*SpecularCoeff;
+    if (Red_term > 255){
+        Red_term =255;
+    }
+    if (Blue_term>255){
+        Blue_term=255;
+    }
+    if (Green_term >255){
+        Green_term = 255;
+    }
+    if((Green_term < 0)|(Red_term < 0)|(Blue_term < 0)){
+        cout<<"This should never happen \n";              
+    }
+    vector3 RGB(Red_term, Green_term, Blue_term);
+    return RGB;
 }
  
  

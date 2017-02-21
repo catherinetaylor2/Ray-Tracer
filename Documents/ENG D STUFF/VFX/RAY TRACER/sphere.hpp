@@ -2,6 +2,8 @@
 #define sphere_hpp
 #include<iostream>
 #include"vec3.hpp"
+#include"light.hpp"
+#include"scene.hpp"
 
 class sphere{
     public:
@@ -21,6 +23,7 @@ class sphere{
         vector3 get_colour(void);
         vector3 find_normal(vector3 point);
         float Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction);
+        vector3 determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene);
     private:
         int centre_x, centre_y, centre_z, radius, colour_x, colour_y, colour_z;
         float DiffuseCoeff, SpecularCoeff, AmbientCoeff, SpecularPower;
@@ -48,6 +51,7 @@ class triangle{
         float ray_triangle_intersection(vector3 ray_point, vector3 ray_direction);
         vector3 barycentric_coords(vector3 intersection_point);
         void set_lighting_constants(float DC, float SC, float AC, float SP);
+        vector3 determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene);
     private:
         float vertex1_x, vertex1_y, vertex1_z, vertex2_x, vertex2_y, vertex2_z, vertex3_x, vertex3_y, vertex3_z;
         float normal_x, normal_y, normal_z, point_D;
