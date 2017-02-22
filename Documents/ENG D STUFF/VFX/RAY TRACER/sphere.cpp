@@ -77,13 +77,13 @@ float sphere::Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction){
     }
     return 0;
  }
-vector3 sphere::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene){
+vector3 sphere::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow){
     float D, DD, Red_term, Green_term, Blue_term;
     D = myscene.DiffuseValue(normal, light_direction);
     DD = myscene.SpecularValue(normal,light_direction,ray_direction);
-    Red_term = (source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_x+pow(DD,SpecularPower)*SpecularCoeff;
-    Green_term =(source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_y+pow(DD,SpecularPower)*SpecularCoeff;
-    Blue_term =(source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_z+pow(DD,SpecularPower)*SpecularCoeff;
+    Red_term = (source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_x+shadow*pow(DD,SpecularPower)*SpecularCoeff);
+    Green_term =(source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_y+shadow*pow(DD,SpecularPower)*SpecularCoeff);
+    Blue_term =(source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_z+shadow*pow(DD,SpecularPower)*SpecularCoeff);
     if (Red_term > 255){
         Red_term =255;
     }
@@ -205,13 +205,13 @@ float triangle::get_AmbientCoeff(void){
 float triangle::get_SpecularPower(void){
     return SpecularPower;
 }
-vector3 triangle::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene){
+vector3 triangle::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow){
    float D, DD, Red_term, Green_term, Blue_term;
     D = myscene.DiffuseValue(normal, light_direction);
     DD = myscene.SpecularValue(normal,light_direction,ray_direction);
-    Red_term = (source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_x+pow(DD,SpecularPower)*SpecularCoeff;
-    Green_term =(source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_y+pow(DD,SpecularPower)*SpecularCoeff;
-    Blue_term =(source.get_light_intensity())*(DiffuseCoeff*D+AmbientCoeff)*colour_z+pow(DD,SpecularPower)*SpecularCoeff;
+    Red_term = (source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_x+pow(DD,SpecularPower)*SpecularCoeff);
+    Green_term =(source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_y+pow(DD,SpecularPower)*SpecularCoeff);
+    Blue_term =(source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_z+pow(DD,SpecularPower)*SpecularCoeff);
     if (Red_term > 255){
         Red_term =255;
     }

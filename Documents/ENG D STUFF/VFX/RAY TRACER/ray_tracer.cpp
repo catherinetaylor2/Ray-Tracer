@@ -18,8 +18,8 @@ const int YELLOW[]={255,255,0};
 int main(){
 
  //initial inputs
-    sphere sphere1(0,1,-1,1,RED);
-    triangle triangle1(0,3,3,-4,0,3,4,0,3,BLUE);
+    sphere sphere1(0,0,0,1,RED);
+    triangle triangle1(0,1,-1,-1,0,-1,4,0,-1,BLUE);
     sphere1.set_lighting_constants(0.6, 0.7*255, 0.1, 600);
     triangle1.set_lighting_constants(0.6, 0.5*255, 0.1, 800);
     
@@ -64,7 +64,7 @@ int main(){
                 vector3 l = sun.get_light_direction(point); 
                 vector3 normal=sphere1.find_normal(point); 
                
-                vector3 RGB = sphere1.determine_colour(point, l, d, sun, normal, myscene);
+                vector3 RGB = sphere1.determine_colour(point, l, d, sun, normal, myscene,1);
 
 
 
@@ -77,7 +77,7 @@ int main(){
                 vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d));
                 vector3 l = sun.get_light_direction(point); 
                 vector3 normal=triangle1.get_triangle_normal(triangle1.get_vertex1(), triangle1.get_vertex2(), triangle1.get_vertex3());  
-                vector3 RGB = triangle1.determine_colour(point, l, d, sun, normal, myscene);
+                vector3 RGB = triangle1.determine_colour(point, l, d, sun, normal, myscene,1);
                 img[x] = RGB.get_x();
                 img[x+1]=RGB.get_y();
                 img[x+2]=RGB.get_z();    
@@ -88,7 +88,12 @@ int main(){
             vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d));
             vector3 l = sun.get_light_direction(point); 
             vector3 normal=sphere1.find_normal(point); 
-            vector3 RGB = sphere1.determine_colour(point, l, d, sun, normal, myscene);
+            //vector3 RGB = sphere1.determine_colour(point, l, d, sun, normal, myscene,1);
+
+            float ss = triangle1.ray_triangle_intersection( point, l);
+            int s = (ss<=0);
+           vector3 RGB = sphere1.determine_colour(point, l, d, sun, normal, myscene,s);
+             
             img[x] = RGB.get_x();
             img[x+1]=RGB.get_y();
             img[x+2]=RGB.get_z();  
@@ -98,13 +103,14 @@ int main(){
             vector3 point = d.vec_add(eye, d.vec_scal_mult(t,d));
             vector3 l = sun.get_light_direction(point); 
             vector3 normal=triangle1.get_triangle_normal(triangle1.get_vertex1(), triangle1.get_vertex2(), triangle1.get_vertex3());  
-            vector3 RGB = triangle1.determine_colour(point, l, d, sun, normal, myscene);
+            
             float ss = sphere1.Sphere_ray_intersection( point, l);
             int s = (ss<=0);
+           vector3 RGB = triangle1.determine_colour(point, l, d, sun, normal, myscene,s);
              
-            img[x] = s*RGB.get_x();
-            img[x+1]=s*RGB.get_y();
-            img[x+2]=s*RGB.get_z();  
+            img[x] = RGB.get_x();
+            img[x+1]=RGB.get_y();
+            img[x+2]=RGB.get_z();  
         }
         else{
             img[x]=0;
