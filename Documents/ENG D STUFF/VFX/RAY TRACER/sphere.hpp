@@ -30,9 +30,15 @@ class sphere{
 };
 class plane{
     public:
+        plane(float p1x, float p1y, float p1z, float p2x, float p2y, float p2z, float p3x, float p3y, float p3z, const int* plane_colour);
         vector3 get_plane_normal(void);
+        float ray_plane_intersection(vector3 ray_point, vector3 ray_direction);
+        void set_lighting_constants(float DC, float SC, float AC, float SP);
+       vector3 determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow);
     private:
-        float normal_x, normal_y,normal_z;
+        float normal_x, normal_y,normal_z, point_D;
+        float DiffuseCoeff, SpecularCoeff, AmbientCoeff, SpecularPower;
+         int colour_x, colour_y, colour_z;
 
 };
 class triangle{
@@ -47,7 +53,7 @@ class triangle{
         float get_SpecularCoeff(void);
         float get_AmbientCoeff(void);
         float get_SpecularPower(void);
-        float ray_plane_intersection(vector3 ray_point, vector3 ray_direction);
+      //  float ray_plane_intersection(vector3 ray_point, vector3 ray_direction);
         float ray_triangle_intersection(vector3 ray_point, vector3 ray_direction);
         vector3 barycentric_coords(vector3 intersection_point);
         void set_lighting_constants(float DC, float SC, float AC, float SP);
