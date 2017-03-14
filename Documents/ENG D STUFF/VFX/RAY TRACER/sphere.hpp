@@ -5,6 +5,7 @@
 #include"light.hpp"
 #include"scene.hpp"
 
+
 class sphere{
     public:
         sphere(int sphere_x, int sphere_y, int sphere_z, int sphere_radius, const int* sphere_colour);

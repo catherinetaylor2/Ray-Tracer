@@ -55,7 +55,7 @@ float sphere::get_AmbientCoeff(void){
 float sphere::get_SpecularPower(void){
     return SpecularPower;
 }
-vector3 sphere::find_normal(vector3 point){     
+vector3 sphere::find_normal(vector3 point){
     vector3 centre(centre_x, centre_y, centre_z);
     vector3 norm = centre.vec_add(point, centre.vec_scal_mult(-1,centre));
     vector3 normal = centre.vec_scal_mult(2,norm);
@@ -69,7 +69,7 @@ float sphere::Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction){
     b=2*(centre.dotproduct(ray_direction,centre.vec_add(ray_point, centre.vec_scal_mult(-1, centre))));
     c=centre.dotproduct(centre.vec_add(ray_point, centre.vec_scal_mult(-1, centre)),centre.vec_add(ray_point, centre.vec_scal_mult(-1, centre)))-radius*radius;
     det = b*b - 4*a*c;
-    if (det >= 0){     
+    if (det >= 0){
         float  t1,t2;
         t1 = (-1*b -sqrt(det))/(2*a);
         t2 = (-1*b +sqrt(det))/(2*a);
@@ -78,15 +78,15 @@ float sphere::Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction){
     return 0;
  }
 vector3 sphere::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow){
-     
+
     float D, DD, Red_term, Green_term, Blue_term;
     D = myscene.DiffuseValue(normal, light_direction);
     DD = myscene.SpecularValue(normal,light_direction,ray_direction);
-   
+
     Red_term = (source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_x+shadow*pow(DD,SpecularPower)*SpecularCoeff);
     Green_term =(source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_y+shadow*pow(DD,SpecularPower)*SpecularCoeff);
     Blue_term =(source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_z+shadow*pow(DD,SpecularPower)*SpecularCoeff);
-   
+
     if (Red_term > 255){
         Red_term =255;
     }
@@ -97,7 +97,7 @@ vector3 sphere::determine_colour(vector3 point, vector3 light_direction, vector3
         Green_term = 255;
     }
     if((Green_term < 0)|(Red_term < 0)|(Blue_term < 0)){
-        cout<<"This should never happen \n";              
+        cout<<"This should never happen \n";
     }
     vector3 RGB(Red_term, Green_term, Blue_term);
     return RGB;
@@ -121,15 +121,12 @@ triangle::triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float 
     vector3 V1(v1x,v1y,v1z);
     vector3 V2(v2x, v2y, v2z);
     vector3 V3(v3x, v3y, v3z);
-    vector3 N = V1.crossproduct(V1.vec_add(V3, V1.vec_scal_mult(-1, V1)), V1.vec_add(V2, V1.vec_scal_mult(-1, V1)));
+    vector3 N = V1.crossproduct(V1.vec_add(V2, V1.vec_scal_mult(-1, V1)), V1.vec_add(V3, V1.vec_scal_mult(-1, V1)));
     N.normalize();
     normal_x = N.get_x();
     normal_y=N.get_y();
     normal_z=N.get_z();
-    // cout<<"Nx "<<normal_x<<" ";
-    //  cout<<"Ny "<<normal_y<<" ";
-    //   cout<<"Nz "<<normal_z<<"\n";
-
+ 
     point_D = N.dotproduct(N, V1);
     colour_x=sphere_colour[0];
     colour_y=sphere_colour[1];
@@ -157,20 +154,26 @@ vector3 triangle::get_colour(void){
 }
 float triangle::ray_triangle_intersection(vector3 ray_point, vector3 ray_direction){
      vector3 normal(normal_x, normal_y, normal_z);
-    // cout<<"N.D "<<ray_point.dotproduct(normal,ray_direction)<<"\n";
-    if (ray_point.dotproduct(normal,ray_direction)==0){
-        return 0;
-    }   
-    float t=-1*(ray_point.dotproduct(normal,ray_point) -point_D)/(ray_point.dotproduct(normal,ray_direction));
-   // cout<<"numerator "<< -1*(ray_point.dotproduct(normal,ray_point) -point_D) <<"\n";
-    vector3 intersection_point = ray_point.vec_add(ray_point, ray_direction.vec_scal_mult(t, ray_direction)); 
+     float r = ray_point.dotproduct(normal,ray_direction);
+
+    if (fabs(r) < 0.000000001f){
+              return 0;
+       }
+    float t=(point_D - ray_point.dotproduct(normal,ray_point) )/r;
+
+    vector3 intersection_point = ray_point.vec_add(ray_point, ray_direction.vec_scal_mult(t, ray_direction));
     vector3 V1(vertex1_x,vertex1_y,vertex1_z);
     vector3 V2(vertex2_x, vertex2_y, vertex2_z);
     vector3 V3(vertex3_x, vertex3_y, vertex3_z);
-    if ((ray_point.dotproduct(V1.crossproduct(V1.vec_add(V1, V1.vec_scal_mult(-1, V2)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V2))), normal)>=0)&&(ray_point.dotproduct(V1.crossproduct(V1.vec_add(V2, V1.vec_scal_mult(-1, V3)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V3))), normal)>=0)&&(ray_point.dotproduct(V1.crossproduct(V1.vec_add(V3, V1.vec_scal_mult(-1, V1)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V1))), normal)>=0)){
-        return t;
+
+    if (
+    (ray_point.dotproduct(V1.crossproduct(V1.vec_add(V2, V1.vec_scal_mult(-1, V1)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V1))), normal)>=-0.0001f)&&
+    (ray_point.dotproduct(V1.crossproduct(V1.vec_add(V3, V1.vec_scal_mult(-1, V2)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V2))), normal)>=-0.0001f)&&
+    (ray_point.dotproduct(V1.crossproduct(V1.vec_add(V1, V1.vec_scal_mult(-1, V3)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V3))), normal)>=-0.0001f))
+    {
+            return t;
     }
-    return 0;
+ return 0;
 
 }
 vector3 triangle::barycentric_coords(vector3 intersection_point){
@@ -205,7 +208,7 @@ float triangle::get_SpecularPower(void){
     return SpecularPower;
 }
 vector3 triangle::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow){
-     
+
    float D, DD, Red_term, Green_term, Blue_term;
     D = myscene.DiffuseValue(normal, light_direction);
     DD = myscene.SpecularValue(normal,light_direction,ray_direction);
@@ -222,12 +225,12 @@ vector3 triangle::determine_colour(vector3 point, vector3 light_direction, vecto
         Green_term = 255;
     }
     if((Green_term < 0)|(Red_term < 0)|(Blue_term < 0)){
-        cout<<"This should never happen \n";              
+        cout<<"This should never happen \n";
     }
     vector3 RGB(Red_term, Green_term, Blue_term);
     return RGB;
 }
- 
+
 // plane::plane(float nx, float ny, float nz, float px, float py, float pz, const int* plane_colour){
 //     normal_x = nx;
 //     normal_y = ny;
@@ -251,9 +254,9 @@ plane::plane(float p1x, float p1y, float p1z, float p2x, float p2y, float p2z, f
           normal_x = N.get_x();
     normal_y = N.get_y();
     normal_z = N.get_z();
-    cout<<"nx "<<normal_x<<"\n";
-    cout<<"ny "<<normal_y<<"\n";
-    cout<<"nz "<<normal_z<<"\n";
+    // cout<<"nx "<<normal_x<<"\n";
+    // cout<<"ny "<<normal_y<<"\n";
+    // cout<<"nz "<<normal_z<<"\n";
     point_D = P.dotproduct(N,P);
         colour_x=plane_colour[0];
     colour_y=plane_colour[1];
@@ -272,7 +275,7 @@ vector3 plane::get_plane_normal(void){
     SpecularPower=SP;
  }
  vector3 plane::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow){
-  
+
    float D, DD, Red_term, Green_term, Blue_term;
     D = myscene.DiffuseValue(normal, light_direction);
     DD = myscene.SpecularValue(normal,light_direction,ray_direction);
@@ -289,7 +292,7 @@ vector3 plane::get_plane_normal(void){
         Green_term = 255;
     }
     if((Green_term < 0)|(Red_term < 0)|(Blue_term < 0)){
-        cout<<"This should never happen \n";              
+        cout<<"This should never happen \n";
     }
     vector3 RGB(Red_term, Green_term, Blue_term);
     return RGB;
@@ -299,9 +302,9 @@ float plane::ray_plane_intersection(vector3 ray_point, vector3 ray_direction){
     vector3 normal(normal_x, normal_y, normal_z);
     normal.normalize();
      if (ray_point.dotproduct(normal,ray_direction)!=0){
-       
+
         return (( point_D- ray_point.dotproduct(normal,ray_point))/(ray_point.dotproduct(normal,ray_direction)));
-     
+
     }
     else{
         return 0;

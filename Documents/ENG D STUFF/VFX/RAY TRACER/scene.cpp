@@ -8,7 +8,7 @@
 scene::scene(int x, int y, int fov, int d){
     x_res = x;
     y_res= y;
-    height = 2*d*tan((float)fov/360.0f *PI/2.0f );
+    height = 2*(float)d*tan((float)fov/360.0f *PI/2.0f );
     width = ((float)x/(float)y)*height;
     distance_to_image = d;
 }
