@@ -31,7 +31,7 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("sphere_small.obj");
+    ObjFile mesh("joint.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
@@ -41,7 +41,7 @@ int main(int argc, char* argv[] ){
     vector3 eye(0,0,-8);
     vector3 lookup(0,1,-8);
     vector3 lookat(0,0,1);
-    Light sun(4,3,-5,1);
+    Light sun(-5,0,-2,1);
     vector3 light = sun.get_position();
     scene myscene(width,height,90,3);
     float d = myscene.get_distance_to_image();
@@ -70,47 +70,61 @@ int main(int argc, char* argv[] ){
 
 
        float t_min = FLT_MAX, t;
-       int min_value = 0, c1, c2, c3;
+	   float* t_values = new float[F];
+       int min_value = -1, c1, c2, c3;
 
 		for (int k=0; k<F; k++){
-		c1 = FV[3*k] -1, c2 = FV[3*k+1]-1, c3 = FV[3*k+2] -1 ;
-			
+			c1 = FV[3*k] -1, c2 = FV[3*k+1]-1, c3 = FV[3*k+2] -1 ;
 			triangle tri(V[3*c1], V[3*c1+1], V[3*c1+2], V[3*c2], V[3*c2+1], V[3*c2+2], V[3*c3], V[3*c3+1], V[3*c3+2], RED);
-			
 			t = tri.ray_triangle_intersection(eye,d);
-						
-			if ((t!=0)){
-				vector3 xyz = d.vec_add( eye , d.vec_scal_mult(t,d));
+			t_values[k]=t;		
+		}
+
+		for (int k=0; k<F; k++){
+			if ((t_values[k]!=0)){
+				vector3 xyz = d.vec_add( eye , d.vec_scal_mult(t_values[k],d));
 				if (xyz.get_z()<t_min){
 					t_min = xyz.get_z();
 					min_value = k;					
 				}
 			}
-		}
-    
-		c1 = FV[3*min_value] -1, c2 = FV[3*min_value+1]-1, c3 = FV[3*min_value+2] -1 ;
-		triangle tri(V[3*c1], V[3*c1+1], V[3*c1+2], V[3*c2], V[3*c2+1], V[3*c2+2], V[3*c3], V[3*c3+1], V[3*c3+2], RED);
-		t = tri.ray_triangle_intersection(eye,d);
-		tri.set_lighting_constants(0.7, 0.5*255, 0.3, 800);
-
-		if (t!=0){
-
-			vector3 int_point = d.vec_add(eye, d.vec_scal_mult(t,d));
-			vector3 point = tri.barycentric_coords( int_point);
-			vector3 l = sun.get_light_direction(point); 
-
-			vector3 normal=tri.get_triangle_normal(tri.get_vertex1(), tri.get_vertex2(), tri.get_vertex3());  
-			vector3 RGB = tri.determine_colour(point, l, d, sun, normal, myscene,1);
-
-									
-			img[x] = RGB.get_x();
-			img[x+1]=RGB.get_y();
-			img[x+2]=RGB.get_z(); 
-		}
-		else{
+		}	
+			
+		if (min_value == -1){
 			img[x]=0;
 			img[x+1]=0;
-			img[x+2]=0; 
+			img[x+2]=0;
+		}
+		else{
+			c1 = FV[3*min_value] -1, c2 = FV[3*min_value+1]-1, c3 = FV[3*min_value+2] -1 ;
+			triangle tri(V[3*c1], V[3*c1+1], V[3*c1+2], V[3*c2], V[3*c2+1], V[3*c2+2], V[3*c3], V[3*c3+1], V[3*c3+2], RED);
+			t = tri.ray_triangle_intersection(eye,d);
+			tri.set_lighting_constants(0.7, 0.8*255, 0.3, 400);
+
+			if (t!=0){
+				float ss;
+				int s = 1;
+
+				vector3 point = d.vec_add(eye, d.vec_scal_mult(t-0.00001f,d));
+			//	vector3 point = tri.barycentric_coords( int_point);
+				vector3 l = sun.get_light_direction(point);
+				for (int k=0; k<F; k++){
+					c1 = FV[3*k] -1, c2 = FV[3*k+1]-1, c3 = FV[3*k+2] -1 ;
+					triangle tri2(V[3*c1], V[3*c1+1], V[3*c1+2], V[3*c2], V[3*c2+1], V[3*c2+2], V[3*c3], V[3*c3+1], V[3*c3+2], RED);
+					ss = tri2.ray_triangle_intersection( point, l);
+					
+					if ((ss)> 0){;
+						s = 0;						
+					}			
+				 } 
+
+				vector3 normal=tri.get_triangle_normal(tri.get_vertex1(), tri.get_vertex2(), tri.get_vertex3());  
+				vector3 RGB = tri.determine_colour(point, l, d, sun, normal, myscene,s);
+				
+				img[x] = RGB.get_x();
+				img[x+1]=RGB.get_y();
+				img[x+2]=RGB.get_z(); 
+			}
 		}
 	}
 
@@ -121,8 +135,7 @@ int main(int argc, char* argv[] ){
     <<myscene.get_y_res()<<"\n"
     <<255<<"\n";
     for (int i=0; i<3*myscene.get_x_res()*myscene.get_y_res(); i++){
-        my_image << img[i];
-        
+        my_image << img[i]; 
     }
     my_image.close();
 
@@ -130,6 +143,7 @@ int main(int argc, char* argv[] ){
     delete FN;
     delete V;
     delete N;
+
 
     return 0;
 }
