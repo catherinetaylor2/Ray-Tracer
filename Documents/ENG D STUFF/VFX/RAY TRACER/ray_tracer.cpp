@@ -9,8 +9,6 @@
 #include "readObj.hpp"
 #include "search_tree.hpp"
 
-using namespace std;
-
 const int RED[] = {255,0,0};
 const int GREEN[] ={0,255,0};
 const int BLUE[] = {0,0,255};
@@ -177,8 +175,8 @@ int main(int argc, char* argv[] ){
 		delete t_values;
 	}
 
-    ofstream my_image;
-    my_image.open("test.ppm", ios::out| ios::binary);
+    std::ofstream my_image;
+    my_image.open("test.ppm", std::ios::out| std::ios::binary);
     my_image<<"P6 \n" 
     <<myscene.get_x_res()<<" "
     <<myscene.get_y_res()<<"\n"

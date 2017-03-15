@@ -3,7 +3,6 @@
 #include"light.hpp"
 #include"vec3.hpp"
 
-using namespace std;
 
 Light::Light(float x, float y, float z, float I){
     light_x=x;

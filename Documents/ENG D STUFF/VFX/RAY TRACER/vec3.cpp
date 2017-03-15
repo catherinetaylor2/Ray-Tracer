@@ -3,7 +3,6 @@
 #include <cmath>
 #include"vec3.hpp"
 
-using namespace std;
 
 vector3::vector3(float x, float y, float z){
     x_val=x;

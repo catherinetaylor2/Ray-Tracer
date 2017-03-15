@@ -6,8 +6,6 @@
 #include"light.hpp"
 #include"scene.hpp"
 
-using namespace std;
-
 const int RED[] = {255,0,0};
 const int GREEN[] ={0,255,0};
 const int BLUE[] = {0,0,255};
@@ -97,7 +95,7 @@ vector3 sphere::determine_colour(vector3 point, vector3 light_direction, vector3
         Green_term = 255;
     }
     if((Green_term < 0)|(Red_term < 0)|(Blue_term < 0)){
-        cout<<"This should never happen \n";
+        std::cout<<"This should never happen \n";
     }
     vector3 RGB(Red_term, Green_term, Blue_term);
     return RGB;
@@ -225,7 +223,7 @@ vector3 triangle::determine_colour(vector3 point, vector3 light_direction, vecto
         Green_term = 255;
     }
     if((Green_term < 0)|(Red_term < 0)|(Blue_term < 0)){
-        cout<<"This should never happen \n";
+        std::cout<<"This should never happen \n";
     }
     vector3 RGB(Red_term, Green_term, Blue_term);
     return RGB;
@@ -292,7 +290,7 @@ vector3 plane::get_plane_normal(void){
         Green_term = 255;
     }
     if((Green_term < 0)|(Red_term < 0)|(Blue_term < 0)){
-        cout<<"This should never happen \n";
+        std::cout<<"This should never happen \n";
     }
     vector3 RGB(Red_term, Green_term, Blue_term);
     return RGB;
