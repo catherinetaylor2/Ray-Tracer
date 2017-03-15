@@ -6,7 +6,6 @@ class search_tree{
     public:
         search_tree *left_node;
         search_tree *right_node;
-        search_tree();
 
         int* vertices_in_node;
         float parameters [6];

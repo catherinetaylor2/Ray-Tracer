@@ -40,14 +40,12 @@ int main(int argc, char* argv[] ){
     int F = mesh.get_number_of_faces();
 	
 	search_tree* root = new search_tree;
-	 root->vertices_in_node = new int[5];
-    for(int i =0; i<5; i++){
-		//cout<<"line 45 \n";
-     root->vertices_in_node[i]=i;
-    }
-	//search_tree st;
+	root->vertices_in_node = new int[5];
+	for(int i =0; i<5; i++){
+		root->vertices_in_node[i]=i;
+	}
 	search_tree::build_tree(V,V, 5, root,10);
-	cout<<"root value "<<root->left_node->left_node->right_node->right_node->vertices_in_node[0]<<"\n";
+	//cout<<"root value "<<root->left_node->vertices_in_node[1]<<"\n";
 
     vector3 eye(0,0,-8);
     vector3 lookup(0,1,-8);
@@ -68,7 +66,6 @@ int main(int argc, char* argv[] ){
     vector3 L = C.vec_add3(C, C.vec_scal_mult(half_width,u), C.vec_scal_mult(half_height,v) );
     float ratio = (myscene.get_width())/((float)myscene.get_x_res());
 
-   
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
 
     for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
@@ -78,7 +75,6 @@ int main(int argc, char* argv[] ){
         vector3 s = C.vec_add3(L, C.vec_scal_mult(-1*i*ratio,u), C.vec_scal_mult(-1*j*ratio,v) );
         vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
         d.normalize();
-		//cout<<"d "<<d.get_x()<<" "<<d.get_y()<<" "<<d.get_z()<<"\n";
 
        float t_min = FLT_MAX, t;
 	   float* t_values = new float[F];
@@ -198,8 +194,6 @@ int main(int argc, char* argv[] ){
     delete N;
 	delete root;
 	delete root->vertices_in_node;
-
-
 
     return 0;
 }

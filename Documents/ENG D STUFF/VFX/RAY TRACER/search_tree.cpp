@@ -3,10 +3,6 @@
 
 #define infinity FLT_MAX
 
-search_tree::search_tree(){
-
-}
-
 void search_tree::build_tree(float* vertices, float* node_vertices, int number_of_vertices, search_tree* root, int previous_vertices){
 
     int k1=0, k2=0, k3=0; 
