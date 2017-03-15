@@ -167,9 +167,9 @@ float triangle::ray_triangle_intersection(vector3 ray_point, vector3 ray_directi
     vector3 V3(vertex3_x, vertex3_y, vertex3_z);
 
     if (
-    (ray_point.dotproduct(V1.crossproduct(V1.vec_add(V2, V1.vec_scal_mult(-1, V1)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V1))), normal)>=-0.00005f)&&
-    (ray_point.dotproduct(V1.crossproduct(V1.vec_add(V3, V1.vec_scal_mult(-1, V2)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V2))), normal)>=-0.00005f)&&
-    (ray_point.dotproduct(V1.crossproduct(V1.vec_add(V1, V1.vec_scal_mult(-1, V3)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V3))), normal)>=-0.00005f))
+    (ray_point.dotproduct(V1.crossproduct(V1.vec_add(V2, V1.vec_scal_mult(-1, V1)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V1))), normal)>=-0.00001f)&&
+    (ray_point.dotproduct(V1.crossproduct(V1.vec_add(V3, V1.vec_scal_mult(-1, V2)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V2))), normal)>=-0.00001f)&&
+    (ray_point.dotproduct(V1.crossproduct(V1.vec_add(V1, V1.vec_scal_mult(-1, V3)), V1.vec_add(intersection_point, V1.vec_scal_mult(-1, V3))), normal)>=-0.00001f))
     {
             return t;
     }

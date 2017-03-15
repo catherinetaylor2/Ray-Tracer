@@ -7,6 +7,7 @@
 #include "sphere.hpp"
 #include "light.hpp"
 #include "readObj.hpp"
+#include "search_tree.hpp"
 
 using namespace std;
 
@@ -31,13 +32,23 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("joint2.obj");
+    ObjFile mesh("pyramid.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
     int* FN = mesh.get_faceN();
     int F = mesh.get_number_of_faces();
 	
+	search_tree* root = new search_tree;
+	 root->vertices_in_node = new int[5];
+    for(int i =0; i<5; i++){
+		//cout<<"line 45 \n";
+     root->vertices_in_node[i]=i;
+    }
+	//search_tree st;
+	search_tree::build_tree(V,V, 5, root,10);
+	cout<<"root value "<<root->left_node->left_node->right_node->right_node->vertices_in_node[0]<<"\n";
+
     vector3 eye(0,0,-8);
     vector3 lookup(0,1,-8);
     vector3 lookat(0,0,1);
@@ -67,6 +78,7 @@ int main(int argc, char* argv[] ){
         vector3 s = C.vec_add3(L, C.vec_scal_mult(-1*i*ratio,u), C.vec_scal_mult(-1*j*ratio,v) );
         vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
         d.normalize();
+		//cout<<"d "<<d.get_x()<<" "<<d.get_y()<<" "<<d.get_z()<<"\n";
 
        float t_min = FLT_MAX, t;
 	   float* t_values = new float[F];
@@ -98,13 +110,13 @@ int main(int argc, char* argv[] ){
 			c1 = FV[3*min_value] -1, c2 = FV[3*min_value+1]-1, c3 = FV[3*min_value+2] -1 ;
 			triangle tri(V[3*c1], V[3*c1+1], V[3*c1+2], V[3*c2], V[3*c2+1], V[3*c2+2], V[3*c3], V[3*c3+1], V[3*c3+2], RED);
 			t = tri.ray_triangle_intersection(eye,d);
-			tri.set_lighting_constants(0.5, 1*255, 0.5, 150);
+			tri.set_lighting_constants(0.5, 1*255, 0.3, 170);
 
 			if (t!=0){
 				float ss,  alpha1, alpha2, alpha3, area, A,B,C, semiPerimeter, semiPerimeter1, semiPerimeter2,semiPerimeter3, P_P1, P_P2, P_P3, R,G, Bc;
 				int s = 1;
 
-				vector3 point = d.vec_add(eye, d.vec_scal_mult(t-0.00001f,d));
+				vector3 point = d.vec_add(eye, d.vec_scal_mult(t-0.001f,d));
 				vector3 l = sun.get_light_direction(point);
 				for (int k=0; k<F; k++){
 					c1 = FV[3*k] -1, c2 = FV[3*k+1]-1, c3 = FV[3*k+2] -1 ;
@@ -184,6 +196,8 @@ int main(int argc, char* argv[] ){
     delete FN;
     delete V;
     delete N;
+	delete root;
+	delete root->vertices_in_node;
 
 
 
