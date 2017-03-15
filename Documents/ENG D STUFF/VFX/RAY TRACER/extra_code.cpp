@@ -150,3 +150,15 @@
 //         }
 //     }
   
+
+  //GOURARD SHADING EXTRAS
+
+  // vector3 l1 = sun.get_light_direction(point1);
+				// vector3 l2= sun.get_light_direction(point2);
+				// vector3 l3 = sun.get_light_direction(point3);
+
+// vector3 RGB2 = tri.determine_colour(point2, l2, d, sun, N2, myscene,s);
+// vector3 RGB3 = tri.determine_colour(point3, l3, d, sun, N3, myscene,s);
+		// R = RGB1.get_x()*alpha1+RGB2.get_x()*alpha2+RGB3.get_x()*alpha3;
+		// 		G = RGB1.get_y()*alpha1+RGB2.get_y()*alpha2+RGB3.get_y()*alpha3;
+		// 		Bc = RGB1.get_z()alpha1+RGB2.get_z()*alpha2+RGB3.get_z()*alpha3;

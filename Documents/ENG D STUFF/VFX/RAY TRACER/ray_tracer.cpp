@@ -31,13 +31,13 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("joint.obj");
+    ObjFile mesh("joint2.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
     int* FN = mesh.get_faceN();
     int F = mesh.get_number_of_faces();
-
+	
     vector3 eye(0,0,-8);
     vector3 lookup(0,1,-8);
     vector3 lookat(0,0,1);
@@ -59,7 +59,7 @@ int main(int argc, char* argv[] ){
 
    
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
-   
+
     for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
         int i, j;
         i=(x/(3))%(myscene.get_x_res());
@@ -67,7 +67,6 @@ int main(int argc, char* argv[] ){
         vector3 s = C.vec_add3(L, C.vec_scal_mult(-1*i*ratio,u), C.vec_scal_mult(-1*j*ratio,v) );
         vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
         d.normalize();
-
 
        float t_min = FLT_MAX, t;
 	   float* t_values = new float[F];
@@ -99,14 +98,13 @@ int main(int argc, char* argv[] ){
 			c1 = FV[3*min_value] -1, c2 = FV[3*min_value+1]-1, c3 = FV[3*min_value+2] -1 ;
 			triangle tri(V[3*c1], V[3*c1+1], V[3*c1+2], V[3*c2], V[3*c2+1], V[3*c2+2], V[3*c3], V[3*c3+1], V[3*c3+2], RED);
 			t = tri.ray_triangle_intersection(eye,d);
-			tri.set_lighting_constants(0.5, 0.7*255, 0.5, 800);
+			tri.set_lighting_constants(0.5, 1*255, 0.5, 150);
 
 			if (t!=0){
 				float ss,  alpha1, alpha2, alpha3, area, A,B,C, semiPerimeter, semiPerimeter1, semiPerimeter2,semiPerimeter3, P_P1, P_P2, P_P3, R,G, Bc;
 				int s = 1;
 
 				vector3 point = d.vec_add(eye, d.vec_scal_mult(t-0.00001f,d));
-			//	vector3 point = tri.barycentric_coords( int_point);
 				vector3 l = sun.get_light_direction(point);
 				for (int k=0; k<F; k++){
 					c1 = FV[3*k] -1, c2 = FV[3*k+1]-1, c3 = FV[3*k+2] -1 ;
@@ -119,6 +117,8 @@ int main(int argc, char* argv[] ){
 				 } 
 
 				vector3 normal=tri.get_triangle_normal(tri.get_vertex1(), tri.get_vertex2(), tri.get_vertex3());  
+
+			//PHONG SHADING-----------------------------
 				c1 = FV[3*min_value] -1, c2 = FV[3*min_value+1]-1, c3 = FV[3*min_value+2] -1 ;
 				int n1 = FN[3*min_value]-1, n2 = FN[3*min_value+1]-1, n3= FN[3*min_value+2]-1;
 				vector3 point1(V[3*c1], V[3*c1+1], V[3*c1+2]);
@@ -143,17 +143,15 @@ int main(int argc, char* argv[] ){
 				alpha1 = sqrt(semiPerimeter1*(semiPerimeter1 - B)*(semiPerimeter1- P_P2)*(semiPerimeter1 -P_P3))/area;
 				alpha2 = sqrt(semiPerimeter2*(semiPerimeter2 - C)*(semiPerimeter2- P_P1)*(semiPerimeter2 -P_P3))/area;
 				alpha3 = sqrt(semiPerimeter3*(semiPerimeter3 - A)*(semiPerimeter3- P_P2)*(semiPerimeter3 -P_P1))/area;
-				vector3 l1 = sun.get_light_direction(point1);
-				vector3 l2= sun.get_light_direction(point2);
-				vector3 l3 = sun.get_light_direction(point3);
-	
-				vector3 RGB1 = tri.determine_colour(point1, l1, d, sun, N1, myscene,s); //see the slides. what about getting v normals from VN?
-				vector3 RGB2 = tri.determine_colour(point2, l2, d, sun, N2, myscene,s);
-				vector3 RGB3 = tri.determine_colour(point3, l3, d, sun, N3, myscene,s);
-				//cout<<"RGB "<<alpha1<<" "<<alpha2<<" "<<alpha3<<"\n";
-				R = RGB1.get_x()*alpha1+RGB2.get_x()*alpha2+RGB3.get_x()*alpha3;
-				G = RGB1.get_y()*alpha1+RGB2.get_y()*alpha2+RGB3.get_y()*alpha3;
-				Bc = RGB1.get_z()*alpha1+RGB2.get_z()*alpha2+RGB3.get_z()*alpha3;
+
+				vector3 N = N1.vec_add3(N1.vec_scal_mult(alpha1, N1), N1.vec_scal_mult(alpha2, N2), N1.vec_scal_mult(alpha3, N3));
+			//---------------------------------------
+
+				vector3 RGB = tri.determine_colour(point, l, d, sun, N, myscene,s);
+				
+				R = RGB.get_x();
+				G = RGB.get_y();
+				Bc = RGB.get_z();
 				if (R > 255){
 					R=255;
 				}
