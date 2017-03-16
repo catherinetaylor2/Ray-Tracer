@@ -1,5 +1,6 @@
 #include <iostream>
 #include "search_tree.hpp"
+#include "vec3.hpp"
 
 #define infinity FLT_MAX
 
@@ -10,6 +11,7 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
 
     for(int i =0; i<number_of_faces; i++){
         for(int j=0; j<3; j++){
+           // std::cout<<"z "<< vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)+2]<<"\n";
             if (vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)]< xmin){
                 xmin = vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)];
             }
@@ -65,11 +67,11 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
             is_inside = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line);
             if (is_inside>=2){
                 l=l+1;
-                L->faces_in_node[l]= node_faces[i];
+                L->faces_in_node[l]= root->faces_in_node[i];
             }
             else{
                 r=r+1;
-                R->faces_in_node[r]=node_faces[i];
+                R->faces_in_node[r]=root->faces_in_node[i];
             }
         }
     }
@@ -93,18 +95,18 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
             is_inside = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)+1]<=boundary_line)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)+1]<=boundary_line)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)+1]<=boundary_line);
             if (is_inside>=2){
                 l=l+1;
-                L->faces_in_node[l]= node_faces[i];
+                L->faces_in_node[l]= root->faces_in_node[i];
             }
             else{
                 r=r+1;
-                R->faces_in_node[r]=node_faces[i];
+                R->faces_in_node[r]=root->faces_in_node[i];
             }
         }
     }
 
     else{ 
         boundary_line = (zmax-zmin)/2.0f+zmin;
-       // std::cout<<"bz "<<boundary_line<<"\n";
+     //  std::cout<<"bz "<<boundary_line<<"\n";
         l=-1, r=-1, number_r=0, number_l=0;
         for(int i=0; i<number_of_faces;i++){
             is_inside = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)+2]<boundary_line)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)+2]<boundary_line)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)+2]<boundary_line);
@@ -121,11 +123,11 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
             is_inside = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)+2]<boundary_line)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)+2]<boundary_line)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)+2]<boundary_line);
              if (is_inside>=2){
                 l=l+1;
-                L->faces_in_node[l]= node_faces[i];
+                L->faces_in_node[l]= root->faces_in_node[i];
             }
             else{        
                 r=r+1;
-                R->faces_in_node[r]=node_faces[i];
+                R->faces_in_node[r]=root->faces_in_node[i];
             }
         }
     }
@@ -139,6 +141,7 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
         for(int i=0; i<number_l;i++){
             faces_l[i] = L->faces_in_node[i];
         }
+        L->number_of_node_faces = number_l;
         build_tree(vertices, faces, faces_l, number_l, L, number_l);
         delete faces_l;
     }
@@ -151,11 +154,220 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
         for(int i=0; i<number_r;i++){
            faces_r[i] = R->faces_in_node[i];
         }
+        R->number_of_node_faces=number_r;
         build_tree(vertices, faces, faces_r, number_r, R, number_r);
         delete faces_r;
     }
     else{
         delete R;
         root->right_node = nullptr;
+      //  std::cout<<"null "<<"\n";
     }
+     
 }
+
+ Bounding_box::Bounding_box(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){
+     parameters[0] = xmin;
+     parameters[1] = xmax;
+     parameters[2] = ymin;
+     parameters[3] = ymax;
+     parameters[4] = zmin;
+     parameters[5] = zmax;
+ }
+
+ int Bounding_box::ray_box_intersection(vector3 ray_point, vector3 ray_direction){
+    float tmin_y, tmax_y, tmin_z, tmax_z, a;
+    vector3 inv_direction(1/ray_direction.get_x(), 1/ray_direction.get_y(), 1/ray_direction.get_z());
+
+     tmin = (parameters[0]- ray_point.get_x())*inv_direction.get_x();
+     tmax = (parameters[1]- ray_point.get_x())*inv_direction.get_x();
+
+     if((ray_direction.get_x()==0)&&(ray_point.get_x()<parameters[0])&&(ray_point.get_x()>parameters[1])){
+         return 0;
+     }
+         if((ray_direction.get_y()==0)&&(ray_point.get_y()<parameters[2])&&(ray_point.get_y()>parameters[3])){
+         return 0;
+     }
+         if((ray_direction.get_z()==0)&&(ray_point.get_z()<parameters[4])&&(ray_point.get_z()>parameters[5])){
+         return 0;
+     }
+     tmin_y = (parameters[2]- ray_point.get_y())*inv_direction.get_y();
+     tmax_y = (parameters[3]- ray_point.get_y())*inv_direction.get_y();
+     tmin_z = (parameters[4]- ray_point.get_z())*inv_direction.get_z();
+     tmax_z = (parameters[5]- ray_point.get_z())*inv_direction.get_z();
+//std::cout<<"1 x "<<tmin<<" "<<tmax<<" y "<<tmin_y<<" "<<tmax_y<<" z "<<tmin_z<<" "<<tmax_z<<"\n";
+     if (tmin > tmax){
+         std::swap(tmin, tmax);
+     }
+     if (tmin_y > tmax_y){
+          std::swap(tmin_y, tmax_y);
+     }
+     
+     if (tmin_z > tmax_z){
+          a = tmin_z;
+         tmin_z = tmax_z;
+         tmax_z=a;
+     }
+
+     if ((tmin > tmax_y)||(tmin_y>tmax)){
+         return 0;
+     }
+     if (tmin_y > tmin){
+        tmin = tmin_y;
+     }
+     if (tmax_y < tmax){
+         tmax = tmax_y;
+     }
+
+   //  std::cout<<"2 x "<<tmin<<" "<<tmax<<" y "<<tmin_y<<" "<<tmax_y<<" z "<<tmin_z<<" "<<tmax_z<<"\n";
+
+     if ((tmin > tmax_z)|(tmin_z>tmax)){
+         return 0;
+     }
+      if (tmin_z > tmin){
+        tmin = tmin_z;
+     }
+     if (tmax_z < tmax){
+         tmax = tmax_z;
+     }
+     if(tmin<0){
+         return 0;
+     }
+     //  std::cout<<"3 x "<<tmin<<" "<<tmax<<" y "<<tmin_y<<" "<<tmax_y<<" z "<<tmin_z<<" "<<tmax_z<<"\n";
+     return 1;
+ }   
+
+ float Bounding_box::get_tmax(void){
+     return tmax;
+ }
+ float Bounding_box::get_tmin(void){
+     return tmin;
+ }
+//  int search_tree::left_or_right(search_tree* root, vector3 eye, vector3 d){
+//      float brr, brl, bll, blr, c;
+//             if(root->right_node->right_node != nullptr){
+//                 Bounding_box Brr(root->right_node->right_node->parameters[0],root->right_node->right_node->parameters[1], root->right_node->right_node->parameters[2],root->right_node->right_node->parameters[3],root->right_node->right_node->parameters[4],root->right_node->right_node->parameters[5]);
+//                 brr = Brr.ray_box_intersection(eye, d);
+//             }
+//             else{
+//                 brr=0;
+//             }
+//             if(root->right_node->left_node != nullptr){
+//                 Bounding_box Brl(root->right_node->left_node->parameters[0],root->right_node->left_node->parameters[1], root->right_node->left_node->parameters[2],root->right_node->left_node->parameters[3],root->right_node->left_node->parameters[4],root->right_node->left_node->parameters[5]);
+//                 brl = Brl.ray_box_intersection(eye, d);
+//             }
+//             else{
+//                 brl=0;
+//             }
+//              if(root->left_node->left_node != nullptr){
+//                 Bounding_box Bll(root->left_node->left_node->parameters[0],root->left_node->left_node->parameters[1], root->left_node->left_node->parameters[2],root->left_node->left_node->parameters[3],root->left_node->left_node->parameters[4],root->left_node->left_node->parameters[5]);
+//                 bll = Bll.ray_box_intersection(eye, d);
+//             }
+//             else{
+//                 bll=0;
+//             }
+//            c = bll +blr +brr+brl;
+//             // if((bll ==0)&&(blr==0)&&(brr==0)&&(brl=0)){
+//             //     return 0;
+//             // }
+//             if(root->left_node->right_node != nullptr){
+//                 Bounding_box Blr(root->left_node->right_node->parameters[0],root->left_node->right_node->parameters[1], root->left_node->right_node->parameters[2],root->left_node->right_node->parameters[3],root->left_node->right_node->parameters[4],root->left_node->right_node->parameters[5]);
+//                 blr = Blr.ray_box_intersection(eye, d);
+//             }
+//             else{
+//                // std::cout<<"line 274 \n";
+//                 blr=0;
+//             }
+//             if((fabs(brr)+fabs(brl)==0)&&(fabs(bll)+fabs(blr)!=0)){
+//               return -1;
+//             }
+//             if((fabs(brr)+fabs(brl)!=0)&&(fabs(bll)+fabs(blr)==0)){
+//               return 1;
+//             }
+//             else if (((fabs(brr)+fabs(brl))<(fabs(bll)+fabs(blr)))&&(fabs(brr)+fabs(brl)!=0)&&(fabs(bll)+fabs(blr)!=0)){
+//                  return -1;
+//               }
+//             else if(((fabs(brr)+fabs(brl))>(fabs(bll)+fabs(blr)))&&(fabs(brr)+fabs(brl)!=0)&&(fabs(bll)+fabs(blr)!=0)){
+//                 return 1;
+//               }                     
+//             // else{
+//             //     return -1;
+//             // }
+
+//  }
+
+
+ int* search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d){
+     	Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
+         int b1, b2;
+
+    if(B_root.ray_box_intersection(eye, d)==1){       
+        search_tree* current = root;
+        if(root->right_node!=nullptr){
+            Bounding_box B1(root->right_node->parameters[0],root->right_node->parameters[1], root->right_node->parameters[2],root->right_node->parameters[3],root->right_node->parameters[4],root->right_node->parameters[5]);
+            b1 = B1.ray_box_intersection(eye, d);
+        }
+        else{
+            b1=0;
+        }
+        if(root->left_node!=nullptr){
+            Bounding_box B2(root->left_node->parameters[0],root->left_node->parameters[1], root->left_node->parameters[2],root->left_node->parameters[3],root->left_node->parameters[4],root->left_node->parameters[5]);
+            b2 = B2.ray_box_intersection(eye, d);
+        }
+        else{
+            b2=0;
+        }
+        if((b1!=1)&&(b2!=1)){
+           int* no = new int[1];
+           no[0]=-1;
+            return no;
+            delete no;
+        }
+        else if((b1!=1)&&(b2==1)){
+            root = root->left_node;
+        }
+        else if((b1==1)&&(b2!=1)){
+            root = root->right_node;
+        }  
+        else{
+            int* yes = new int[root->number_of_node_faces+1];
+            yes[0] = root->number_of_node_faces;
+            for (int i = 1; i< root->number_of_node_faces+1; i++){
+                yes[i] = root->faces_in_node[i-1];
+            }
+            root = current;
+            return yes;
+            delete yes;
+            // if (search_tree::left_or_right(root, eye, d)==-1){
+            //     root= root->left_node;
+            // }
+            // else{
+                
+            //     root=root->right_node;
+            // }
+        }
+        if((root->left_node!=nullptr)&&(root->right_node!=nullptr)){
+          //  std::cout<<root->left_node<<"\n";
+            traverse_tree(root, eye, d);
+        }
+        else{
+            //std::cout<<"root"<<root->number_of_node_faces<<" \n";
+            int* yes = new int[root->number_of_node_faces+1];
+            yes[0] = root->number_of_node_faces;
+            for (int i = 1; i< root->number_of_node_faces+1; i++){
+                yes[i] = root->faces_in_node[i-1];
+            }
+            root = current;
+            return yes;
+            delete yes;
+        }      
+    }
+    else{
+         int* no = new int[1];
+           no[0]=-1;
+            return no;
+            delete no;
+    }
+   //return -1;
+    
+ }
