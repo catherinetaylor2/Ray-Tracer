@@ -30,7 +30,7 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("pyramid.obj");
+    ObjFile mesh("cube.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
@@ -38,12 +38,12 @@ int main(int argc, char* argv[] ){
     int F = mesh.get_number_of_faces();
 	
 	search_tree* root = new search_tree;
-	root->vertices_in_node = new int[5];
-	for(int i =0; i<5; i++){
-		root->vertices_in_node[i]=i;
+	root->faces_in_node = new int[F];
+	for(int i =0; i<F; i++){
+		root->faces_in_node[i]=i;
 	}
-	search_tree::build_tree(V,V, 5, root,10);
-	//cout<<"root value "<<root->left_node->vertices_in_node[1]<<"\n";
+	search_tree::build_tree(V,FV,FV, F, root,F+1);
+	std::cout<<"root value "<<root->left_node->parameters[0]<<"\n";
 
     vector3 eye(0,0,-8);
     vector3 lookup(0,1,-8);
@@ -191,7 +191,7 @@ int main(int argc, char* argv[] ){
     delete V;
     delete N;
 	delete root;
-	delete root->vertices_in_node;
+	delete root->faces_in_node;
 
     return 0;
 }

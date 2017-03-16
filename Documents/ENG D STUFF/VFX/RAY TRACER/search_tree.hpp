@@ -7,9 +7,9 @@ class search_tree{
         search_tree *left_node;
         search_tree *right_node;
 
-        int* vertices_in_node;
+        int*faces_in_node;
         float parameters [6];
-        static void build_tree(float* vertices, float* node_vertices, int number_of_vertices, search_tree* root, int previous_vertices);
+        static void build_tree(float* vertices, int* faces, int* node_faces, int number_of_faces, search_tree* root, int previous_faces);
     private:
 };
 
