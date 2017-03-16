@@ -329,15 +329,17 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
         else if((b1==1)&&(b2!=1)){
             root = root->right_node;
         }  
-        else{
+        else if ((b1==1)&&(b2==1)){
             int* yes = new int[root->number_of_node_faces+1];
             yes[0] = root->number_of_node_faces;
+            //std::cout<<"yes "<<yes[0]<<"\n";
             for (int i = 1; i< root->number_of_node_faces+1; i++){
                 yes[i] = root->faces_in_node[i-1];
             }
             root = current;
-            return yes;
-            delete yes;
+             return yes;
+    //    //    std::cout<<"line 340 \n";
+           delete yes;
             // if (search_tree::left_or_right(root, eye, d)==-1){
             //     root= root->left_node;
             // }

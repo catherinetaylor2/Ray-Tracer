@@ -30,7 +30,7 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("joint2.obj");
+    ObjFile mesh("sphere1.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
@@ -42,6 +42,7 @@ int main(int argc, char* argv[] ){
 	for(int i =0; i<F; i++){
 		root->faces_in_node[i]=i;
 	}
+	root->number_of_node_faces = F;
 	search_tree::build_tree(V,FV,FV, F, root,F+1);
 	// std::cout<<"left value "<<root->left_node->parameters[0]<<" "<<root->left_node->parameters[1] <<" "<<root->left_node->parameters[2]<<" "<< root->left_node->parameters[3]<<" "<< root->left_node->parameters[4]<<"\n";
 	// std::cout<<"right value "<<root->right_node->parameters[0]<<" "<<root->right_node->parameters[1] <<" "<<root->right_node->parameters[2]<<" "<<root->right_node->parameters[3]<<" "<< root->right_node->parameters[4]<<"\n";
