@@ -30,7 +30,7 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("joint2.obj");
+    ObjFile mesh("sphere_small.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
@@ -75,11 +75,9 @@ int main(int argc, char* argv[] ){
 
 		int* k = new int[F+1];
 		search_tree::traverse_tree(root, eye, d, k);
-		//std::cout<<k[0]<<"\n";
 	
 		if( (k[0]!=-1)&&(k[0]>0)){
 			float* t_values = new float[k[0]];
-			//std::cout<<"k "<<k[0]<<"\n";
 			int min_value=-1, t_min = infinity;
 			for (int z=1; z<k[0]+1; z++){
 				int index = k[z];
@@ -117,22 +115,17 @@ int main(int argc, char* argv[] ){
 
 			int* k2 = new int[F+1], s=1;
 			search_tree::traverse_tree(root, point, l, k2);
-			//std::cout<<"k2 "<<k2[0]<<"\n";
 			if( (k2[0]!=-1)&&(k2[0]>0)){
-				//std::cout<<"line 120 \n";
 				for (int z=1; z<k2[0]+1; z++){
 					int index = k2[z];
 					c1 = FV[3*index] -1, c2 = FV[3*index+1]-1, c3 = FV[3*index+2] -1 ;
 					triangle tri2(V[3*c1], V[3*c1+1], V[3*c1+2], V[3*c2], V[3*c2+1], V[3*c2+2], V[3*c3], V[3*c3+1], V[3*c3+2], RED);
-
 					ss = tri2.ray_triangle_intersection( point, l);			
 					if ((ss)> 0){
-						s = 0;	
-										
+						s = 0;											
 					}	
 				} 
 			}
-			//std::cout<<"s1 "<<s<<"\n ";
  delete k2;
 	//PHONG SHADING-----------------------------
 		
@@ -163,7 +156,7 @@ int main(int argc, char* argv[] ){
 
 				vector3 N = N1.vec_add3(N1.vec_scal_mult(alpha1, N1), N1.vec_scal_mult(alpha2, N2), N1.vec_scal_mult(alpha3, N3));
 			//---------------------------------------
-		//	std::cout<<"s2 "<<s<<"\n ";
+
 				vector3 RGB = tri.determine_colour(point, l, d, sun, N, myscene,s);
 				
 				R = RGB.get_x();
