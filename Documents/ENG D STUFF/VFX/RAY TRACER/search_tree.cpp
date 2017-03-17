@@ -218,8 +218,7 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
      if (tmax_y < tmax){
          tmax = tmax_y;
      }
-
-   //  std::cout<<"2 x "<<tmin<<" "<<tmax<<" y "<<tmin_y<<" "<<tmax_y<<" z "<<tmin_z<<" "<<tmax_z<<"\n";
+//std::cout<<"2 x "<<tmin<<" "<<tmax<<" y "<<tmin_y<<" "<<tmax_y<<" z "<<tmin_z<<" "<<tmax_z<<"\n";
 
      if ((tmin > tmax_z)|(tmin_z>tmax)){
          return 0;
@@ -230,10 +229,10 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
      if (tmax_z < tmax){
          tmax = tmax_z;
      }
-     if(tmin<0){
-         return 0;
-     }
-     //  std::cout<<"3 x "<<tmin<<" "<<tmax<<" y "<<tmin_y<<" "<<tmax_y<<" z "<<tmin_z<<" "<<tmax_z<<"\n";
+    //  if(tmin<0){
+    //      return 0;
+    //  }
+  //  std::cout<<"3 x "<<tmin<<" "<<tmax<<" y "<<tmin_y<<" "<<tmax_y<<" z "<<tmin_z<<" "<<tmax_z<<"\n";
      return 1;
  }   
 
@@ -303,6 +302,7 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
 
     if(B_root.ray_box_intersection(eye, d)==1){       
         search_tree* current = root;
+     //   std::cout<<"line 306 \n";
         if(root->right_node!=nullptr){
             Bounding_box B1(root->right_node->parameters[0],root->right_node->parameters[1], root->right_node->parameters[2],root->right_node->parameters[3],root->right_node->parameters[4],root->right_node->parameters[5]);
             b1 = B1.ray_box_intersection(eye, d);
@@ -318,8 +318,10 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
         else{
             b2=0;
         }
+
         if((b1!=1)&&(b2!=1)){
           // output = new int[1];
+          
           root=current;
            output[0]=-1;
             return output;
@@ -338,13 +340,13 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
             for (int i = 1; i< root->number_of_node_faces+1; i++){
                 output[i] = root->faces_in_node[i-1];
             }
-            std::cout<<"all "<<output[0]<<" \n";
+        //  std::cout<<"all "<<output[0]<<" \n";
             root = current;
              return output;
          //
         }
-        if((root->left_node!=nullptr)&&(root->right_node!=nullptr)&&((b1+b2)!=2)){
-         std::cout<<root->left_node<<"\n";
+        else if((root->left_node!=nullptr)&&(root->right_node!=nullptr)&&((b1+b2)!=2)){
+        // std::cout<<root->left_node<<"\n";
             traverse_tree(root, eye, d, output);
         }
         else{
@@ -362,7 +364,7 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
     }
     else{
        //  output = new int[1];
-      std::cout<<"line 373 \n";
+//  std::cout<<"line 373 \n";
            output[0]=-1;
             return output;
             //delete no;

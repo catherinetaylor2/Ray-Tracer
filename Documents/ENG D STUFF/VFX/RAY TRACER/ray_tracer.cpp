@@ -75,6 +75,7 @@ int main(int argc, char* argv[] ){
 
 		int* k = new int[F+1];
 		search_tree::traverse_tree(root, eye, d, k);
+		//std::cout<<k[0]<<"\n";
 	
 		if( (k[0]!=-1)&&(k[0]>0)){
 			float* t_values = new float[k[0]];
@@ -116,9 +117,9 @@ int main(int argc, char* argv[] ){
 
 			int* k2 = new int[F+1], s=1;
 			search_tree::traverse_tree(root, point, l, k2);
-			std::cout<<"k2 "<<k2[0]<<"\n";
+			//std::cout<<"k2 "<<k2[0]<<"\n";
 			if( (k2[0]!=-1)&&(k2[0]>0)){
-				std::cout<<"line 120 \n";
+				//std::cout<<"line 120 \n";
 				for (int z=1; z<k2[0]+1; z++){
 					int index = k2[z];
 					c1 = FV[3*index] -1, c2 = FV[3*index+1]-1, c3 = FV[3*index+2] -1 ;
@@ -132,7 +133,7 @@ int main(int argc, char* argv[] ){
 				} 
 			}
 			//std::cout<<"s1 "<<s<<"\n ";
-delete k2;
+ delete k2;
 	//PHONG SHADING-----------------------------
 		
 				c1 = FV[3*m] -1, c2 = FV[3*m+1]-1, c3 = FV[3*m+2] -1 ;
