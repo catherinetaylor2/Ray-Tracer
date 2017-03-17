@@ -12,7 +12,7 @@ class search_tree{
         float parameters [6];
         int number_of_node_faces;
         static void build_tree(float* vertices, int* faces, int* node_faces, int number_of_faces, search_tree* root, int previous_faces);
-        static int* traverse_tree(search_tree*root, vector3 eye, vector3 d);
+        static int* traverse_tree(search_tree*root, vector3 eye, vector3 d, int* output);
         static int left_or_right(search_tree*root, vector3 eye, vector3 d);
     private:
 };

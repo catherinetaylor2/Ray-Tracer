@@ -297,7 +297,7 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
 //  }
 
 
- int* search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d){
+ int* search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, int* output){
      	Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
          int b1, b2;
 
@@ -306,6 +306,7 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
         if(root->right_node!=nullptr){
             Bounding_box B1(root->right_node->parameters[0],root->right_node->parameters[1], root->right_node->parameters[2],root->right_node->parameters[3],root->right_node->parameters[4],root->right_node->parameters[5]);
             b1 = B1.ray_box_intersection(eye, d);
+           // std::cout<<"b1 "<<b1<<"\n";
         }
         else{
             b1=0;
@@ -318,10 +319,11 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
             b2=0;
         }
         if((b1!=1)&&(b2!=1)){
-           int* no = new int[1];
-           no[0]=-1;
-            return no;
-            delete no;
+          // output = new int[1];
+          root=current;
+           output[0]=-1;
+            return output;
+           // delete no;
         }
         else if((b1!=1)&&(b2==1)){
             root = root->left_node;
@@ -329,46 +331,41 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
         else if((b1==1)&&(b2!=1)){
             root = root->right_node;
         }  
-        else if ((b1==1)&&(b2==1)){
-            int* yes = new int[root->number_of_node_faces+1];
-            yes[0] = root->number_of_node_faces;
+        if ((b1==1)&&(b2==1)){
+           // output = new int[root->number_of_node_faces+1];
+            output[0] = root->number_of_node_faces;
             //std::cout<<"yes "<<yes[0]<<"\n";
             for (int i = 1; i< root->number_of_node_faces+1; i++){
-                yes[i] = root->faces_in_node[i-1];
+                output[i] = root->faces_in_node[i-1];
             }
+            std::cout<<"all "<<output[0]<<" \n";
             root = current;
-             return yes;
-    //    //    std::cout<<"line 340 \n";
-           delete yes;
-            // if (search_tree::left_or_right(root, eye, d)==-1){
-            //     root= root->left_node;
-            // }
-            // else{
-                
-            //     root=root->right_node;
-            // }
+             return output;
+         //
         }
-        if((root->left_node!=nullptr)&&(root->right_node!=nullptr)){
-          //  std::cout<<root->left_node<<"\n";
-            traverse_tree(root, eye, d);
+        if((root->left_node!=nullptr)&&(root->right_node!=nullptr)&&((b1+b2)!=2)){
+         std::cout<<root->left_node<<"\n";
+            traverse_tree(root, eye, d, output);
         }
         else{
             //std::cout<<"root"<<root->number_of_node_faces<<" \n";
-            int* yes = new int[root->number_of_node_faces+1];
-            yes[0] = root->number_of_node_faces;
+          //  output = new int[root->number_of_node_faces+1];
+         // std::cout<<"int \n";
+           output[0] = root->number_of_node_faces;
             for (int i = 1; i< root->number_of_node_faces+1; i++){
-                yes[i] = root->faces_in_node[i-1];
+                output[i] = root->faces_in_node[i-1];
             }
             root = current;
-            return yes;
-            delete yes;
+            return output;
+        //    delete yes;
         }      
     }
     else{
-         int* no = new int[1];
-           no[0]=-1;
-            return no;
-            delete no;
+       //  output = new int[1];
+      std::cout<<"line 373 \n";
+           output[0]=-1;
+            return output;
+            //delete no;
     }
    //return -1;
     
