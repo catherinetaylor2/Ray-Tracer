@@ -10,14 +10,14 @@ class vector3{
         float get_z(void);
         void normalize(void);
         void setValue(int x, int y, int z);
-        float dotproduct(vector3 v1, vector3 v2);
-        vector3 crossproduct(vector3 v1, vector3 v2);
-        vector3 vec_scal_mult(float c, vector3 v);
-        vector3 vec_add(vector3 v1, vector3 v2);
-        vector3 vec_add3(vector3 v1, vector3 v2, vector3 v3);
+        static float dotproduct(vector3 v1, vector3 v2);
+        static vector3 crossproduct(vector3 v1, vector3 v2);
+        static vector3 vec_scal_mult(float c, vector3 v);
+        static vector3 vec_add(vector3 v1, vector3 v2);
+        static vector3 vec_add3(vector3 v1, vector3 v2, vector3 v3);
     private:    
-      float x_val;
-      float y_val;
-      float z_val;
+        float x_val;
+        float y_val;
+        float z_val;
 };
 #endif

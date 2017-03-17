@@ -19,7 +19,7 @@ vector3 Light::get_position(void){
 }
 vector3 Light::get_light_direction(vector3 point){
     vector3 V = Light::get_position();
-    vector3 l = V.vec_add(V, V.vec_scal_mult(-1,point));
+    vector3 l =vector3::vec_add(V, vector3::vec_scal_mult(-1,point));
     l.normalize();
     return l;
 }
