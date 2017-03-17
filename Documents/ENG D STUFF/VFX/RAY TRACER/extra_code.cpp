@@ -162,3 +162,33 @@
 		// R = RGB1.get_x()*alpha1+RGB2.get_x()*alpha2+RGB3.get_x()*alpha3;
 		// 		G = RGB1.get_y()*alpha1+RGB2.get_y()*alpha2+RGB3.get_y()*alpha3;
 		// 		Bc = RGB1.get_z()alpha1+RGB2.get_z()*alpha2+RGB3.get_z()*alpha3;
+
+
+    
+
+    // if ((current->left_node==nullptr)&&(current->right_node==nullptr)&&(B_root.ray_box_intersection(eye, d)==1)){
+    //     std::cout<<"in here"<<root->number_of_node_faces<<" \n";
+    //     output[0] = current->number_of_node_faces;
+    //     for (int i = 1; i< current->number_of_node_faces+1; i++){
+    //         output[i] = current->faces_in_node[i-1];
+    //     //    std::cout<<root->faces_in_node[i-1]<<"\n";
+    //     }            
+    //     return output;  
+    // }
+    // else if ((current->left_node!=nullptr)|(current->right_node!=nullptr)){
+    //     if (current->left_node!=nullptr){
+    //     std::cout<<"line 303 \n";
+    //       output=  traverse_tree(current->left_node, eye, d, output);
+    //     }
+    //    if { 
+    //         std::cout<<"line 308 \n";
+
+    //        output =  traverse_tree(current->right_node, eye, d, output);
+    //     }
+        
+    // }
+    // else{
+    //     // std::cout<<"line 306 \n";
+    //         output[0]=-1;
+    //         return output;
+    //     }

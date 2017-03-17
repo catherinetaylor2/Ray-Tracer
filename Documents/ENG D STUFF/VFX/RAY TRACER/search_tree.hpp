@@ -2,6 +2,7 @@
 #define search_tree_hpp
 #include<iostream>
 #include "vec3.hpp"
+#include <vector>
 
 class search_tree{
     public:
@@ -12,7 +13,7 @@ class search_tree{
         float parameters [6];
         int number_of_node_faces;
         static void build_tree(float* vertices, int* faces, int* node_faces, int number_of_faces, search_tree* root, int previous_faces);
-        static int* traverse_tree(search_tree*root, vector3 eye, vector3 d, int* output);
+        static bool traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<float> *output);
     private:
 };
 class Bounding_box{

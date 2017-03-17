@@ -1,6 +1,7 @@
 #include <iostream>
 #include "search_tree.hpp"
 #include "vec3.hpp"
+#include <vector>
 
 #define infinity FLT_MAX
 
@@ -126,6 +127,7 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
     }
     root->left_node = L;
     root->right_node = R;
+   // std::cout<<"number "<<number_r<<" "<<number_l<<"\n ";
     if ((number_l < previous_faces)&&(number_l>0)){
         int* faces_l = new int [3*number_l];
         for(int i=0; i<number_l;i++){
@@ -152,7 +154,7 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
         delete R;
         root->right_node = nullptr;
     }
-     
+ 
 }
 
  Bounding_box::Bounding_box(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax){
@@ -225,61 +227,129 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
      return tmin;
  }
 
- int* search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, int* output){
+//  int* search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, int* output){
+//     Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
+//     int b1, b2;
+
+//     if(B_root.ray_box_intersection(eye, d)==1){       
+//         search_tree* current = root;
+//         if(root->right_node!=nullptr){
+//             Bounding_box B1(root->right_node->parameters[0],root->right_node->parameters[1], root->right_node->parameters[2],root->right_node->parameters[3],root->right_node->parameters[4],root->right_node->parameters[5]);
+//             b1 = B1.ray_box_intersection(eye, d);
+//         }
+//         else{
+//             b1=0;
+//         }
+//         if(root->left_node!=nullptr){
+//             Bounding_box B2(root->left_node->parameters[0],root->left_node->parameters[1], root->left_node->parameters[2],root->left_node->parameters[3],root->left_node->parameters[4],root->left_node->parameters[5]);
+//             b2 = B2.ray_box_intersection(eye, d);
+//         }
+//         else{
+//             b2=0;
+//         }
+
+//         if((b1+b2)==0){          
+//             root=current;
+//             output[0]=-1;
+//             return output;
+//         }
+//         else if(b2>b1){
+//             root = root->left_node;
+//         }
+//         else if(b1>b2){
+//             root = root->right_node;
+//         }  
+//         else{
+//             output[0] = root->number_of_node_faces;
+//             for (int i = 1; i< root->number_of_node_faces+1; i++){
+//                 output[i] = root->faces_in_node[i-1];
+//             }
+//             root = current;
+//             return output;
+//         }
+
+//        if((root->left_node!=nullptr)&&(root->right_node!=nullptr)){
+//             traverse_tree(root, eye, d, output);
+//         }
+//         else{
+//             output[0] = root->number_of_node_faces;
+//             for (int i = 1; i< root->number_of_node_faces+1; i++){
+//                 output[i] = root->faces_in_node[i-1];
+//             }
+//             root = current;
+//             return output;
+//         }      
+//     }
+//     else{
+//         output[0]=-1;
+//         return output;
+//     }   
+// }
+
+bool search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<float> *output){
+    bool right,left;
+
+   search_tree*current = root;
+	
     Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
-    int b1, b2;
 
-    if(B_root.ray_box_intersection(eye, d)==1){       
-        search_tree* current = root;
-        if(root->right_node!=nullptr){
-            Bounding_box B1(root->right_node->parameters[0],root->right_node->parameters[1], root->right_node->parameters[2],root->right_node->parameters[3],root->right_node->parameters[4],root->right_node->parameters[5]);
-            b1 = B1.ray_box_intersection(eye, d);
-        }
-        else{
-            b1=0;
-        }
-        if(root->left_node!=nullptr){
-            Bounding_box B2(root->left_node->parameters[0],root->left_node->parameters[1], root->left_node->parameters[2],root->left_node->parameters[3],root->left_node->parameters[4],root->left_node->parameters[5]);
-            b2 = B2.ray_box_intersection(eye, d);
-        }
-        else{
-            b2=0;
-        }
-
-        if((b1+b2)==0){          
-            root=current;
-            output[0]=-1;
-            return output;
-        }
-        else if(b2>b1){
-            root = root->left_node;
-        }
-        else if(b1>b2){
-            root = root->right_node;
+if(((root->left_node==nullptr))&&((root->right_node==nullptr))){
+    
+    if((B_root.ray_box_intersection(eye, d)==1)){
+       // c=c+1;
+       // std::cout<<" c "<<c<<"\n";
+       // output[0] = root->number_of_node_faces;
+        
+        for (int i = 0; i<root->number_of_node_faces; i++){
+            (*output).push_back( root->faces_in_node[i]);
         }  
-        else{
-            output[0] = root->number_of_node_faces;
-            for (int i = 1; i< root->number_of_node_faces+1; i++){
-                output[i] = root->faces_in_node[i-1];
-            }
-            root = current;
-            return output;
-        }
-
-       if((root->left_node!=nullptr)&&(root->right_node!=nullptr)){
-            traverse_tree(root, eye, d, output);
-        }
-        else{
-            output[0] = root->number_of_node_faces;
-            for (int i = 1; i< root->number_of_node_faces+1; i++){
-                output[i] = root->faces_in_node[i-1];
-            }
-            root = current;
-            return output;
-        }      
+        root=current;  
+ //std::cout<<"o "<<output[0]<<"\n";        
+        return 1;  
     }
-    else{
-        output[0]=-1;
-        return output;
-    }   
-}
+   
+    }
+
+
+        if ((root->right_node!=nullptr)){ 
+     //   route[iterations]=1;
+        right =  traverse_tree(root->right_node, eye, d, output);
+        }
+         if ((root->left_node!=nullptr)){ 
+        left = traverse_tree(root->left_node, eye, d, output);
+        }
+        return right||left;
+         
+  
+
+
+
+} 
+
+
+    // if ((current->left_node==nullptr)&&(current->right_node==nullptr)&&(B_root.ray_box_intersection(eye, d)==1)){
+    //     std::cout<<"in here"<<root->number_of_node_faces<<" \n";
+    //     output[0] = current->number_of_node_faces;
+    //     for (int i = 1; i< current->number_of_node_faces+1; i++){
+    //         output[i] = current->faces_in_node[i-1];
+    //     //    std::cout<<root->faces_in_node[i-1]<<"\n";
+    //     }            
+    //     return output;  
+    // }
+    // else if ((current->left_node!=nullptr)|(current->right_node!=nullptr)){
+    //     if (current->left_node!=nullptr){
+    //     std::cout<<"line 303 \n";
+    //       output=  traverse_tree(current->left_node, eye, d, output);
+    //     }
+    //    if { 
+    //         std::cout<<"line 308 \n";
+
+    //        output =  traverse_tree(current->right_node, eye, d, output);
+    //     }
+        
+    // }
+    // else{
+    //     // std::cout<<"line 306 \n";
+    //         output[0]=-1;
+    //         return output;
+    //     }
