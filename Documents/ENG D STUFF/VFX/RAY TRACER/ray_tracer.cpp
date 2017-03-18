@@ -122,7 +122,7 @@ int main(int argc, char* argv[] ){
 				t_values[z-1]=t;
 			}
 			for (int z=0; z<k[0]; z++){
-				if ((t_values[z]!=0)){
+				if ((t_values[z]>0)){
 					vector3 xyz = vector3::vec_add( eye , vector3::vec_scal_mult(t_values[z],d));
 					if (xyz.get_z()<t_min){
 						t_min = xyz.get_z();
@@ -150,32 +150,32 @@ int main(int argc, char* argv[] ){
 
 				//	SHADOWS-------------------------------------------------------
 
-					std::vector<float>  output2;
-					output2.clear();
-					if(B_root.ray_box_intersection(point, l)==1){	
-						search_tree::traverse_tree(root, point, l, &output2);
-					}
-					float *k2=new float[output2.size()+1];
-					k2[0]=-1;
-					if (output2.size()>1){
-						k2[0]=output2.size();
-						for(int g=1; g<output2.size()+1;g++){
-							k2[g] = output2[g-1];
-						}
-					}
-					int s=1, index;
-					if( (k2[0]!=-1)&&(k2[0]>0)){
-						for (int z=1; z<k2[0]+1; z++){
-							index = k2[z];
-							c1 = FV[3*index] -1, c2 = FV[3*index+1]-1, c3 = FV[3*index+2] -1 ;
-							triangle tri2(V[3*c1], V[3*c1+1], V[3*c1+2], V[3*c2], V[3*c2+1], V[3*c2+2], V[3*c3], V[3*c3+1], V[3*c3+2], RED);
-							ss = tri2.ray_triangle_intersection( point, l);			
-							if ((ss)> 0){
-								s = 0;											
-							}	
-						} 
-					}
-					delete k2;
+					// std::vector<float>  output2;
+					// output2.clear();
+					// if(B_root.ray_box_intersection(point, l)==1){	
+					// 	search_tree::traverse_tree(root, point, l, &output2);
+					// }
+					// float *k2=new float[output2.size()+1];
+					// k2[0]=-1;
+					// if (output2.size()>1){
+					// 	k2[0]=output2.size();
+					// 	for(int g=1; g<output2.size()+1;g++){
+					// 		k2[g] = output2[g-1];
+					// 	}
+					// }
+					 int s=1, index;
+					// if( (k2[0]!=-1)&&(k2[0]>0)){
+					// 	for (int z=1; z<k2[0]+1; z++){
+					// 		index = k2[z];
+					// 		c1 = FV[3*index] -1, c2 = FV[3*index+1]-1, c3 = FV[3*index+2] -1 ;
+					// 		triangle tri2(V[3*c1], V[3*c1+1], V[3*c1+2], V[3*c2], V[3*c2+1], V[3*c2+2], V[3*c3], V[3*c3+1], V[3*c3+2], RED);
+					// 		ss = tri2.ray_triangle_intersection( point, l);			
+					// 		if ((ss)> 0){
+					// 			s = 0;											
+					// 		}	
+					// 	} 
+					// }
+					// delete k2;
 					//	PHONG SHADING-----------------------------
 
 					n1 = FN[3*m]-1, n2 = FN[3*m+1]-1, n3= FN[3*m+2]-1;
@@ -202,7 +202,6 @@ int main(int argc, char* argv[] ){
 					//---------------------------------------
 
 					vector3 RGB = tri.determine_colour(point, l, d, sun, N, myscene,s);
-
 					R = RGB.get_x();
 					G = RGB.get_y();
 					Bc = RGB.get_z();

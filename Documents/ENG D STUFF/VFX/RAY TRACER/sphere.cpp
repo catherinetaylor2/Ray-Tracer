@@ -161,9 +161,9 @@ float triangle::ray_triangle_intersection(vector3 ray_point, vector3 ray_directi
     vector3 V3(vertex3_x, vertex3_y, vertex3_z);
 
     if (
-    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V2, vector3::vec_scal_mult(-1, V1)), vector3::vec_add(intersection_point, vector3::vec_scal_mult(-1, V1))), normal)>=-0.00001f)&&
-    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V3, vector3::vec_scal_mult(-1, V2)), vector3::vec_add(intersection_point,vector3::vec_scal_mult(-1, V2))), normal)>=-0.00001f)&&
-    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V1, vector3::vec_scal_mult(-1, V3)), vector3::vec_add(intersection_point, vector3::vec_scal_mult(-1, V3))), normal)>=-0.00001f))
+    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V2, vector3::vec_scal_mult(-1, V1)), vector3::vec_add(intersection_point, vector3::vec_scal_mult(-1, V1))), normal)>=-0.0001f)&&
+    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V3, vector3::vec_scal_mult(-1, V2)), vector3::vec_add(intersection_point,vector3::vec_scal_mult(-1, V2))), normal)>=-0.0001f)&&
+    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V1, vector3::vec_scal_mult(-1, V3)), vector3::vec_add(intersection_point, vector3::vec_scal_mult(-1, V3))), normal)>=-0.0001f))
     {
             return t;
     }

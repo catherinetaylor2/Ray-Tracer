@@ -183,20 +183,13 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
      }
      tmin_y = (parameters[2]- ray_point.get_y())*inv_direction.get_y();
      tmax_y = (parameters[3]- ray_point.get_y())*inv_direction.get_y();
-     tmin_z = (parameters[4]- ray_point.get_z())*inv_direction.get_z();
-     tmax_z = (parameters[5]- ray_point.get_z())*inv_direction.get_z();
      if (tmin > tmax){
          std::swap(tmin, tmax);
      }
      if (tmin_y > tmax_y){
           std::swap(tmin_y, tmax_y);
      }
-     
-     if (tmin_z > tmax_z){
-          a = tmin_z;
-         tmin_z = tmax_z;
-         tmax_z=a;
-     }
+  
 
      if ((tmin > tmax_y)||(tmin_y>tmax)){
          return 0;
@@ -206,6 +199,13 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
      }
      if (tmax_y < tmax){
          tmax = tmax_y;
+     }        
+     tmin_z = (parameters[4]- ray_point.get_z())*inv_direction.get_z();
+     tmax_z = (parameters[5]- ray_point.get_z())*inv_direction.get_z();
+     if (tmin_z > tmax_z){
+          a = tmin_z;
+         tmin_z = tmax_z;
+         tmax_z=a;
      }
      if ((tmin > tmax_z)|(tmin_z>tmax)){
          return 0;
@@ -215,8 +215,9 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
      }
      if (tmax_z < tmax){
          tmax = tmax_z;
-     }
+     } 
      return 1;
+     
  }   
 
  float Bounding_box::get_tmax(void){
@@ -227,20 +228,18 @@ void search_tree::build_tree(float* vertices, int* faces, int* node_faces, int n
  }
 
 
-bool search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<float> *output){
+void search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<float> *output){
     bool right,left;
     Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
     if(((root->left_node==nullptr))&&((root->right_node==nullptr))){
         if((B_root.ray_box_intersection(eye, d)==1)){        
             for (int i = 0; i<root->number_of_node_faces; i++){
                 (*output).push_back( root->faces_in_node[i]);
-            }       
-            return 1;  
+            }         
         }   
     }
     if ((root->right_node!=nullptr)||(root->left_node!=nullptr)) {
-        right =  traverse_tree(root->right_node, eye, d, output);
-        left = traverse_tree(root->left_node, eye, d, output);
-    }
-    return right||left;       
+        traverse_tree(root->right_node, eye, d, output);
+        traverse_tree(root->left_node, eye, d, output);
+    }     
 } 
