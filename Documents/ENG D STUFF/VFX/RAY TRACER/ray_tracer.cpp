@@ -39,12 +39,17 @@ int main(int argc, char* argv[] ){
     int F = mesh.get_number_of_faces();
 	
 	search_tree* root = new search_tree;
+	search_tree_8* root8 = new search_tree_8;
 	root->faces_in_node = new int[F];
+	root8->faces_in_node = new int[F];
 	for(int i =0; i<F; i++){
 		root->faces_in_node[i]=i;
+		root8->faces_in_node[i]=i;
 	}
 	root->number_of_node_faces = F;
+	root8->number_of_node_faces = F;
 	search_tree::build_tree(V,FV,FV, F, root,F+1);
+	search_tree_8::build_tree(V,FV,FV, F, root8,F+1);
 
     vector3 eye(0,0,-8);
     vector3 lookup(0,1,-8);
@@ -95,7 +100,7 @@ int main(int argc, char* argv[] ){
 		vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
 		d.normalize();
 
-		Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
+		Bounding_box B_root(root8->parameters[0],root8->parameters[1], root8->parameters[2],root8->parameters[3],root8->parameters[4],root8->parameters[5]);
 
 		std::vector<float>  output;
 		output.clear();
@@ -175,7 +180,7 @@ int main(int argc, char* argv[] ){
 					// 		}	
 					// 	} 
 					// }
-					// delete k2;
+				//	delete k2;
 					//	PHONG SHADING-----------------------------
 
 					n1 = FN[3*m]-1, n2 = FN[3*m+1]-1, n3= FN[3*m+2]-1;
@@ -245,7 +250,9 @@ int main(int argc, char* argv[] ){
     delete V;
     delete N;
 	delete root;
+	delete root8;
 	delete root->faces_in_node;
+	delete root8->faces_in_node;
 	delete area;
 	delete A;
 
