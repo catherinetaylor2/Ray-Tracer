@@ -192,3 +192,486 @@
     //         output[0]=-1;
     //         return output;
     //     }
+
+
+    //-----------------------------------------------------------------------------------------------------------------------------------------------------------
+    //octave search traverse_tree
+
+// class search_tree_8{
+//        public:
+//             search_tree_8 *node_1;
+//             search_tree_8 *node_2;
+//             search_tree_8 *node_3;
+//             search_tree_8 *node_4;
+//             search_tree_8 *node_5;
+//             search_tree_8 *node_6;
+//             search_tree_8 *node_7;
+//             search_tree_8 *node_8;
+
+//             int*faces_in_node;
+//             float parameters [6];
+//             int number_of_node_faces;
+//             static void build_tree(float* vertices, int* faces, int* node_faces, int number_of_faces, search_tree_8* root, int previous_faces);
+//             static void traverse_tree(search_tree_8*root, vector3 eye, vector3 d, std::vector<float> *output);
+//     private:
+
+// };
+
+
+//     void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int number_of_faces, search_tree_8* root, int previous_faces){
+//     int k1=0, k2=0, k3=0; 
+//     float xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+//   for(int i =0; i<number_of_faces; i++){
+//         for(int j=0; j<3; j++){
+//             if (vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)]< xmin){
+//                 xmin = vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)];
+//             }
+//             if (vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)+1]< ymin){
+//                 ymin = vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)+1];
+//             }
+//             if (vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)+2]< zmin){
+//                 zmin = vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)+2];
+//             }
+//             if (vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)]> xmax){
+//                 xmax = vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)];
+//             }
+//             if (vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)+1]> ymax){
+//                 ymax =vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)+1];
+//             }
+//             if (vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)+2]> zmax){
+//                 zmax = vertices[3*(faces[3*(root->faces_in_node[i])+j]-1)+2];
+//             }
+//         }
+//     }
+//     root->parameters[0] = xmin;
+//     root->parameters[1] = xmax;
+//     root->parameters[2] = ymin;
+//     root->parameters[3] = ymax;
+//     root->parameters[4] = zmin;
+//     root->parameters[5] = zmax;
+
+//     search_tree_8*node1= new search_tree_8;
+//     search_tree_8*node2= new search_tree_8;
+//     search_tree_8*node3= new search_tree_8;
+//     search_tree_8*node4= new search_tree_8;
+//     search_tree_8*node5= new search_tree_8;
+//     search_tree_8*node6= new search_tree_8;
+//     search_tree_8*node7= new search_tree_8;
+//     search_tree_8*node8= new search_tree_8;
+
+//     int n1=-1, n2=-1,n3=-1, n4=-1,n5=-1, n6=-1,n7=-1, n8=-1, number_1=0, number_2=0,number_3=0, number_4=0,number_5=0, number_6=0,number_7=0, number_8=0, is_inside1, is_inside2, is_inside3, is_inside4, is_inside5, is_inside6, is_inside7;
+//     float boundary_line1,boundary_line2,boundary_line3,boundary_line4,boundary_line5,boundary_line6,boundary_line7 ;
+
+//      if ((fabs(xmax - xmin)>fabs(ymax-ymin))&&(fabs(xmax - xmin)>fabs(zmax-zmin))){ 
+//         n1=-1, n2=-1,n3=-1, n4=-1,n5=-1, n6=-1,n7=-1, n8=-1, number_1=0, number_2=0,number_3=0, number_4=0,number_5=0, number_6=0,number_7=0, number_8=0;
+//         boundary_line1 = (xmax-xmin)/8.0f +xmin, boundary_line2 = 2*(xmax-xmin)/8.0f +xmin, boundary_line3 = 3*(xmax-xmin)/8.0f +xmin, boundary_line4 = 4*(xmax-xmin)/8.0f +xmin, boundary_line5 = 5*(xmax-xmin)/8.0f +xmin, boundary_line6 = 6*(xmax-xmin)/8.0f +xmin, boundary_line7 = 7*(xmax-xmin)/8.0f +xmin;
+//         for(int i=0; i<number_of_faces;i++){
+//             is_inside1 = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line1);
+//             is_inside2 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line1));
+//             is_inside3 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line2));
+//             is_inside4 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line3));
+//             is_inside5 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line4));
+//             is_inside6 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line5));
+//             is_inside7= ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line6));
+
+//             if (is_inside1>=2){
+//                 number_1=number_1+1;
+//             }
+//             else if (is_inside2>=2){
+//                 number_2=number_2+1;
+//             }
+//             else if (is_inside3>=2){
+//                 number_3=number_3+1;
+//             }
+//             else if (is_inside4>=2){
+//                 number_4=number_4+1;
+//             }
+//             else if (is_inside5>=2){
+//                 number_5=number_5+1;
+//             }
+//             else if (is_inside6>=2){
+//                 number_6=number_6+1;
+//             }
+//             else if (is_inside7>=2){
+//                 number_7=number_7+1;
+//             }
+//             else{
+//                 number_8 = number_8+1;
+//             }
+//         }
+//         node1->faces_in_node = new int [number_1];
+//         node2->faces_in_node = new int [number_2];
+//         node3->faces_in_node = new int[number_3];
+//         node4->faces_in_node = new int [number_4];
+//         node5->faces_in_node = new int[number_5];
+//         node6->faces_in_node = new int [number_6];
+//         node7->faces_in_node = new int[number_7];
+//         node8->faces_in_node = new int[number_8];
+//         for(int i=0; i<number_of_faces;i++){
+//             is_inside1 = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line1);
+//             is_inside2 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line1));
+//             is_inside3 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line2));
+//             is_inside4 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line3));
+//             is_inside5 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line4));
+//             is_inside6 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line5));
+//             is_inside7= ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line6));
+
+//             if (is_inside1>=2){
+//                 n1=n1+1;
+//                 node1->faces_in_node[n1]= root->faces_in_node[i];
+//             }
+//             else if (is_inside2>=2){
+//                 n2=n2+1;
+//                 node2->faces_in_node[n2]= root->faces_in_node[i];
+//             }
+//             else if (is_inside3>=2){
+//                 n3=n3+1;
+//                 node3->faces_in_node[n3]= root->faces_in_node[i];
+//             }
+//             else if (is_inside4>=2){
+//                 n4=n4+1;
+//                 node4->faces_in_node[n4]= root->faces_in_node[i];
+//             }
+//             else if (is_inside5>=2){
+//                 n5=n5+1;
+//                 node5->faces_in_node[n5]= root->faces_in_node[i];
+//             }
+//            else  if (is_inside6>=2){
+//                 n6=n6+1;
+//                 node6->faces_in_node[n6]= root->faces_in_node[i];
+//             }
+//              else if (is_inside7>=2){
+//                 n7=n7+1;
+//                 node7->faces_in_node[n7]=root->faces_in_node[i];
+//             }
+//             else{
+//                  n8=n8+1;
+//                 node8->faces_in_node[n8]=root->faces_in_node[i];
+//             }
+//         }
+//     }
+//     else if ((fabs(ymax - ymin)>fabs(xmax-xmin))&&(fabs(ymax - ymin)>fabs(zmax-zmin))){ 
+//         n1=-1, n2=-1,n3=-1, n4=-1,n5=-1, n6=-1,n7=-1, n8=-1, number_1=0, number_2=0,number_3=0, number_4=0,number_5=0, number_6=0,number_7=0, number_8=0;
+//         boundary_line1 = (ymax-ymin)/8.0f +ymin, boundary_line2 = 2*(ymax-ymin)/8.0f +ymin, boundary_line3 = 3*(ymax-ymin)/8.0f +ymin, boundary_line4 = 4*(ymax-ymin)/8.0f +ymin, boundary_line5 = 5*(ymax-ymin)/8.0f +ymin, boundary_line6 = 6*(ymax-ymin)/8.0f +ymin, boundary_line7 = 7*(ymax-ymin)/8.0f +ymin;
+//         for(int i=0; i<number_of_faces;i++){
+//             is_inside1 = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line1);
+//             is_inside2 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line1));
+//             is_inside3 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line2));
+//             is_inside4 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line3));
+//             is_inside5 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line4));
+//             is_inside6 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line5));
+//             is_inside7= ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line6));
+
+//             if (is_inside1>=2){
+//                 number_1=number_1+1;
+//             }
+//             else if (is_inside2>=2){
+//                 number_2=number_2+1;
+//             }
+//             else if (is_inside3>=2){
+//                 number_3=number_3+1;
+//             }
+//             else if (is_inside4>=2){
+//                 number_4=number_4+1;
+//             }
+//             else if (is_inside5>=2){
+//                 number_5=number_5+1;
+//             }
+//             else if (is_inside6>=2){
+//                 number_6=number_6+1;
+//             }
+//              else if (is_inside7>=2){
+//                 number_7=number_7+1;
+//             }
+//             else{
+//                 number_8 = number_8+1;
+//             }
+
+//         }
+//         node1->faces_in_node = new int [number_1];
+//         node2->faces_in_node = new int [number_2];
+//         node3->faces_in_node = new int[number_3];
+//         node4->faces_in_node = new int [number_4];
+//         node5->faces_in_node = new int[number_5];
+//         node6->faces_in_node = new int [number_6];
+//         node7->faces_in_node = new int[number_7];
+//         node8->faces_in_node = new int[number_8];
+//         for(int i=0; i<number_of_faces;i++){
+//             is_inside1 = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line1);
+//             is_inside2 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line1));
+//             is_inside3 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line2));
+//             is_inside4 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line3));
+//             is_inside5 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line4));
+//             is_inside6 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line5));
+//             is_inside7= ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line6));
+
+//             if (is_inside1>=2){
+//                 n1=n1+1;
+//                 node1->faces_in_node[n1]= root->faces_in_node[i];
+//             }
+//             else if (is_inside2>=2){
+//                 n2=n2+1;
+//                 node2->faces_in_node[n2]= root->faces_in_node[i];
+//             }
+//             else if (is_inside3>=2){
+//                 n3=n3+1;
+//                 node3->faces_in_node[n3]= root->faces_in_node[i];
+//             }
+//             else if (is_inside4>=2){
+//                 n4=n4+1;
+//                 node4->faces_in_node[n4]= root->faces_in_node[i];
+//             }
+//             else if (is_inside5>=2){
+//                 n5=n5+1;
+//                 node5->faces_in_node[n5]= root->faces_in_node[i];
+//             }
+//            else  if (is_inside6>=2){
+//                 n6=n6+1;
+//                 node6->faces_in_node[n6]= root->faces_in_node[i];
+//             }
+//             else if (is_inside7>=2){
+//                 n7=n7+1;
+//                 node7->faces_in_node[n7]=root->faces_in_node[i];
+//             }
+//             else{
+//                  n8=n8+1;
+//                 node8->faces_in_node[n8]=root->faces_in_node[i];
+//             }
+//         }
+//     }
+//   else{
+//   n1=-1, n2=-1,n3=-1, n4=-1,n5=-1, n6=-1,n7=-1, n8=-1, number_1=0, number_2=0,number_3=0, number_4=0,number_5=0, number_6=0,number_7=0, number_8=0;
+//         boundary_line1 = (zmax-zmin)/8.0f +zmin, boundary_line2 = 2*(zmax-zmin)/8.0f +zmin, boundary_line3 = 3*(zmax-zmin)/8.0f +zmin, boundary_line4 = 4*(zmax-zmin)/8.0f +zmin, boundary_line5 = 5*(zmax-zmin)/8.0f +zmin, boundary_line6 = 6*(zmax-zmin)/8.0f +zmin, boundary_line7 = 7*(zmax-zmin)/8.0f +zmin;
+//         for(int i=0; i<number_of_faces;i++){
+//             is_inside1 = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line1);
+//             is_inside2 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line1));
+//             is_inside3 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line2));
+//             is_inside4 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line3));
+//             is_inside5 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line4));
+//             is_inside6 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line5));
+//             is_inside7= ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line6));
+
+//             if (is_inside1>=2){
+//                 number_1=number_1+1;
+//             }
+//             else if (is_inside2>=2){
+//                 number_2=number_2+1;
+//             }
+//             else if (is_inside3>=2){
+//                 number_3=number_3+1;
+//             }
+//             else if (is_inside4>=2){
+//                 number_4=number_4+1;
+//             }
+//             else if (is_inside5>=2){
+//                 number_5=number_5+1;
+//             }
+//             else if (is_inside6>=2){
+//                 number_6=number_6+1;
+//             }
+//              else if (is_inside7>=2){
+//                 number_7=number_7+1;
+//             }
+//             else{
+//                 number_8 = number_8+1;
+//             }
+//         }
+//         node1->faces_in_node = new int [number_1];
+//         node2->faces_in_node = new int [number_2];
+//         node3->faces_in_node = new int[number_3];
+//         node4->faces_in_node = new int [number_4];
+//         node5->faces_in_node = new int[number_5];
+//         node6->faces_in_node = new int [number_6];
+//         node7->faces_in_node = new int[number_7];
+//         node8->faces_in_node = new int[number_8];
+//         for(int i=0; i<number_of_faces;i++){
+//             is_inside1 = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line1);
+//             is_inside2 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line1))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line2)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line1));
+//             is_inside3 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line2))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line3)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line2));
+//             is_inside4 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line3))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line4)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line3));
+//             is_inside5 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line4))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line5)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line4));
+//             is_inside6 = ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line5))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line6)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line5));
+//             is_inside7= ((vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]>boundary_line6))+((vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line7)&&(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]>boundary_line6));
+
+//             if (is_inside1>=2){
+//                 n1=n1+1;
+//                 node1->faces_in_node[n1]= root->faces_in_node[i];
+//             }
+//             else if (is_inside2>=2){
+//                 n2=n2+1;
+//                 node2->faces_in_node[n2]= root->faces_in_node[i];
+//             }
+//             else if (is_inside3>=2){
+//                 n3=n3+1;
+//                 node3->faces_in_node[n3]= root->faces_in_node[i];
+//             }
+//             else if (is_inside4>=2){
+//                 n4=n4+1;
+//                 node4->faces_in_node[n4]= root->faces_in_node[i];
+//             }
+//             else if (is_inside5>=2){
+//                 n5=n5+1;
+//                 node5->faces_in_node[n5]= root->faces_in_node[i];
+//             }
+//            else  if (is_inside6>=2){
+//                 n6=n6+1;
+//                 node6->faces_in_node[n6]= root->faces_in_node[i];
+//             }
+//             else if (is_inside7>=2){
+//                 n7=n7+1;
+//                 node7->faces_in_node[n7]=root->faces_in_node[i];
+//             }
+//             else{
+//                  n8=n8+1;
+//                 node8->faces_in_node[n8]=root->faces_in_node[i];
+//             }
+//         }
+//     }
+//     root->node_1 = node1;
+//     root->node_2 = node2;
+//     root->node_3 = node3;
+//     root->node_4 = node4;
+//     root->node_5 = node5;
+//     root->node_6 = node6;
+//     root->node_7 = node7;
+//     root->node_8 = node8;
+//     if ((number_1 < previous_faces)&&(number_1>0)){
+//         int* faces_1 = new int [3*number_1];
+//         for(int i=0; i<number_1;i++){
+//             faces_1[i] = node1->faces_in_node[i];
+//         }
+//        node1->number_of_node_faces = number_1;
+//         build_tree(vertices, faces, faces_1, number_1, node1, number_1);
+//         delete faces_1;
+//     }
+//     else{
+//         delete node1;
+//         root->node_1= nullptr;
+//     }
+//  if ((number_2 < previous_faces)&&(number_2>0)){
+//         int* faces_2 = new int [3*number_2];
+//         for(int i=0; i<number_2;i++){
+//             faces_2[i] = node2->faces_in_node[i];
+//         }
+//        node2->number_of_node_faces = number_2;
+//         build_tree(vertices, faces, faces_2, number_2, node2, number_2);
+//         delete faces_2;
+//     }
+//     else{
+//         delete node2;
+//         root->node_2= nullptr;
+//     }
+//      if ((number_3 < previous_faces)&&(number_3>0)){
+//         int* faces_3 = new int [3*number_3];
+//         for(int i=0; i<number_3;i++){
+//             faces_3[i] = node3->faces_in_node[i];
+//         }
+//        node3->number_of_node_faces = number_3;
+//         build_tree(vertices, faces, faces_3, number_3, node3, number_3);
+//         delete faces_3;
+//     }
+//     else{
+//         delete node3;
+//         root->node_3= nullptr;
+//     }
+//      if ((number_4 < previous_faces)&&(number_4>0)){
+//         int* faces_4 = new int [3*number_4];
+//         for(int i=0; i<number_4;i++){
+//             faces_4[i] = node4->faces_in_node[i];
+//         }
+//        node4->number_of_node_faces = number_4;
+//         build_tree(vertices, faces, faces_4, number_4, node4, number_4);
+//         delete faces_4;
+//     }
+//     else{
+//         delete node4;
+//         root->node_4= nullptr;
+//     }
+//      if ((number_5 < previous_faces)&&(number_5>0)){
+//         int* faces_5 = new int [3*number_5];
+//         for(int i=0; i<number_5;i++){
+//             faces_5[i] = node5->faces_in_node[i];
+//         }
+//        node5->number_of_node_faces = number_5;
+//         build_tree(vertices, faces, faces_5, number_5, node5, number_5);
+//         delete faces_5;
+//     }
+//     else{
+//         delete node5;
+//         root->node_5= nullptr;
+//     }
+//      if ((number_6 < previous_faces)&&(number_6>0)){
+//         int* faces_6 = new int [3*number_6];
+//         for(int i=0; i<number_6;i++){
+//             faces_6[i] = node6->faces_in_node[i];
+//         }
+//        node6->number_of_node_faces = number_6;
+//         build_tree(vertices, faces, faces_6, number_6, node6, number_6);
+//         delete faces_6;
+//     }
+//     else{
+//         delete node6;
+//         root->node_6= nullptr;
+//     }
+//      if ((number_7 < previous_faces)&&(number_7>0)){
+//         int* faces_7 = new int [3*number_7];
+//         for(int i=0; i<number_7;i++){
+//             faces_7[i] = node7->faces_in_node[i];
+//         }
+//        node7->number_of_node_faces = number_7;
+//         build_tree(vertices, faces, faces_7, number_7, node7, number_7);
+//         delete faces_7;
+//     }
+//     else{
+//         delete node7;
+//         root->node_7= nullptr;
+//     }
+//     if ((number_8 < previous_faces)&&(number_8>0)){
+//         int* faces_8 = new int [3*number_8];
+//         for(int i=0; i<number_8;i++){
+//             faces_8[i] = node8->faces_in_node[i];
+//         }
+//         node8->number_of_node_faces = number_8;
+//         build_tree(vertices, faces, faces_8, number_8, node8, number_8);
+//         delete faces_8;
+//     }
+//     else{
+//         delete node8;
+//         root->node_8= nullptr;
+//     }
+// }
+
+// void search_tree_8::traverse_tree(search_tree_8*root, vector3 eye, vector3 d, std::vector<float> *output){
+//     Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
+//     if(((root->node_1==nullptr))&&((root->node_2==nullptr))&&((root->node_3==nullptr))&&((root->node_4==nullptr))&&((root->node_5==nullptr))&&((root->node_6==nullptr))&&((root->node_7==nullptr))&&((root->node_8==nullptr))){
+//         if((B_root.ray_box_intersection(eye, d)==1)){        
+//             for (int i = 0; i<root->number_of_node_faces; i++){
+//                 (*output).push_back( root->faces_in_node[i]);
+//             }         
+//         }   
+//     }
+//      if((root->node_1!=nullptr)){
+//          traverse_tree(root->node_1, eye, d, output);
+//      }
+//      if (root->node_2!=nullptr){
+//         traverse_tree(root->node_2, eye, d, output);
+//      }
+//      if (root->node_3!=nullptr){
+//         traverse_tree(root->node_3, eye, d, output);
+//      }
+//      if ((root->node_4!=nullptr)){
+//         traverse_tree(root->node_4, eye, d, output);
+//      }
+//      if ((root->node_5!=nullptr)){
+//         traverse_tree(root->node_5, eye, d, output);
+//      }
+//      if((root->node_6!=nullptr)){
+//         traverse_tree(root->node_6, eye, d, output);
+//      }
+//      if ((root->node_7!=nullptr)){
+//         traverse_tree(root->node_7, eye, d, output);
+//      }
+//      if ((root->node_8!=nullptr)){
+//         traverse_tree(root->node_8, eye, d, output);
+//      }  
+// } 

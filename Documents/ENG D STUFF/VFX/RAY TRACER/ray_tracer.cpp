@@ -39,19 +39,10 @@ int main(int argc, char* argv[] ){
     int F = mesh.get_number_of_faces();
 	
 	search_tree* root ;
-	// search_tree* root2 = new search_tree;
-	// root->faces_in_node = new int[F];
-	// for(int i =0; i<F; i++){
-	// 	root->faces_in_node[i]=i;
-	// }
-	// root->number_of_node_faces = F;
-	//search_tree::build_tree(V,FV,FV, F, root,F+1);
-
-	 std::vector<search_tree*> leaf_nodes;
+	std::vector<search_tree*> leaf_nodes;
 	leaf_nodes = search_tree::leaf_nodes(V, FV, F);
-	//std::cout<<"line "<< leaf_nodes[0]->faces_in_node[0]<<"\n";
-	search_tree::build_tree_leaves(V, FV,leaf_nodes, &root );
-std::cout<<"line 54"<<root->number_of_node_faces<<" \n";
+	search_tree::build_tree(V, FV,leaf_nodes, &root );
+
     vector3 eye(0,0,-8);
     vector3 lookup(0,1,-8);
     vector3 lookat(0,0,1);
@@ -161,7 +152,6 @@ std::cout<<"line 54"<<root->number_of_node_faces<<" \n";
 					if(B_root.ray_box_intersection(point, l)==1){	
 						search_tree::traverse_tree(root, point, l, &output2);
 					}
-					//std::cout<<"line 164 \n";
 					float *k2=new float[output2.size()+1];
 					k2[0]=-1;
 					if (output2.size()>1){
@@ -170,7 +160,7 @@ std::cout<<"line 54"<<root->number_of_node_faces<<" \n";
 							k2[g] = output2[g-1];
 						}
 					}
-					 int s=1, index;
+					  int s=1, index;
 					if( (k2[0]!=-1)&&(k2[0]>0)){
 						for (int z=1; z<k2[0]+1; z++){
 							index = k2[z];
@@ -252,7 +242,6 @@ std::cout<<"line 54"<<root->number_of_node_faces<<" \n";
     delete V;
     delete N;
 	delete root;
-	//delete root2;
 	delete root->faces_in_node;
 	delete area;
 	delete A;
