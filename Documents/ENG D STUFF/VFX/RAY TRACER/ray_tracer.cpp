@@ -31,7 +31,7 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("pyramid.obj");
+    ObjFile mesh("joint2.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
@@ -50,7 +50,7 @@ int main(int argc, char* argv[] ){
 	 std::vector<search_tree*> leaf_nodes;
 	leaf_nodes = search_tree::leaf_nodes(V, FV, F);
 	//std::cout<<"line "<< leaf_nodes[0]->faces_in_node[0]<<"\n";
-	search_tree::build_tree_leaves(V, FV,leaf_nodes, root );
+	search_tree::build_tree_leaves(V, FV,leaf_nodes, &root );
 std::cout<<"line 54"<<root->number_of_node_faces<<" \n";
     vector3 eye(0,0,-8);
     vector3 lookup(0,1,-8);
@@ -161,7 +161,7 @@ std::cout<<"line 54"<<root->number_of_node_faces<<" \n";
 					if(B_root.ray_box_intersection(point, l)==1){	
 						search_tree::traverse_tree(root, point, l, &output2);
 					}
-					std::cout<<"line 164 \n";
+					//std::cout<<"line 164 \n";
 					float *k2=new float[output2.size()+1];
 					k2[0]=-1;
 					if (output2.size()>1){

@@ -746,7 +746,7 @@ std::vector<search_tree*> leaf_nodes;
     return leaf_nodes;
 }
 
-void search_tree::build_tree_leaves(float* vertices, int* faces, std::vector<search_tree*> leaf_nodes, search_tree*root ){
+void search_tree::build_tree_leaves(float* vertices, int* faces, std::vector<search_tree*> leaf_nodes, search_tree**root ){
  
     float xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
 
@@ -756,8 +756,8 @@ void search_tree::build_tree_leaves(float* vertices, int* faces, std::vector<sea
     first = leaf_nodes[0];
  
     if(leaf_nodes[1]==nullptr){
-        root = first;
-       std::cout<<root->number_of_node_faces<<"\n";
+       *root = first;
+        //std::cout<<root->number_of_node_faces<<"\n";
         return;
     }
     else{
@@ -773,42 +773,40 @@ void search_tree::build_tree_leaves(float* vertices, int* faces, std::vector<sea
         for(int i = first->number_of_node_faces; i<first->number_of_node_faces+second->number_of_node_faces;i++){
             temp->faces_in_node[i] = second->faces_in_node[i-first->number_of_node_faces];
         };
- xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
- for(int i =0; i<temp->number_of_node_faces; i++){
-        for(int j=0; j<3; j++){
-            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]< xmin){
-                xmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+        xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+        for(int i =0; i<temp->number_of_node_faces; i++){
+                for(int j=0; j<3; j++){
+                    if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]< xmin){
+                        xmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+                    }
+                    if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]< ymin){
+                        ymin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+                    }
+                    if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]< zmin){
+                        zmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+                    }
+                    if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]> xmax){
+                        xmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+                    }
+                    if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]> ymax){
+                        ymax =vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+                    }
+                    if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]> zmax){
+                        zmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+                    }
+                }
             }
-            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]< ymin){
-                ymin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
-            }
-            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]< zmin){
-                zmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
-            }
-            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]> xmax){
-                xmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
-            }
-            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]> ymax){
-                ymax =vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
-            }
-            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]> zmax){
-                zmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
-            }
-        }
-    }
-    //std::cout <<"line 839 \n";
-        temp->parameters[0] = xmin;
-       temp->parameters[1] = xmax;
-       temp->parameters[2] = ymin;
-        temp->parameters[3] = ymax;
-        temp->parameters[4] = zmin;
-        temp->parameters[5] = zmax;
+            temp->parameters[0] = xmin;
+            temp->parameters[1] = xmax;
+            temp->parameters[2] = ymin;
+            temp->parameters[3] = ymax;
+            temp->parameters[4] = zmin;
+            temp->parameters[5] = zmax;
 
-        (leaf_nodes).push_back(temp);
-        // delete first;
-        // delete second;
-       // delete temp;    
-        build_tree_leaves(vertices, faces, leaf_nodes, root);  
-
+            (leaf_nodes).push_back(temp);
+            // delete first;
+            // delete second;
+        // delete temp;    
+            build_tree_leaves(vertices, faces, leaf_nodes, root);  
     }
 }
