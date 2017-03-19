@@ -288,9 +288,8 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
     int n1=-1, n2=-1,n3=-1, n4=-1,n5=-1, n6=-1,n7=-1, n8=-1, number_1=0, number_2=0,number_3=0, number_4=0,number_5=0, number_6=0,number_7=0, number_8=0, is_inside1, is_inside2, is_inside3, is_inside4, is_inside5, is_inside6, is_inside7;
     float boundary_line1,boundary_line2,boundary_line3,boundary_line4,boundary_line5,boundary_line6,boundary_line7 ;
 
-     if ((fabs(xmax - xmin)>fabs(ymax-ymin))&&(fabs(xmax - xmin)>fabs(zmax-zmin))){ //x max axis
-      // std::cout<<"bx \n";
-       n1=-1, n2=-1,n3=-1, n4=-1,n5=-1, n6=-1,n7=-1, n8=-1, number_1=0, number_2=0,number_3=0, number_4=0,number_5=0, number_6=0,number_7=0, number_8=0;
+     if ((fabs(xmax - xmin)>fabs(ymax-ymin))&&(fabs(xmax - xmin)>fabs(zmax-zmin))){ 
+        n1=-1, n2=-1,n3=-1, n4=-1,n5=-1, n6=-1,n7=-1, n8=-1, number_1=0, number_2=0,number_3=0, number_4=0,number_5=0, number_6=0,number_7=0, number_8=0;
         boundary_line1 = (xmax-xmin)/8.0f +xmin, boundary_line2 = 2*(xmax-xmin)/8.0f +xmin, boundary_line3 = 3*(xmax-xmin)/8.0f +xmin, boundary_line4 = 4*(xmax-xmin)/8.0f +xmin, boundary_line5 = 5*(xmax-xmin)/8.0f +xmin, boundary_line6 = 6*(xmax-xmin)/8.0f +xmin, boundary_line7 = 7*(xmax-xmin)/8.0f +xmin;
         for(int i=0; i<number_of_faces;i++){
             is_inside1 = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line1);
@@ -377,9 +376,8 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
             }
         }
     }
-    else if ((fabs(ymax - ymin)>fabs(xmax-xmin))&&(fabs(ymax - ymin)>fabs(zmax-zmin))){ //x max axis#
-     //  std::cout<<"by \n";
-       n1=-1, n2=-1,n3=-1, n4=-1,n5=-1, n6=-1,n7=-1, n8=-1, number_1=0, number_2=0,number_3=0, number_4=0,number_5=0, number_6=0,number_7=0, number_8=0;
+    else if ((fabs(ymax - ymin)>fabs(xmax-xmin))&&(fabs(ymax - ymin)>fabs(zmax-zmin))){ 
+        n1=-1, n2=-1,n3=-1, n4=-1,n5=-1, n6=-1,n7=-1, n8=-1, number_1=0, number_2=0,number_3=0, number_4=0,number_5=0, number_6=0,number_7=0, number_8=0;
         boundary_line1 = (ymax-ymin)/8.0f +ymin, boundary_line2 = 2*(ymax-ymin)/8.0f +ymin, boundary_line3 = 3*(ymax-ymin)/8.0f +ymin, boundary_line4 = 4*(ymax-ymin)/8.0f +ymin, boundary_line5 = 5*(ymax-ymin)/8.0f +ymin, boundary_line6 = 6*(ymax-ymin)/8.0f +ymin, boundary_line7 = 7*(ymax-ymin)/8.0f +ymin;
         for(int i=0; i<number_of_faces;i++){
             is_inside1 = (vertices[3*(faces[3*(root->faces_in_node[i])]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+1]-1)]<=boundary_line1)+(vertices[3*(faces[3*(root->faces_in_node[i])+2]-1)]<=boundary_line1);
@@ -467,8 +465,7 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
             }
         }
     }
-  else{ //x max axis
-//  std::cout<<"bz \n";
+  else{
   n1=-1, n2=-1,n3=-1, n4=-1,n5=-1, n6=-1,n7=-1, n8=-1, number_1=0, number_2=0,number_3=0, number_4=0,number_5=0, number_6=0,number_7=0, number_8=0;
         boundary_line1 = (zmax-zmin)/8.0f +zmin, boundary_line2 = 2*(zmax-zmin)/8.0f +zmin, boundary_line3 = 3*(zmax-zmin)/8.0f +zmin, boundary_line4 = 4*(zmax-zmin)/8.0f +zmin, boundary_line5 = 5*(zmax-zmin)/8.0f +zmin, boundary_line6 = 6*(zmax-zmin)/8.0f +zmin, boundary_line7 = 7*(zmax-zmin)/8.0f +zmin;
         for(int i=0; i<number_of_faces;i++){
@@ -506,7 +503,6 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
             }
         }
         node1->faces_in_node = new int [number_1];
-       // std::cout<<"number1 "<<number_1<<"\n";
         node2->faces_in_node = new int [number_2];
         node3->faces_in_node = new int[number_3];
         node4->faces_in_node = new int [number_4];
@@ -525,7 +521,6 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
 
             if (is_inside1>=2){
                 n1=n1+1;
-              //  std::cout<<"n1 "<<n1<<"\n";
                 node1->faces_in_node[n1]= root->faces_in_node[i];
             }
             else if (is_inside2>=2){
@@ -566,12 +561,8 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
     root->node_6 = node6;
     root->node_7 = node7;
     root->node_8 = node8;
-  // std::cout<<"line 562 \n";
- //  std::cout<<"n "<<number_1<<" "<<number_2<<" "<<number_3<<" "<<number_4<<" "<<number_5<<" "<<number_6<<" "<<number_7<<" "<<number_8<<" "<<previous_faces<<"\n";
-  // std::cout<<"faces "<< node1->number_of_node_faces<<"\n";
     if ((number_1 < previous_faces)&&(number_1>0)){
         int* faces_1 = new int [3*number_1];
-      //  std::cout<<"line 571 \n";
         for(int i=0; i<number_1;i++){
             faces_1[i] = node1->faces_in_node[i];
         }
@@ -583,7 +574,6 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
         delete node1;
         root->node_1= nullptr;
     }
- // std::cout<<"line 577 \n";
  if ((number_2 < previous_faces)&&(number_2>0)){
         int* faces_2 = new int [3*number_2];
         for(int i=0; i<number_2;i++){
@@ -610,9 +600,7 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
         delete node3;
         root->node_3= nullptr;
     }
- //   std::cout<<"line 614 \n";
      if ((number_4 < previous_faces)&&(number_4>0)){
-       //  std::cout<<"line 616 \n";
         int* faces_4 = new int [3*number_4];
         for(int i=0; i<number_4;i++){
             faces_4[i] = node4->faces_in_node[i];
@@ -625,9 +613,7 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
         delete node4;
         root->node_4= nullptr;
     }
-  //  std::cout<<"line 628 \n";
      if ((number_5 < previous_faces)&&(number_5>0)){
-       //  std::cout<<"line 631 \n";
         int* faces_5 = new int [3*number_5];
         for(int i=0; i<number_5;i++){
             faces_5[i] = node5->faces_in_node[i];
@@ -640,7 +626,6 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
         delete node5;
         root->node_5= nullptr;
     }
-   // std::cout<<"line 644 \n";
      if ((number_6 < previous_faces)&&(number_6>0)){
         int* faces_6 = new int [3*number_6];
         for(int i=0; i<number_6;i++){
@@ -654,7 +639,6 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
         delete node6;
         root->node_6= nullptr;
     }
-   // std::cout<<"line 654 \n";
      if ((number_7 < previous_faces)&&(number_7>0)){
         int* faces_7 = new int [3*number_7];
         for(int i=0; i<number_7;i++){
@@ -668,13 +652,12 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
         delete node7;
         root->node_7= nullptr;
     }
-  //  std::cout<<"line 667 \n";
-     if ((number_8 < previous_faces)&&(number_8>0)){
+    if ((number_8 < previous_faces)&&(number_8>0)){
         int* faces_8 = new int [3*number_8];
         for(int i=0; i<number_8;i++){
             faces_8[i] = node8->faces_in_node[i];
         }
-       node8->number_of_node_faces = number_8;
+        node8->number_of_node_faces = number_8;
         build_tree(vertices, faces, faces_8, number_8, node8, number_8);
         delete faces_8;
     }
@@ -682,22 +665,17 @@ void search_tree_8::build_tree(float* vertices, int* faces, int* node_faces, int
         delete node8;
         root->node_8= nullptr;
     }
-  //  std::cout<<"line 680 \n";
 }
 
 void search_tree_8::traverse_tree(search_tree_8*root, vector3 eye, vector3 d, std::vector<float> *output){
-  //  std::cout<<"line 689 \n";
     Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
-   // std::cout<<"line 691 \n";
     if(((root->node_1==nullptr))&&((root->node_2==nullptr))&&((root->node_3==nullptr))&&((root->node_4==nullptr))&&((root->node_5==nullptr))&&((root->node_6==nullptr))&&((root->node_7==nullptr))&&((root->node_8==nullptr))){
         if((B_root.ray_box_intersection(eye, d)==1)){        
             for (int i = 0; i<root->number_of_node_faces; i++){
-              //  std::cout<<"line 694 \n";
                 (*output).push_back( root->faces_in_node[i]);
             }         
         }   
     }
-
      if((root->node_1!=nullptr)){
          traverse_tree(root->node_1, eye, d, output);
      }
@@ -721,6 +699,116 @@ void search_tree_8::traverse_tree(search_tree_8*root, vector3 eye, vector3 d, st
      }
      if ((root->node_8!=nullptr)){
         traverse_tree(root->node_8, eye, d, output);
-     }
-   // std::cout<<"line 107 \n";   
+     }  
 } 
+
+std::vector<search_tree*> search_tree::leaf_nodes(float* vertices, int*faces, int number_of_faces){
+     float xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+std::vector<search_tree*> leaf_nodes;
+
+    for(int i = 0; i<number_of_faces; i++){ // make list of leaf_nodes.
+        xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+        search_tree* leaf = new search_tree;
+        leaf->number_of_node_faces = 1; 
+        leaf->faces_in_node= new int [1];
+        leaf->faces_in_node[0]=i;
+
+        for(int j=0; j<3; j++){
+            if (vertices[3*(faces[3*i+j]-1)]< xmin){
+                xmin = vertices[3*(faces[3*i+j]-1)];
+            }
+            if (vertices[3*(faces[3*i+j]-1)+1]< ymin){
+                ymin = vertices[3*(faces[3*i+j]-1)+1];
+            }
+            if (vertices[3*(faces[3*i+j]-1)+2]< zmin){
+                zmin = vertices[3*(faces[3*i+j]-1)+2];
+            }
+            if (vertices[3*(faces[3*i+j]-1)]> xmax){
+                xmax = vertices[3*(faces[3*i+j]-1)];
+            }
+            if (vertices[3*(faces[3*i+j]-1)+1]> ymax){
+                ymax =vertices[3*(faces[3*i+j]-1)+1];
+            }
+            if (vertices[3*(faces[3*i+j]-1)+2]> zmax){
+                zmax = vertices[3*(faces[3*i+j]-1)+2];
+            }
+        }
+        leaf->parameters[0] = xmin;
+        leaf->parameters[1] = xmax;
+        leaf->parameters[2] = ymin;
+        leaf->parameters[3] = ymax;
+        leaf->parameters[4] = zmin;
+        leaf->parameters[5] = zmax;
+        leaf->left_node=nullptr;
+        leaf->right_node=nullptr;
+        (leaf_nodes).push_back(leaf);
+    }
+    return leaf_nodes;
+}
+
+void search_tree::build_tree_leaves(float* vertices, int* faces, std::vector<search_tree*> leaf_nodes, search_tree*root ){
+ 
+    float xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+
+    search_tree* first = new search_tree;
+    search_tree* second = new search_tree;
+    search_tree*temp = new search_tree;
+    first = leaf_nodes[0];
+ 
+    if(leaf_nodes[1]==nullptr){
+        root = first;
+       std::cout<<root->number_of_node_faces<<"\n";
+        return;
+    }
+    else{
+        second = leaf_nodes[1];
+        temp->left_node = first;
+        temp->right_node = second;
+        temp->number_of_node_faces = first->number_of_node_faces+second->number_of_node_faces;
+        leaf_nodes.erase (leaf_nodes.begin(),leaf_nodes.begin()+2);
+        temp->faces_in_node = new int [temp->number_of_node_faces];
+        for(int i=0; i<first->number_of_node_faces; i++){
+            temp->faces_in_node[i] = first->faces_in_node[i];
+        }
+        for(int i = first->number_of_node_faces; i<first->number_of_node_faces+second->number_of_node_faces;i++){
+            temp->faces_in_node[i] = second->faces_in_node[i-first->number_of_node_faces];
+        };
+ xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+ for(int i =0; i<temp->number_of_node_faces; i++){
+        for(int j=0; j<3; j++){
+            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]< xmin){
+                xmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+            }
+            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]< ymin){
+                ymin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+            }
+            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]< zmin){
+                zmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+            }
+            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]> xmax){
+                xmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+            }
+            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]> ymax){
+                ymax =vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+            }
+            if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]> zmax){
+                zmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+            }
+        }
+    }
+    //std::cout <<"line 839 \n";
+        temp->parameters[0] = xmin;
+       temp->parameters[1] = xmax;
+       temp->parameters[2] = ymin;
+        temp->parameters[3] = ymax;
+        temp->parameters[4] = zmin;
+        temp->parameters[5] = zmax;
+
+        (leaf_nodes).push_back(temp);
+        // delete first;
+        // delete second;
+       // delete temp;    
+        build_tree_leaves(vertices, faces, leaf_nodes, root);  
+
+    }
+}
