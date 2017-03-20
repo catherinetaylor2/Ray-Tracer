@@ -31,16 +31,16 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("joint2.obj");
+    ObjFile mesh("sphere1.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
     int* FN = mesh.get_faceN();
     int F = mesh.get_number_of_faces();
-	
-	search_tree* root ;
+
+	search_tree* root;
 	std::vector<search_tree*> leaf_nodes;
-	leaf_nodes = search_tree::leaf_nodes(V, FV, F);
+	search_tree::leaf_nodes(V, FV, F, &leaf_nodes);
 	search_tree::build_tree(V, FV,leaf_nodes, &root );
 
     vector3 eye(0,0,-8);
@@ -136,7 +136,7 @@ int main(int argc, char* argv[] ){
 				float  ss,R,G,Bc, B,C, P_P1, P_P2, P_P3, semiPerimeter, semiPerimeter1, semiPerimeter2, semiPerimeter3, alpha1, alpha2, alpha3;
 				int m = k[min_value+1], n1, n2, n3;
 				c_m1 = FV[3*m] -1, c_m2 = FV[3*m+1]-1, c_m3 = FV[3*m+2] -1 ;
-				triangle tri(V[3*c_m1], V[3*c_m1+1], V[3*c_m1+2], V[3*c_m2], V[3*c_m2+1], V[3*c_m2+2], V[3*c_m3], V[3*c_m3+1], V[3*c_m3+2], RED);
+				triangle tri(V[3*c_m1], V[3*c_m1+1], V[3*c_m1+2], V[3*c_m2], V[3*c_m2+1], V[3*c_m2+2], V[3*c_m3], V[3*c_m3+1], V[3*c_m3+2],RED);
 				t = tri.ray_triangle_intersection(eye,d);
 
 				if(t!=0){
@@ -160,7 +160,7 @@ int main(int argc, char* argv[] ){
 							k2[g] = output2[g-1];
 						}
 					}
-					  int s=1, index;
+					   int s=1, index;
 					if( (k2[0]!=-1)&&(k2[0]>0)){
 						for (int z=1; z<k2[0]+1; z++){
 							index = k2[z];

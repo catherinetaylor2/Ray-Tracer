@@ -675,3 +675,526 @@
 //         traverse_tree(root->node_8, eye, d, output);
 //      }  
 // } 
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//  void search_tree_8::build_tree(float* vertices, int* faces, std::vector<search_tree_8*> leaf_nodes, search_tree_8**root ){
+//  float xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+//     search_tree_8* first = new search_tree_8;
+//    // search_tree* second = new search_tree;
+//   //  search_tree*temp = new search_tree;
+//     first = leaf_nodes[0];
+ 
+//     if(leaf_nodes[1]==nullptr){
+//        *root = first;
+//     //     delete second;
+//     //     delete third;
+//     //     delete fourth;
+//     //     delete fifth;
+//     //     delete sixth;
+//     //     delete seventh;
+//     //    delete temp; 
+//         return;
+//     }
+//     else if( leaf_nodes[2]==nullptr){
+//         std::cout<<"line 262 \n";
+//         search_tree_8*second = new search_tree_8;
+//         search_tree_8*temp = new search_tree_8;
+//         second = leaf_nodes[1];
+//         temp->node_1 = first;
+//         temp->node_2 = second;
+//         temp->number_of_node_faces = first->number_of_node_faces+second->number_of_node_faces;
+//         leaf_nodes.erase (leaf_nodes.begin(),leaf_nodes.begin()+2);
+//         temp->faces_in_node = new int [temp->number_of_node_faces];
+//         for(int i=0; i<first->number_of_node_faces; i++){
+//             temp->faces_in_node[i] = first->faces_in_node[i];
+//         }
+//         for(int i = first->number_of_node_faces; i<first->number_of_node_faces+second->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = second->faces_in_node[i-first->number_of_node_faces];
+//         };
+//         xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+//         for(int i =0; i<temp->number_of_node_faces; i++){
+//                 for(int j=0; j<3; j++){
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]< xmin){
+//                         xmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]< ymin){
+//                         ymin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]< zmin){
+//                         zmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]> xmax){
+//                         xmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]> ymax){
+//                         ymax =vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]> zmax){
+//                         zmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                 }
+//             }
+//             temp->parameters[0] = xmin;
+//             temp->parameters[1] = xmax;
+//             temp->parameters[2] = ymin;
+//             temp->parameters[3] = ymax;
+//             temp->parameters[4] = zmin;
+//             temp->parameters[5] = zmax;
+
+//             temp->node_3=nullptr;
+//             temp->node_4=nullptr;
+//             temp->node_5 = nullptr;
+//             temp->node_6=nullptr;
+//             temp->node_7=nullptr;
+//             temp->node_8=nullptr;
+//             (leaf_nodes).push_back(temp);
+//             build_tree(vertices, faces, leaf_nodes, root);  
+
+//  }
+//   else if( leaf_nodes[3]==nullptr){
+//       std::cout<<"line 318 \n";
+//         search_tree_8*second = new search_tree_8;
+//         search_tree_8*temp = new search_tree_8;
+//         search_tree_8*third = new search_tree_8;
+//         second = leaf_nodes[1];
+//         third = leaf_nodes[2];
+//         temp->node_1 = first;
+//         temp->node_2 = second;
+//         temp->node_3 =  third;
+//         temp->number_of_node_faces = first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces;
+//         leaf_nodes.erase (leaf_nodes.begin(),leaf_nodes.begin()+3);
+//         temp->faces_in_node = new int [temp->number_of_node_faces];
+//         for(int i=0; i<first->number_of_node_faces; i++){
+//             temp->faces_in_node[i] = first->faces_in_node[i];
+//         }
+//         for(int i = first->number_of_node_faces; i<first->number_of_node_faces+second->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = second->faces_in_node[i-first->number_of_node_faces];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = third->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces)];
+//         }
+//         xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+//         for(int i =0; i<temp->number_of_node_faces; i++){
+//                 for(int j=0; j<3; j++){
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]< xmin){
+//                         xmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]< ymin){
+//                         ymin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]< zmin){
+//                         zmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]> xmax){
+//                         xmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]> ymax){
+//                         ymax =vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]> zmax){
+//                         zmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                 }
+//             }
+//             temp->parameters[0] = xmin;
+//             temp->parameters[1] = xmax;
+//             temp->parameters[2] = ymin;
+//             temp->parameters[3] = ymax;
+//             temp->parameters[4] = zmin;
+//             temp->parameters[5] = zmax;
+
+//             temp->node_4=nullptr;
+//             temp->node_5 = nullptr;
+//             temp->node_6=nullptr;
+//             temp->node_7=nullptr;
+//             temp->node_8=nullptr;
+//             (leaf_nodes).push_back(temp);
+//             build_tree(vertices, faces, leaf_nodes, root);  
+
+//  }
+//   else if( leaf_nodes[4]==nullptr){
+//       std::cout<<"line 379 \n";
+//         search_tree_8*second = new search_tree_8;
+//         search_tree_8*temp = new search_tree_8;
+//         search_tree_8*third = new search_tree_8;
+//         search_tree_8*fourth = new search_tree_8;
+//         second = leaf_nodes[1];
+//          third = leaf_nodes[2];
+//          fourth = leaf_nodes[3];
+//         temp->node_1 = first;
+//         temp->node_2 = second;
+//         temp->node_3 =  third;
+//         temp->node_4 = fourth;
+//         temp->number_of_node_faces = first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces + fourth->number_of_node_faces;
+//         std::cout<<"line 392 \n";
+//         leaf_nodes.erase (leaf_nodes.begin(),leaf_nodes.begin()+4);
+//         temp->faces_in_node = new int [temp->number_of_node_faces];
+//         for(int i=0; i<first->number_of_node_faces; i++){
+//             temp->faces_in_node[i] = first->faces_in_node[i];
+//         }
+//         for(int i = first->number_of_node_faces; i<first->number_of_node_faces+second->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = second->faces_in_node[i-first->number_of_node_faces];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = third->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces)];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = fourth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces)];
+//         }
+//         xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+//         for(int i =0; i<temp->number_of_node_faces; i++){
+//                 for(int j=0; j<3; j++){
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]< xmin){
+//                         xmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]< ymin){
+//                         ymin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]< zmin){
+//                         zmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]> xmax){
+//                         xmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]> ymax){
+//                         ymax =vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]> zmax){
+//                         zmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                 }
+//             }
+//             temp->parameters[0] = xmin;
+//             temp->parameters[1] = xmax;
+//             temp->parameters[2] = ymin;
+//             temp->parameters[3] = ymax;
+//             temp->parameters[4] = zmin;
+//             temp->parameters[5] = zmax;
+
+//             temp->node_5 = nullptr;
+//             temp->node_6=nullptr;
+//             temp->node_7=nullptr;
+//             temp->node_8=nullptr;
+//             (leaf_nodes).push_back(temp);
+//             build_tree(vertices, faces, leaf_nodes, root);  
+
+//  }
+//    else if( leaf_nodes[5]==nullptr){
+//        std::cout<<"line 445 \n";
+//         search_tree_8*second = new search_tree_8;
+//         search_tree_8*temp = new search_tree_8;
+//         search_tree_8*third = new search_tree_8;
+//         search_tree_8*fourth = new search_tree_8;
+//         search_tree_8*fifth =  new search_tree_8;
+//         second = leaf_nodes[1];
+//          third = leaf_nodes[2];
+//          fourth = leaf_nodes[3];
+//          fifth = leaf_nodes[4];
+//         temp->node_1 = first;
+//         temp->node_2 = second;
+//         temp->node_3 =  third;
+//         temp->node_4 = fourth;
+//         temp->node_5 = fifth;
+//         temp->number_of_node_faces = first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces + fourth->number_of_node_faces+fifth->number_of_node_faces;
+//         leaf_nodes.erase (leaf_nodes.begin(),leaf_nodes.begin()+5);
+//         temp->faces_in_node = new int [temp->number_of_node_faces];
+//         for(int i=0; i<first->number_of_node_faces; i++){
+//             temp->faces_in_node[i] = first->faces_in_node[i];
+//         }
+//         for(int i = first->number_of_node_faces; i<first->number_of_node_faces+second->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = second->faces_in_node[i-first->number_of_node_faces];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = third->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces)];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = fourth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces)];
+//         }
+//         for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] =fifth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces)];
+//         }
+//         xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+//         for(int i =0; i<temp->number_of_node_faces; i++){
+//                 for(int j=0; j<3; j++){
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]< xmin){
+//                         xmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]< ymin){
+//                         ymin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]< zmin){
+//                         zmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]> xmax){
+//                         xmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]> ymax){
+//                         ymax =vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]> zmax){
+//                         zmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                 }
+//             }
+//             temp->parameters[0] = xmin;
+//             temp->parameters[1] = xmax;
+//             temp->parameters[2] = ymin;
+//             temp->parameters[3] = ymax;
+//             temp->parameters[4] = zmin;
+//             temp->parameters[5] = zmax;
+
+//             temp->node_6=nullptr;
+//             temp->node_7=nullptr;
+//             temp->node_8=nullptr;
+//             (leaf_nodes).push_back(temp);
+//             build_tree(vertices, faces, leaf_nodes, root);  
+
+//  }
+// else if( leaf_nodes[6]==nullptr){
+//     std::cout<<"line 516 \n";
+//         search_tree_8*second = new search_tree_8;
+//         search_tree_8*temp = new search_tree_8;
+//         search_tree_8*third = new search_tree_8;
+//         search_tree_8*fourth = new search_tree_8;
+//         search_tree_8*fifth =  new search_tree_8;
+//         search_tree_8* sixth = new search_tree_8;
+//         second = leaf_nodes[1];
+//          third = leaf_nodes[2];
+//          fourth = leaf_nodes[3];
+//          fifth = leaf_nodes[4];
+//          sixth = leaf_nodes[5];
+//         temp->node_1 = first;
+//         temp->node_2 = second;
+//         temp->node_3 =  third;
+//         temp->node_4 = fourth;
+//         temp->node_5 = fifth;
+//         temp->node_6 = sixth;
+//         temp->number_of_node_faces = first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces + fourth->number_of_node_faces+fifth->number_of_node_faces+sixth->number_of_node_faces;
+//         leaf_nodes.erase (leaf_nodes.begin(),leaf_nodes.begin()+6);
+//         temp->faces_in_node = new int [temp->number_of_node_faces];
+//         for(int i=0; i<first->number_of_node_faces; i++){
+//             temp->faces_in_node[i] = first->faces_in_node[i];
+//         }
+//         for(int i = first->number_of_node_faces; i<first->number_of_node_faces+second->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = second->faces_in_node[i-first->number_of_node_faces];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = third->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces)];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = fourth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces)];
+//         }
+//         for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] =fifth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces)];
+//         }
+//         for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] =sixth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces)];
+//         }
+//         xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+//         for(int i =0; i<temp->number_of_node_faces; i++){
+//                 for(int j=0; j<3; j++){
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]< xmin){
+//                         xmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]< ymin){
+//                         ymin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]< zmin){
+//                         zmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]> xmax){
+//                         xmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]> ymax){
+//                         ymax =vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]> zmax){
+//                         zmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                 }
+//             }
+//             temp->parameters[0] = xmin;
+//             temp->parameters[1] = xmax;
+//             temp->parameters[2] = ymin;
+//             temp->parameters[3] = ymax;
+//             temp->parameters[4] = zmin;
+//             temp->parameters[5] = zmax;
+
+//             temp->node_7=nullptr;
+//             temp->node_8=nullptr;
+//             (leaf_nodes).push_back(temp);
+//             build_tree(vertices, faces, leaf_nodes, root);  
+
+//  }
+//  else if( leaf_nodes[7]==nullptr){
+//      std::cout<<"line 592 \n";
+//         search_tree_8*second = new search_tree_8;
+//         search_tree_8*temp = new search_tree_8;
+//         search_tree_8*third = new search_tree_8;
+//         search_tree_8*fourth = new search_tree_8;
+//         search_tree_8*fifth =  new search_tree_8;
+//         search_tree_8* sixth = new search_tree_8;
+//         search_tree_8*seventh = new search_tree_8;
+//         second = leaf_nodes[1];
+//          third = leaf_nodes[2];
+//          fourth = leaf_nodes[3];
+//          fifth = leaf_nodes[4];
+//          sixth = leaf_nodes[5];
+//          seventh = leaf_nodes[6];
+//         temp->node_1 = first;
+//         temp->node_2 = second;
+//         temp->node_3 =  third;
+//         temp->node_4 = fourth;
+//         temp->node_5 = fifth;
+//         temp->node_6 = sixth;
+//         temp->node_7 = seventh;
+//         temp->number_of_node_faces = first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces + fourth->number_of_node_faces+fifth->number_of_node_faces+sixth->number_of_node_faces+seventh->number_of_node_faces;
+//         leaf_nodes.erase (leaf_nodes.begin(),leaf_nodes.begin()+7);
+//         temp->faces_in_node = new int [temp->number_of_node_faces];
+//         for(int i=0; i<first->number_of_node_faces; i++){
+//             temp->faces_in_node[i] = first->faces_in_node[i];
+//         }
+//         for(int i = first->number_of_node_faces; i<first->number_of_node_faces+second->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = second->faces_in_node[i-first->number_of_node_faces];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = third->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces)];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = fourth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces)];
+//         }
+//         for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] =fifth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces)];
+//         }
+//         for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] =sixth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces)];
+//         }
+//          for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces+sixth->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] =seventh->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces+sixth->number_of_node_faces)];
+//         }
+//         xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+//         for(int i =0; i<temp->number_of_node_faces; i++){
+//                 for(int j=0; j<3; j++){
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]< xmin){
+//                         xmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]< ymin){
+//                         ymin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]< zmin){
+//                         zmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]> xmax){
+//                         xmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]> ymax){
+//                         ymax =vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]> zmax){
+//                         zmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                 }
+//             }
+//             temp->parameters[0] = xmin;
+//             temp->parameters[1] = xmax;
+//             temp->parameters[2] = ymin;
+//             temp->parameters[3] = ymax;
+//             temp->parameters[4] = zmin;
+//             temp->parameters[5] = zmax;
+//             temp->node_8=nullptr;
+//             (leaf_nodes).push_back(temp);
+//             build_tree(vertices, faces, leaf_nodes, root);  
+
+//  }
+//   else{
+//       std::cout<<"line 672 \n";
+//         search_tree_8*second = new search_tree_8;
+//         search_tree_8*temp = new search_tree_8;
+//         search_tree_8*third = new search_tree_8;
+//         search_tree_8*fourth = new search_tree_8;
+//         search_tree_8*fifth =  new search_tree_8;
+//         search_tree_8* sixth = new search_tree_8;
+//         search_tree_8*seventh = new search_tree_8;
+//         search_tree_8*eighth = new search_tree_8;
+//         second = leaf_nodes[1];
+//          third = leaf_nodes[2];
+//          fourth = leaf_nodes[3];
+//          fifth = leaf_nodes[4];
+//          std::cout<<"line 685 \n";
+//          sixth = leaf_nodes[5];
+//          seventh = leaf_nodes[6];
+//          eighth = leaf_nodes[7];
+//         temp->node_1 = first;
+//         temp->node_2 = second;
+//         temp->node_3 =  third;
+//         temp->node_4 = fourth;
+//         temp->node_5 = fifth;
+//         temp->node_6 = sixth;
+//         temp->node_7 = seventh;
+//         temp->node_8 = eighth;
+//         temp->number_of_node_faces = first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces + fourth->number_of_node_faces+fifth->number_of_node_faces+sixth->number_of_node_faces+seventh->number_of_node_faces+eighth->number_of_node_faces;
+//         leaf_nodes.erase (leaf_nodes.begin(),leaf_nodes.begin()+8);
+//         temp->faces_in_node = new int [temp->number_of_node_faces];
+//         std::cout<<"line 699 "<<temp->number_of_node_faces<<"\n";
+//         for(int i=0; i<first->number_of_node_faces; i++){
+//             temp->faces_in_node[i] = first->faces_in_node[i];
+//         }
+//         for(int i = first->number_of_node_faces; i<first->number_of_node_faces+second->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = second->faces_in_node[i-first->number_of_node_faces];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = third->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces)];
+//         }
+//           for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] = fourth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces)];
+//         }
+//         for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] =fifth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces)];
+//         }
+//         for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] =sixth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces)];
+//         }
+//          for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces+sixth->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] =seventh->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces+sixth->number_of_node_faces)];
+//         }
+//          for(int i =first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces+sixth->number_of_node_faces+seventh->number_of_node_faces; i<temp->number_of_node_faces;i++){
+//             temp->faces_in_node[i] =eighth->faces_in_node[i-(first->number_of_node_faces+second->number_of_node_faces+third->number_of_node_faces+fourth->number_of_node_faces+fifth->number_of_node_faces+sixth->number_of_node_faces+seventh->number_of_node_faces)];
+//         }
+//         xmin = infinity, ymin = infinity, zmin = infinity, xmax=0, ymax=0, zmax = 0;
+//         std::cout<<"line 724 \n";
+//         for(int i =0; i<temp->number_of_node_faces; i++){
+//                 for(int j=0; j<3; j++){
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]< xmin){
+//                         xmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]< ymin){
+//                         ymin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]< zmin){
+//                         zmin = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)]> xmax){
+//                         xmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1]> ymax){
+//                         ymax =vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+1];
+//                     }
+//                     if (vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2]> zmax){
+//                         zmax = vertices[3*(faces[3*(temp->faces_in_node[i])+j]-1)+2];
+//                     }
+//                 }
+//             }
+//             temp->parameters[0] = xmin;
+//             temp->parameters[1] = xmax;
+//             temp->parameters[2] = ymin;
+//             temp->parameters[3] = ymax;
+//             temp->parameters[4] = zmin;
+//             temp->parameters[5] = zmax;
+     
+//             (leaf_nodes).push_back(temp);
+//             build_tree(vertices, faces, leaf_nodes, root);  
+
+//  }
+    
+//  }
