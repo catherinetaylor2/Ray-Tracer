@@ -1198,3 +1198,15 @@
 //  }
     
 //  }
+
+///-----------------------Bounding_box---------------------------------------
+
+    //  if((ray_direction.get_x()==0)&&(ray_point.get_x()<parameters[0])&&(ray_point.get_x()>parameters[1])){
+    //      return 0;
+    //  }
+    // if((ray_direction.get_y()==0)&&(ray_point.get_y()<parameters[2])&&(ray_point.get_y()>parameters[3])){
+    //      return 0;
+    //  }
+    // if((ray_direction.get_z()==0)&&(ray_point.get_z()<parameters[4])&&(ray_point.get_z()>parameters[5])){
+    //      return 0;
+    //  }

@@ -31,7 +31,7 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("sphere1.obj");
+    ObjFile mesh("joint3.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();

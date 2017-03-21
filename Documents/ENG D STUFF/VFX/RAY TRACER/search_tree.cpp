@@ -20,25 +20,11 @@
 
      tmin = (parameters[0]- ray_point.get_x())*inv_direction.get_x();
      tmax = (parameters[1]- ray_point.get_x())*inv_direction.get_x();
-
-     if((ray_direction.get_x()==0)&&(ray_point.get_x()<parameters[0])&&(ray_point.get_x()>parameters[1])){
-         return 0;
-     }
-         if((ray_direction.get_y()==0)&&(ray_point.get_y()<parameters[2])&&(ray_point.get_y()>parameters[3])){
-         return 0;
-     }
-         if((ray_direction.get_z()==0)&&(ray_point.get_z()<parameters[4])&&(ray_point.get_z()>parameters[5])){
-         return 0;
-     }
      tmin_y = (parameters[2]- ray_point.get_y())*inv_direction.get_y();
      tmax_y = (parameters[3]- ray_point.get_y())*inv_direction.get_y();
-     if (tmin > tmax){
-         std::swap(tmin, tmax);
-     }
-     if (tmin_y > tmax_y){
-          std::swap(tmin_y, tmax_y);
-     }
-  
+
+     if (tmin > tmax)std::swap(tmin, tmax); 
+     if (tmin_y > tmax_y)std::swap(tmin_y, tmax_y);  
 
      if ((tmin > tmax_y)||(tmin_y>tmax)){
          return 0;
@@ -51,22 +37,12 @@
      }        
      tmin_z = (parameters[4]- ray_point.get_z())*inv_direction.get_z();
      tmax_z = (parameters[5]- ray_point.get_z())*inv_direction.get_z();
-     if (tmin_z > tmax_z){
-          a = tmin_z;
-         tmin_z = tmax_z;
-         tmax_z=a;
-     }
+     if (tmin_z > tmax_z)std::swap(tmin_z, tmax_z);
+
      if ((tmin > tmax_z)|(tmin_z>tmax)){
          return 0;
      }
-      if (tmin_z > tmin){
-        tmin = tmin_z;
-     }
-     if (tmax_z < tmax){
-         tmax = tmax_z;
-     } 
-     return 1;
-     
+     return 1;     
  }   
 
  float Bounding_box::get_tmax(void){
@@ -114,8 +90,7 @@ void search_tree::find_parameters(int i, float* vertices,int*faces, std::vector<
             if (vertices[3*(faces[3*i+j]-1)+2]> zmax){
             zmax = vertices[3*(faces[3*i+j]-1)+2];
             }
-        }
-   
+        }   
     *parameters = {xmin, xmax, ymin, ymax, zmin, zmax};
     }
 
