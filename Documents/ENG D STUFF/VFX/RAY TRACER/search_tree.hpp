@@ -14,7 +14,7 @@ class search_tree{
         static void build_tree(float* vertices, int* faces, std::vector<search_tree*> leaf_nodes, search_tree**root );
         static void traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<float> *output);
         static void leaf_nodes(float* vertices, int*faces, int number_of_faces, std::vector<search_tree*> *leaf_nodes);
-        static void find_parameters(int i, float* vertices, int*faces,  std::vector<float> *parameters);
+        static void find_parameters(int i, float* vertices, int*faces,  std::vector<float> *parameters, std::vector<float> initial_parameters);
     private:
 };
 class Bounding_box{
