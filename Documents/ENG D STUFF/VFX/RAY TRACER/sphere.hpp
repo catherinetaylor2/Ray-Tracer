@@ -38,24 +38,16 @@ class plane{
 };
 class triangle{
     public:
-        vector3 get_triangle_normal(vector3 V1, vector3 V2, vector3 V3);
+        vector3 get_triangle_normal(void);
         triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z,const int* sphere_colour );
-        vector3 get_vertex1(void);
-        vector3 get_vertex2(void);
-        vector3 get_vertex3(void);
-        vector3 get_colour(void);
-         float get_DiffuseCoeff(void);
-        float get_SpecularCoeff(void);
-        float get_AmbientCoeff(void);
-        float get_SpecularPower(void);
+        void get_vertex(std::vector<float> *vertex, int vertex_number);
+        void get_colour(std::vector<int>*tri_colour);
         float ray_triangle_intersection(vector3 ray_point, vector3 ray_direction);
-        vector3 barycentric_coords(vector3 intersection_point);
         void set_lighting_constants(float DC, float SC, float AC, float SP);
         vector3 determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow);
     private:
-        float vertex1_x, vertex1_y, vertex1_z, vertex2_x, vertex2_y, vertex2_z, vertex3_x, vertex3_y, vertex3_z;
-        float normal_x, normal_y, normal_z, point_D;
-        float DiffuseCoeff, SpecularCoeff, AmbientCoeff, SpecularPower;
-        int colour_x, colour_y, colour_z;
+        float point_D;
+        std::vector<int> colour;
+        std::vector<float> lighting_coefficients, vertex1, vertex2, vertex3, normal;
 };
 #endif

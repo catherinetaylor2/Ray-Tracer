@@ -144,7 +144,7 @@ int main(int argc, char* argv[] ){
 					tri.set_lighting_constants(0.5, 1*255, 0.3, 170);
 					vector3 point = vector3::vec_add(eye, vector3::vec_scal_mult(t-0.001f,d));
 					vector3 l = sun.get_light_direction(point);
-					vector3 normal=tri.get_triangle_normal(tri.get_vertex1(), tri.get_vertex2(), tri.get_vertex3());  
+					vector3 normal=tri.get_triangle_normal();  
 
 				//	SHADOWS-------------------------------------------------------
 
