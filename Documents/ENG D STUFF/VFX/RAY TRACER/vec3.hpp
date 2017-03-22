@@ -1,6 +1,7 @@
 #ifndef vec3_hpp
 #define vec3_hpp
 #include<iostream>
+#include <vector>
 
 class vector3{
     public:        

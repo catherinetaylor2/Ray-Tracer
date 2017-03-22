@@ -1,8 +1,14 @@
 #include <iostream>
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
 #include <cmath>
 #include <vector>
 #include"colour.hpp"
 #include "vec3.hpp"
+#include "light.hpp"
+#include "scene.hpp"
+#include "sphere.hpp"
 #include "search_tree.hpp"
 #define infinity INT_MAX
 
@@ -148,9 +154,53 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree*
             }	
         }
     }
-		else{
-			vector3 RGB(0,0,0);	
-            delete k;
-            return RGB;
-		}
+    else{
+        vector3 RGB(0,0,0);	
+        delete k;
+        return RGB;
     }
+}
+
+void TriangleColour::anti_aliasing(float ratio, vector3 u, vector3 v, vector3 camera_origin, search_tree* root,  float* vertices, float*normals, int*face, int*face_normals, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene, std::vector<vector3> *colours, vector3 L, int i, int j, int it){
+    float I,J;
+    for (int k=0; k<4; k++){
+        I = i+1*k%2/(pow(2,(it+1))), J = j-1*(k>2)/(pow(2,(it+1)));
+        vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*(I)*ratio,u), vector3::vec_scal_mult(-1*(J)*ratio,v) );
+        vector3 d(s.get_x()-camera_origin.get_x(),s.get_y()-camera_origin.get_y(),s.get_z()-camera_origin.get_z());
+        d.normalize();
+        vector3 RGB = TriangleColour::intersection_colour(d, camera_origin, root, vertices, normals, face, face_normals, areas, edges, tri_colour, sun, myscene);
+        (*colours).push_back(RGB);
+    }
+    int quadrant = -1;
+    float sum = (*colours)[it].get_x()+(*colours)[it+1].get_x()+(*colours)[it+2].get_x()+(*colours)[it+3].get_x()/4.0f;
+    if(sum>0){
+        for(int k=0; k<4;k++){
+            if((*colours)[k].get_x()/sum >1){
+                quadrant = k;
+            }
+        }
+    }
+    if ((quadrant==-1)||(it>8)){
+        return;
+    }
+    else{
+        if(quadrant == 0){
+            I = i+1*quadrant%2/(pow(2,(it+1)));
+            J =  j-1*(quadrant>2)/(pow(2,(it+1)));
+        }
+        if(quadrant ==1){
+            I = i+1*quadrant%2/(pow(2,(it+1)))-1/(pow(2,(it+2)));
+            J =  j-1*(quadrant>2)/(pow(2,(it+1)));
+        }
+        if(quadrant==2){
+            I = i+1*quadrant%2/(pow(2,(it+1)));
+            J =  j-1*(quadrant>2)/(pow(2,(it+1)))+1/(pow(2,(it+2)));
+        }
+        if(quadrant==3){
+            I = i+1*quadrant%2/(pow(2,(it+1)))-1/(pow(2,(it+2)));
+            J =  j-1*(quadrant>2)/(pow(2,(it+1)))+1/(pow(2,(it+2)));
+        }
+        it=it+1;
+        TriangleColour::anti_aliasing( ratio, u,  v,  camera_origin,  root,  vertices,normals,face, face_normals,  areas, edges,tri_colour,sun, myscene, colours, L,I,J, it);
+    }
+}

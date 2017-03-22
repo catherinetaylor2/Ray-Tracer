@@ -76,14 +76,24 @@ int main(int argc, char* argv[] ){
 		i=(x/(3))%(myscene.get_x_res());
 		j=(x/(3))/(myscene.get_x_res());
 
-		vector3 s = C.vector3::vec_add3(L, vector3::vec_scal_mult(-1*i*ratio,u), vector3::vec_scal_mult(-1*j*ratio,v) );
-		vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
-		d.normalize();
-
-		vector3 RGB = TriangleColour::intersection_colour(d, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene);
-		img[x] = RGB.get_x();
-		img[x+1]=RGB.get_y();
-		img[x+2]=RGB.get_z();
+		std::vector<vector3> colours;
+		TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0);
+		
+		// 	vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*i*ratio,u), vector3::vec_scal_mult(-1*j*ratio,v) );
+		// 	vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
+		// 	d.normalize();
+		// 	vector3 RGB = TriangleColour::intersection_colour(d, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene);
+		// 	(colours).push_back(RGB);
+		
+		float R=0, G=0, B=0;
+		for (int k=0; k<colours.size(); k++){
+			R = R + colours[k].get_x();
+			G = G + colours[k].get_y();
+			B = B + colours[k].get_z();
+		}
+		img[x] = R/(float)colours.size();
+		img[x+1]=G/(float)colours.size();
+		img[x+2]=B/(float)colours.size();
 	}
 
     std::ofstream my_image;
