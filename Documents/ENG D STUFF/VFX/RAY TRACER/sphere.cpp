@@ -177,9 +177,9 @@ void plane::get_plane_normal(std::vector<float>*plane_normal){
     lighting_coefficients = {DC, SC,AC, SP};
  }
  vector3 plane::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow){
-
    float D, DD, Red_term, Green_term, Blue_term;
     D = myscene.DiffuseValue(normal, light_direction);
+    DD = myscene.SpecularValue(normal,light_direction,ray_direction);
     Red_term = (source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[0]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
     Green_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[1]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
     Blue_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[2]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);

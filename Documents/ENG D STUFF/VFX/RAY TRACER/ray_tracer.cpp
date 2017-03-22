@@ -7,6 +7,7 @@
 #include "scene.hpp"
 #include "sphere.hpp"
 #include "light.hpp"
+#include "colour.hpp"
 #include "readObj.hpp"
 #include "search_tree.hpp"
 
@@ -66,22 +67,7 @@ int main(int argc, char* argv[] ){
 	float* area = new float[F];
 	float* A = new float[3*F];
 
-	for (int i=0; i<F; i++){
-		int c1 = FV[3*i] -1, c2 = FV[3*i+1]-1, c3 = FV[3*i+2] -1 ;
-		int	n1 = FN[3*i]-1, n2 = FN[3*i+1]-1, n3= FN[3*i+2]-1;
-		float semiPerimeter;
-		vector3 point1(V[3*c1], V[3*c1+1], V[3*c1+2]);
-		vector3 point2(V[3*c2], V[3*c2+1], V[3*c2+2]);
-		vector3 point3(V[3*c3], V[3*c3+1], V[3*c3+2]);
-		vector3 N1(N[3*n1], N[3*n1+1], N[3*n1+2]);
-		vector3 N2(N[3*n2], N[3*n2+1], N[3*n2+2]);
-		vector3 N3(N[3*n3], N[3*n3+1], N[3*n3+2]);
-		A[3*i] = sqrt(vector3::dotproduct(vector3::vec_add(point1, vector3::vec_scal_mult(-1, point2)),vector3::vec_add(point1, vector3::vec_scal_mult(-1, point2))));
-		A[3*i+1] = sqrt(vector3::dotproduct(vector3::vec_add(point3, vector3::vec_scal_mult(-1, point2)),vector3::vec_add(point3, vector3::vec_scal_mult(-1, point2))));
-		A[3*i+2] = sqrt(vector3::dotproduct(vector3::vec_add(point1, vector3::vec_scal_mult(-1, point3)),vector3::vec_add(point1, vector3::vec_scal_mult(-1, point3))));
-		semiPerimeter = (A[3*i]+A[3*i+1]+A[3*i+2])/2.0f;
-		area[i] = sqrt(semiPerimeter*(semiPerimeter - A[3*i])*(semiPerimeter- A[3*i+1])*(semiPerimeter -A[3*i+2]));
-	}
+	TriangleColour::phong_areas(FV, FN, N,V, area, A, F);
 
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
 	
@@ -134,8 +120,8 @@ int main(int argc, char* argv[] ){
 				img[x+2]=0;
 			}
 			else{
-				float  ss,R,G,Bc, B,C, P_P1, P_P2, P_P3, semiPerimeter, semiPerimeter1, semiPerimeter2, semiPerimeter3, alpha1, alpha2, alpha3;
-				int m = k[min_value+1], n1, n2, n3;
+				float R,G,Bc, B,C, P_P1, P_P2, P_P3, semiPerimeter1, semiPerimeter2, semiPerimeter3, alpha1, alpha2, alpha3;
+				int m = k[min_value+1], n1, n2, n3,s;
 				c_m1 = FV[3*m] -1, c_m2 = FV[3*m+1]-1, c_m3 = FV[3*m+2] -1 ;
 				triangle tri(V[3*c_m1], V[3*c_m1+1], V[3*c_m1+2], V[3*c_m2], V[3*c_m2+1], V[3*c_m2+2], V[3*c_m3], V[3*c_m3+1], V[3*c_m3+2],RED);
 				t = tri.ray_triangle_intersection(eye,d);
@@ -146,9 +132,7 @@ int main(int argc, char* argv[] ){
 					vector3 l = sun.get_light_direction(point);
 					vector3 normal=tri.get_triangle_normal();  
 
-				//	SHADOWS-------------------------------------------------------
-
-					std::vector<float>  output2;
+					std::vector<float> output2;
 					output2.clear();
 					if(B_root.ray_box_intersection(point, l)==1){	
 						search_tree::traverse_tree(root, point, l, &output2);
@@ -161,45 +145,11 @@ int main(int argc, char* argv[] ){
 							k2[g] = output2[g-1];
 						}
 					}
-					   int s=1, index;
-					if( (k2[0]!=-1)&&(k2[0]>0)){
-						for (int z=1; z<k2[0]+1; z++){
-							index = k2[z];
-							c1 = FV[3*index] -1, c2 = FV[3*index+1]-1, c3 = FV[3*index+2] -1 ;
-							triangle tri2(V[3*c1], V[3*c1+1], V[3*c1+2], V[3*c2], V[3*c2+1], V[3*c2+2], V[3*c3], V[3*c3+1], V[3*c3+2], RED);
-							ss = tri2.ray_triangle_intersection( point, l);			
-							if ((ss)> 0){
-								s = 0;											
-							}	
-						} 
-					}
+					s = TriangleColour::shadows(k2, FV, V, point, l, RED);		
 					delete k2;
-					//	PHONG SHADING-----------------------------
+					vector3 phong_normal = TriangleColour::phong_normal(m, V, N, FV, FN,  area, A, point);
 
-					n1 = FN[3*m]-1, n2 = FN[3*m+1]-1, n3= FN[3*m+2]-1;
-					vector3 point1(V[3*c_m1], V[3*c_m1+1], V[3*c_m1+2]);
-					vector3 point2(V[3*c_m2], V[3*c_m2+1], V[3*c_m2+2]);
-					vector3 point3(V[3*c_m3], V[3*c_m3+1], V[3*c_m3+2]);
-					vector3 N1(N[3*n1], N[3*n1+1], N[3*n1+2]);
-					vector3 N2(N[3*n2], N[3*n2+1], N[3*n2+2]);
-					vector3 N3(N[3*n3], N[3*n3+1], N[3*n3+2]);
-
-					P_P1 = sqrt(vector3::dotproduct(vector3::vec_add(point1, vector3::vec_scal_mult(-1, point)),vector3::vec_add(point1, vector3::vec_scal_mult(-1, point))));
-					P_P2= sqrt(vector3::dotproduct(vector3::vec_add(point, vector3::vec_scal_mult(-1, point2)),vector3::vec_add(point, vector3::vec_scal_mult(-1, point2))));
-					P_P3 = sqrt(vector3::dotproduct(vector3::vec_add(point, vector3::vec_scal_mult(-1, point3)),vector3::vec_add(point, vector3::vec_scal_mult(-1, point3))));
-
-					semiPerimeter1 = (P_P3+A[3*m+1]+P_P2)/2.0f;
-					semiPerimeter2 = (P_P3+A[3*m+2]+P_P1)/2.0f;
-					semiPerimeter3 = (A[3*m]+P_P2+P_P1)/2.0f;
-
-					alpha1 = sqrt(semiPerimeter1*(semiPerimeter1 - A[3*m+1])*(semiPerimeter1- P_P2)*(semiPerimeter1 -P_P3))/area[m];
-					alpha2 = sqrt(semiPerimeter2*(semiPerimeter2 - A[3*m+2])*(semiPerimeter2- P_P1)*(semiPerimeter2 -P_P3))/area[m];
-					alpha3 = sqrt(semiPerimeter3*(semiPerimeter3 - A[3*m])*(semiPerimeter3- P_P2)*(semiPerimeter3 -P_P1))/area[m];
-
-					vector3 N = vector3::vec_add3(vector3::vec_scal_mult(alpha1, N1), vector3::vec_scal_mult(alpha2, N2), vector3::vec_scal_mult(alpha3, N3));
-					//---------------------------------------
-
-					vector3 RGB = tri.determine_colour(point, l, d, sun, N, myscene,s);
+					vector3 RGB = tri.determine_colour(point, l, d, sun, phong_normal, myscene,s);
 					R = RGB.get_x();
 					G = RGB.get_y();
 					Bc = RGB.get_z();
