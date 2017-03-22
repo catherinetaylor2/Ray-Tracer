@@ -3,6 +3,8 @@
 #include <vector>
 #include"colour.hpp"
 #include "vec3.hpp"
+#include "search_tree.hpp"
+#define infinity INT_MAX
 
  void TriangleColour::phong_areas(int*faces, int* face_normals, float*normals, float*vertices, float* areas, float *edges, int number_of_faces){
 	for (int i=0; i<number_of_faces; i++){
@@ -67,3 +69,88 @@ vector3 TriangleColour::phong_normal(int triangle, float* vertices, float*normal
 
     return N;
 }
+vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree* root,  float* vertices, float*normals, int*faces, int*face_normals, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene){
+    Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
+    int c1, c2,c3, c_m1, c_m2, c_m3;
+    std::vector<float>  output;
+    output.clear();
+    if(B_root.ray_box_intersection(eye, d)==1){
+        search_tree::traverse_tree(root, eye, d, &output);
+    }
+    float *k=new float[output.size()+1];
+    k[0]=-1;
+    if (output.size()>1){
+        k[0]=output.size();
+        for(int g=1; g<output.size()+1;g++){
+            k[g] = output[g-1];
+        }
+    }
+    if( (k[0]!=-1)&&(k[0]>0)){
+        float* t_values = new float[k[0]];
+        int min_value=-1, t_min = infinity, index;
+        float t;
+        for (int z=1; z<k[0]+1; z++){
+            index = k[z];
+            c1 = faces[3*index] -1, c2 = faces[3*index+1]-1, c3 = faces[3*index+2] -1 ;
+            triangle tri(vertices[3*c1], vertices[3*c1+1], vertices[3*c1+2], vertices[3*c2], vertices[3*c2+1], vertices[3*c2+2], vertices[3*c3], vertices[3*c3+1], vertices[3*c3+2], tri_colour);
+            t = tri.ray_triangle_intersection(eye,d);
+            t_values[z-1]=t;
+        }
+        for (int z=0; z<k[0]; z++){
+            if ((t_values[z]>0)){
+                vector3 xyz = vector3::vec_add( eye , vector3::vec_scal_mult(t_values[z],d));
+                if (xyz.get_z()<t_min){
+                    t_min = xyz.get_z();
+                    min_value = z;					
+                }
+            }
+        }
+        if (min_value == -1){
+            vector3 RGB (0,0,0);
+            delete k;
+            delete t_values;
+            return RGB;
+        }
+        else{
+            float R,G,Bc, B,C, P_P1, P_P2, P_P3, semiPerimeter1, semiPerimeter2, semiPerimeter3, alpha1, alpha2, alpha3;
+            int m = k[min_value+1], n1, n2, n3,s;
+            c_m1 = faces[3*m] -1, c_m2 = faces[3*m+1]-1, c_m3 = faces[3*m+2] -1 ;
+            triangle tri(vertices[3*c_m1], vertices[3*c_m1+1], vertices[3*c_m1+2], vertices[3*c_m2], vertices[3*c_m2+1],vertices[3*c_m2+2], vertices[3*c_m3], vertices[3*c_m3+1], vertices[3*c_m3+2], tri_colour);
+            t = tri.ray_triangle_intersection(eye,d);
+
+            if(t!=0){
+                tri.set_lighting_constants(0.5, 1*255, 0.3, 170);
+                vector3 point = vector3::vec_add(eye, vector3::vec_scal_mult(t-0.001f,d));
+                vector3 l = sun.get_light_direction(point);
+                vector3 normal=tri.get_triangle_normal();  
+
+                std::vector<float> output2;
+                output2.clear();
+                if(B_root.ray_box_intersection(point, l)==1){	
+                    search_tree::traverse_tree(root, point, l, &output2);
+                }
+                float *k2=new float[output2.size()+1];
+                k2[0]=-1;
+                if (output2.size()>1){
+                    k2[0]=output2.size();
+                    for(int g=1; g<output2.size()+1;g++){
+                        k2[g] = output2[g-1];
+                    }
+                }
+                s = TriangleColour::shadows(k2, faces, vertices, point, l, tri_colour);		
+                delete k2;
+                vector3 phong_normal = TriangleColour::phong_normal(m, vertices, normals, faces, face_normals,  areas, edges, point);
+
+                vector3 RGB = tri.determine_colour(point, l, d, sun, phong_normal, myscene,s);
+                delete t_values;
+                delete k;
+                return RGB;
+            }	
+        }
+    }
+		else{
+			vector3 RGB(0,0,0);	
+            delete k;
+            return RGB;
+		}
+    }
