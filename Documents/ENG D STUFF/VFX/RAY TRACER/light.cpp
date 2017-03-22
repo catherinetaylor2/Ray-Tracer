@@ -1,7 +1,9 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include"light.hpp"
 #include"vec3.hpp"
+#include "search_tree.hpp"
 
 
 Light::Light(float x, float y, float z, float I){

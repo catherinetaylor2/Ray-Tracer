@@ -41,7 +41,7 @@ int main(int argc, char* argv[] ){
 	search_tree* root;
 	std::vector<search_tree*> leaf_nodes;
 	search_tree::leaf_nodes(V, FV, F, &leaf_nodes);
-	search_tree::build_tree(V, FV,leaf_nodes, &root );
+	search_tree::build_tree(V, FV, leaf_nodes, &root);
 
     vector3 eye(0,0,-8);
     vector3 lookup(0,1,-8);
@@ -50,7 +50,8 @@ int main(int argc, char* argv[] ){
     vector3 light = sun.get_position();
     scene myscene(width,height,90,3);
     float d = myscene.get_distance_to_image();
-    
+
+
 //set up eye coord system
     vector3 w = vector3::vec_add(eye, vector3::vec_scal_mult(-1, lookat));
     w.normalize();

@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include"sphere.hpp"
 #include"vec3.hpp"
 #include"light.hpp"
@@ -11,50 +12,26 @@ const int GREEN[] ={0,255,0};
 const int BLUE[] = {0,0,255};
 
 sphere::sphere(int sphere_x, int sphere_y, int sphere_z, int sphere_radius,  const int* sphere_colour){
-    centre_x = sphere_x;
-    centre_y=sphere_y;
-    centre_z=sphere_z;
-    radius=sphere_radius;
-    colour_x=sphere_colour[0];
-    colour_y=sphere_colour[1];
-    colour_z= sphere_colour[2];
+    centre = {sphere_x, sphere_y, sphere_z};
+    colour = {sphere_colour[0], sphere_colour[1], sphere_colour[2]};
+}
+void sphere::get_centre(std::vector<int>*sphere_centre){
+    *sphere_centre = centre;
+}
+void sphere::get_colour(std::vector<int>*sphere_colour){
+    *sphere_colour = colour;
 }
  void sphere::set_lighting_constants(float DC, float SC, float AC, float SP){
-    DiffuseCoeff=DC;
-    SpecularCoeff=SC;
-    AmbientCoeff=AC;
-    SpecularPower=SP;
+     lighting_coefficients = {DC, SC, AC, SP};
  }
-vector3 sphere::get_colour(void){
-    vector3 colour(colour_x, colour_y, colour_z);
-    return colour;
-}
 int sphere::get_radius(void){
     return radius;
 }
-int sphere::get_centre_x(void){
-    return centre_x;
-}
-int sphere::get_centre_y(void){
-    return centre_y;
-}
-int sphere::get_centre_z(void){
-    return centre_z;
-}
-float sphere::get_DiffuseCoeff(void){
-    return DiffuseCoeff;
-}
-float sphere::get_SpecularCoeff(void){
-    return SpecularCoeff;
-}
-float sphere::get_AmbientCoeff(void){
-    return AmbientCoeff;
-}
-float sphere::get_SpecularPower(void){
-    return SpecularPower;
+void sphere::get_lighting_coefficients(std::vector<float>*sphere_coefficients){
+    *sphere_coefficients = lighting_coefficients;
 }
 vector3 sphere::find_normal(vector3 point){
-    vector3 centre(centre_x, centre_y, centre_z);
+    vector3 centre(centre[0], centre[1], centre[2]);
     vector3 norm = vector3::vec_add(point, vector3::vec_scal_mult(-1,centre));
     vector3 normal = vector3::vec_scal_mult(2,norm);
     normal.normalize();
@@ -62,7 +39,7 @@ vector3 sphere::find_normal(vector3 point){
 }
 float sphere::Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction){
     float a,b,c, det ;
-    vector3 centre(centre_x, centre_y, centre_z);
+    vector3 centre(centre[0], centre[1], centre[2]);
     a = vector3::dotproduct(ray_direction,ray_direction);
     b=2*(vector3::dotproduct(ray_direction,vector3::vec_add(ray_point, vector3::vec_scal_mult(-1, centre))));
     c=vector3::dotproduct(vector3::vec_add(ray_point, vector3::vec_scal_mult(-1, centre)),vector3::vec_add(ray_point, vector3::vec_scal_mult(-1, centre)))-radius*radius;
@@ -81,9 +58,9 @@ vector3 sphere::determine_colour(vector3 point, vector3 light_direction, vector3
     D = myscene.DiffuseValue(normal, light_direction);
     DD = myscene.SpecularValue(normal,light_direction,ray_direction);
 
-    Red_term = (source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_x+shadow*pow(DD,SpecularPower)*SpecularCoeff);
-    Green_term =(source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_y+shadow*pow(DD,SpecularPower)*SpecularCoeff);
-    Blue_term =(source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_z+shadow*pow(DD,SpecularPower)*SpecularCoeff);
+    Red_term = (source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[0]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
+    Green_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[1]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
+    Blue_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[2]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
 
     if (Red_term > 255){
         Red_term =255;

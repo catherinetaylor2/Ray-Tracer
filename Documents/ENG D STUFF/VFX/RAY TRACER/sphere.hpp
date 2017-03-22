@@ -1,6 +1,7 @@
 #ifndef sphere_hpp
 #define sphere_hpp
 #include<iostream>
+#include <vector>
 #include"vec3.hpp"
 #include"light.hpp"
 #include"scene.hpp"
@@ -10,24 +11,17 @@ class sphere{
     public:
         sphere(int sphere_x, int sphere_y, int sphere_z, int sphere_radius, const int* sphere_colour);
         void set_lighting_constants(float DC, float SC, float AC, float SP);
-        int get_x_coord(void);
-        int get_y_coord(void);
-        int get_z_coord(void);
+        void get_centre(std::vector<int>*sphere_centre);
+        void get_colour(std::vector<int>*sphere_colour);
+        void get_lighting_coefficients(std::vector<float>*sphere_coefficients);
         int get_radius(void);
-        int get_centre_x(void);
-        int get_centre_y(void);
-        int get_centre_z(void);
-        float get_DiffuseCoeff(void);
-        float get_SpecularCoeff(void);
-        float get_AmbientCoeff(void);
-        float get_SpecularPower(void);
-        vector3 get_colour(void);
         vector3 find_normal(vector3 point);
         float Sphere_ray_intersection(vector3 ray_point, vector3 ray_direction);
         vector3 determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow);
     private:
-        int centre_x, centre_y, centre_z, radius, colour_x, colour_y, colour_z;
-        float DiffuseCoeff, SpecularCoeff, AmbientCoeff, SpecularPower;
+        int radius;
+        std::vector<int> colour, centre;
+        std::vector<float> lighting_coefficients;
 };
 class plane{
     public:
@@ -54,7 +48,6 @@ class triangle{
         float get_SpecularCoeff(void);
         float get_AmbientCoeff(void);
         float get_SpecularPower(void);
-      //  float ray_plane_intersection(vector3 ray_point, vector3 ray_direction);
         float ray_triangle_intersection(vector3 ray_point, vector3 ray_direction);
         vector3 barycentric_coords(vector3 intersection_point);
         void set_lighting_constants(float DC, float SC, float AC, float SP);
