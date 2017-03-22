@@ -166,33 +166,23 @@ plane::plane(float p1x, float p1y, float p1z, float p2x, float p2y, float p2z, f
     vector3 PZ = vector3::vec_add(Z, vector3::vec_scal_mult(-1,P));
     vector3 N = vector3::crossproduct(PQ, PZ);
     N.normalize();
-    normal_x = N.get_x();
-    normal_y = N.get_y();
-    normal_z = N.get_z();
+    normal = {N.get_x(), N.get_y(), N.get_z()};
     point_D = vector3::dotproduct(N,P);
-    colour_x=plane_colour[0];
-    colour_y=plane_colour[1];
-    colour_z= plane_colour[2];
+    colour = { plane_colour[0], plane_colour[1], plane_colour[2]};
 }
-vector3 plane::get_plane_normal(void){
-    vector3 normal(normal_x, normal_y, normal_z);
-    normal.normalize();
-    return normal;
+void plane::get_plane_normal(std::vector<float>*plane_normal){
+    *plane_normal = normal;
 }
  void plane::set_lighting_constants(float DC, float SC, float AC, float SP){
-    DiffuseCoeff=DC;
-    SpecularCoeff=SC;
-    AmbientCoeff=AC;
-    SpecularPower=SP;
+    lighting_coefficients = {DC, SC,AC, SP};
  }
  vector3 plane::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow){
 
    float D, DD, Red_term, Green_term, Blue_term;
     D = myscene.DiffuseValue(normal, light_direction);
-    DD = myscene.SpecularValue(normal,light_direction,ray_direction);
-    Red_term = (source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_x+pow(DD,SpecularPower)*SpecularCoeff);
-    Green_term =(source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_y+pow(DD,SpecularPower)*SpecularCoeff);
-    Blue_term =(source.get_light_intensity())*((shadow*DiffuseCoeff*D+AmbientCoeff)*colour_z+pow(DD,SpecularPower)*SpecularCoeff);
+    Red_term = (source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[0]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
+    Green_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[1]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
+    Blue_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[2]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
     if (Red_term > 255){
         Red_term =255;
     }
@@ -210,7 +200,7 @@ vector3 plane::get_plane_normal(void){
 }
 
 float plane::ray_plane_intersection(vector3 ray_point, vector3 ray_direction){
-    vector3 normal(normal_x, normal_y, normal_z);
+    vector3 normal(normal[0], normal[1], normal[2]);
     normal.normalize();
     if (vector3::dotproduct(normal,ray_direction)!=0){
         return (( point_D- vector3::dotproduct(normal,ray_point))/(vector3::dotproduct(normal,ray_direction)));
