@@ -25,6 +25,7 @@ int main(int argc, char* argv[] ){
 	if(argc>1){
 		width = atoi(argv[1]);
 		height = atoi(argv[2]);
+		
 	}
 	else{
 		width=1000;
@@ -32,7 +33,7 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("joint3.obj");
+    ObjFile mesh("joint2.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
@@ -51,7 +52,6 @@ int main(int argc, char* argv[] ){
     vector3 light = sun.get_position();
     scene myscene(width,height,90,3);
     float d = myscene.get_distance_to_image();
-
 
 //set up eye coord system
     vector3 w = vector3::vec_add(eye, vector3::vec_scal_mult(-1, lookat));
@@ -72,18 +72,18 @@ int main(int argc, char* argv[] ){
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
 	
 	for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
-		int i, j, c1, c2,c3, c_m1, c_m2, c_m3;
+		int i, j;
 		i=(x/(3))%(myscene.get_x_res());
 		j=(x/(3))/(myscene.get_x_res());
 
 		std::vector<vector3> colours;
-		TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0);
+	//	TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0);
 		
-		// 	vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*i*ratio,u), vector3::vec_scal_mult(-1*j*ratio,v) );
-		// 	vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
-		// 	d.normalize();
-		// 	vector3 RGB = TriangleColour::intersection_colour(d, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene);
-		// 	(colours).push_back(RGB);
+			vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*i*ratio,u), vector3::vec_scal_mult(-1*j*ratio,v) );
+			vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
+			d.normalize();
+			vector3 RGB = TriangleColour::intersection_colour(d, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene);
+			(colours).push_back(RGB);
 		
 		float R=0, G=0, B=0;
 		for (int k=0; k<colours.size(); k++){
@@ -91,9 +91,9 @@ int main(int argc, char* argv[] ){
 			G = G + colours[k].get_y();
 			B = B + colours[k].get_z();
 		}
-		img[x] = R/(float)colours.size();
-		img[x+1]=G/(float)colours.size();
-		img[x+2]=B/(float)colours.size();
+		img[x] = (unsigned char)(R/(float)colours.size());
+		img[x+1]=(unsigned char)(G/(float)colours.size());
+		img[x+2]=(unsigned char)(B/(float)colours.size());
 	}
 
     std::ofstream my_image;

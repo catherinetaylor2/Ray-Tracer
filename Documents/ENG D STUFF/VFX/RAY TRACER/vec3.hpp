@@ -10,7 +10,7 @@ class vector3{
         float get_y(void);
         float get_z(void);
         void normalize(void);
-        void setValue(int x, int y, int z);
+        void setValue(float x, float y, float z);
         static inline float dotproduct(vector3 vec1, vector3 vec2){
             return vec1.get_x()*vec2.get_x()+vec1.get_y()*vec2.get_y()+vec1.get_z()*vec2.get_z();
         }

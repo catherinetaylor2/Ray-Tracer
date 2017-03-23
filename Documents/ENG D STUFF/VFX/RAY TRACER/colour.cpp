@@ -118,7 +118,6 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree*
             return RGB;
         }
         else{
-            float R,G,Bc, B,C, P_P1, P_P2, P_P3, semiPerimeter1, semiPerimeter2, semiPerimeter3, alpha1, alpha2, alpha3;
             int m = k[min_value+1], n1, n2, n3,s;
             c_m1 = faces[3*m] -1, c_m2 = faces[3*m+1]-1, c_m3 = faces[3*m+2] -1 ;
             triangle tri(vertices[3*c_m1], vertices[3*c_m1+1], vertices[3*c_m1+2], vertices[3*c_m2], vertices[3*c_m2+1],vertices[3*c_m2+2], vertices[3*c_m3], vertices[3*c_m3+1], vertices[3*c_m3+2], tri_colour);
@@ -174,9 +173,23 @@ void TriangleColour::anti_aliasing(float ratio, vector3 u, vector3 v, vector3 ca
     int quadrant = -1;
     float sum = (*colours)[it].get_x()+(*colours)[it+1].get_x()+(*colours)[it+2].get_x()+(*colours)[it+3].get_x()/4.0f;
     if(sum>0){
-        for(int k=0; k<4;k++){
-            if((*colours)[k].get_x()/sum >1){
-                quadrant = k;
+        if(((*colours)[0].get_x()==0)&&((*colours)[1].get_x()!=0)&&((*colours)[2].get_x()!=0)&&((*colours)[3].get_x()!=0)){
+            quadrant = 0;
+        }
+        else if (((*colours)[0].get_x()!=0)&&((*colours)[1].get_x()==0)&&((*colours)[2].get_x()!=0)&&((*colours)[3].get_x()!=0)){
+            quadrant = 1;
+        }
+        else  if(((*colours)[0].get_x()!=0)&&((*colours)[1].get_x()!=0)&&((*colours)[2].get_x()==0)&&((*colours)[3].get_x()!=0)){
+            quadrant = 2;
+        }
+        else if(((*colours)[0].get_x()!=0)&&((*colours)[1].get_x()!=0)&&((*colours)[2].get_x()!=0)&&((*colours)[3].get_x()==0)){
+            quadrant = 3;
+        }
+        else{
+            for(int k=0; k<4;k++){
+                if((*colours)[k].get_x()/sum >0.75){
+                    quadrant = k;
+                }
             }
         }
     }

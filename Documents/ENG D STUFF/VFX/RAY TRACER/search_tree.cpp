@@ -15,7 +15,7 @@
  }
 
  int Bounding_box::ray_box_intersection(vector3 ray_point, vector3 ray_direction){
-    float tmin_y, tmax_y, tmin_z, tmax_z, a;
+    float tmin_y, tmax_y, tmin_z, tmax_z;
     vector3 inv_direction(1/ray_direction.get_x(), 1/ray_direction.get_y(), 1/ray_direction.get_z());
      tmin = (parameters[0]- ray_point.get_x())*inv_direction.get_x();
      tmax = (parameters[1]- ray_point.get_x())*inv_direction.get_x();
@@ -112,15 +112,11 @@ void search_tree::build_tree(float* vertices, int* faces, std::vector<search_tre
     std::vector<float> parameters;
     search_tree* first = new search_tree;
     search_tree* second = new search_tree;
-    search_tree*temp = new search_tree;
-    first = leaf_nodes[0];
-    if(leaf_nodes[1]==nullptr){
-       *root = first;
-        delete second;
-        delete temp; 
-        return;
-    }
-    else{
+
+    while(leaf_nodes.size()>1){
+        parameters.clear();
+        search_tree* temp = new search_tree;
+        first = leaf_nodes[0];
         second = leaf_nodes[1];
         temp->left_node = first;
         temp->right_node = second;
@@ -142,7 +138,8 @@ void search_tree::build_tree(float* vertices, int* faces, std::vector<search_tre
              temp->parameters[j] = parameters[j];
         }
         (leaf_nodes).push_back(temp);
-        build_tree(vertices, faces, leaf_nodes, root);  
     }
+       *root = leaf_nodes[0];
+        return;
 }
 

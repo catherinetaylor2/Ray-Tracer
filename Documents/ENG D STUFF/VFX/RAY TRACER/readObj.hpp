@@ -1,5 +1,7 @@
 #ifndef readObj_hpp
 #define readObj_hpp
+#include <stdio.h>
+#include <string>
 
 class ObjFile{
     public:
@@ -11,6 +13,7 @@ class ObjFile{
         int get_number_of_faces(void);
     private:
         const char* File_Name;
+		std::string fn;
         int number_of_normals, number_of_vertices, number_of_faces;
 };
 

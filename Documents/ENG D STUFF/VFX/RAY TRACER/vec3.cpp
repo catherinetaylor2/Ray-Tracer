@@ -17,7 +17,7 @@ float vector3::get_y(void){
 float vector3::get_z(void){
     return z_val;
 }
-void vector3::setValue(int x, int y, int z){
+void vector3::setValue(float x, float y, float z){
     x_val=x;
     y_val=y;
     z_val=z;
