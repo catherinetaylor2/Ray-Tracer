@@ -49,7 +49,7 @@
      return tmin;
  }
 
-void search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<float> *output){
+void search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<int> *output){
     Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
     if(((root->left_node==nullptr))&&((root->right_node==nullptr))){
         if((B_root.ray_box_intersection(eye, d)==1)){        

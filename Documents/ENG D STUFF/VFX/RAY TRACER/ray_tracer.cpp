@@ -10,6 +10,7 @@
 #include "colour.hpp"
 #include "readObj.hpp"
 #include "search_tree.hpp"
+#include <omp.h> 
 
 const int RED[] = {255,0,0};
 const int GREEN[] ={0,255,0};
@@ -17,7 +18,7 @@ const int BLUE[] = {0,0,255};
 const int PURPLE[]= {255,0,255};
 const int YELLOW[]={255,255,0};
 const int GREY []={200,200,200};
-#define infinity INT_MAX
+#define infinity FLT_MAX
 
 int main(int argc, char* argv[] ){
 
@@ -33,7 +34,7 @@ int main(int argc, char* argv[] ){
 	}
 	
 //initial inputs
-    ObjFile mesh("joint2.obj");
+    ObjFile mesh("sphere1.obj");
     float* V = mesh.get_vertices();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
@@ -45,10 +46,10 @@ int main(int argc, char* argv[] ){
 	search_tree::leaf_nodes(V, FV, F, &leaf_nodes);
 	search_tree::build_tree(V, FV, leaf_nodes, &root);
 
-    vector3 eye(0,0,-8);
-    vector3 lookup(0,1,-8);
-    vector3 lookat(0,0,1);
-    Light sun(-5,0,-2,1);
+    vector3 eye(0,4,-12);
+    vector3 lookup(0,5,-8);
+    vector3 lookat(0,4,1);
+    Light sun(0,15,-20,1);
     vector3 light = sun.get_position();
     scene myscene(width,height,90,3);
     float d = myscene.get_distance_to_image();
@@ -77,13 +78,13 @@ int main(int argc, char* argv[] ){
 		j=(x/(3))/(myscene.get_x_res());
 
 		std::vector<vector3> colours;
-	//	TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0);
+	    TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, area, A, GREY, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0);
 		
-			vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*i*ratio,u), vector3::vec_scal_mult(-1*j*ratio,v) );
-			vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
-			d.normalize();
-			vector3 RGB = TriangleColour::intersection_colour(d, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene);
-			(colours).push_back(RGB);
+			// vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*i*ratio,u), vector3::vec_scal_mult(-1*j*ratio,v) );
+			// vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
+			// d.normalize();
+			// vector3 RGB = TriangleColour::intersection_colour(d, eye, root,  V, N, FV, FN, area, A, GREY, sun, myscene);
+			// (colours).push_back(RGB);
 		
 		float R=0, G=0, B=0;
 		for (int k=0; k<colours.size(); k++){
