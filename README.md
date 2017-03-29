@@ -1,5 +1,5 @@
 # Ray Tracer
 
-![anti](https://cloud.githubusercontent.com/assets/25514442/24217501/f50d4aba-0f37-11e7-8404-b6fd56a77568.png)
+![s3](https://cloud.githubusercontent.com/assets/25514442/24477871/a3fe4bb2-14d0-11e7-96dc-5e4ae0470d78.png)
 
 Creating a raytracer for EngD VFX coursework. Goal: render skeleton fight scene from Jason and the Argonauts.
