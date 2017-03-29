@@ -2,6 +2,7 @@
 #include "search_tree.hpp"
 #include "vec3.hpp"
 #include <vector>
+#include <algorithm>
 
 #define infinity FLT_MAX
 
@@ -21,9 +22,18 @@
      tmax = (parameters[1]- ray_point.get_x())*inv_direction.get_x();
      tmin_y = (parameters[2]- ray_point.get_y())*inv_direction.get_y();
      tmax_y = (parameters[3]- ray_point.get_y())*inv_direction.get_y();
+
+    if((ray_direction.get_x()==0)&&(ray_point.get_x()<parameters[0])&&(ray_point.get_x()>parameters[1])){
+         return 0;
+     }
+    if((ray_direction.get_y()==0)&&(ray_point.get_y()<parameters[2])&&(ray_point.get_y()>parameters[3])){
+         return 0;
+     }
+
+
      if (tmin > tmax)std::swap(tmin, tmax); 
      if (tmin_y > tmax_y)std::swap(tmin_y, tmax_y);  
-     if ((tmin > tmax_y)||(tmin_y>tmax)){
+     if ((tmin >= tmax_y)||(tmin_y>=tmax)){
          return 0;
      }
      if (tmin_y > tmin){
@@ -34,13 +44,26 @@
      }        
      tmin_z = (parameters[4]- ray_point.get_z())*inv_direction.get_z();
      tmax_z = (parameters[5]- ray_point.get_z())*inv_direction.get_z();
-     if (tmin_z > tmax_z)std::swap(tmin_z, tmax_z);
-
-     if ((tmin > tmax_z)|(tmin_z>tmax)){
+         if((ray_direction.get_z()==0)&&(ray_point.get_z()<parameters[4])&&(ray_point.get_z()>parameters[5])){
          return 0;
      }
+     if (tmin_z > tmax_z)std::swap(tmin_z, tmax_z);
+
+     if ((tmin >= tmax_z)||(tmin_z>=tmax)){
+         return 0;
+     }
+    //      if (tmin_z > tmin){
+    //     tmin = tmin_z;
+    //  }
+    // std::cout<<"min "<<parameters[4]<<" "<<parameters[5]<<" "<<tmin_z<<" "<<tmax_z<<" "<<tmin<<" "<<tmax<<"\n";
+    //  if (tmax_z < tmax){
+    //      tmax = tmax_z;
+    //  }  
+    //  if(tmax <=tmin){
+    //      return 0;
+    //  }
      return 1;     
- }   
+ }
 
  float Bounding_box::get_tmax(void){
      return tmax;
@@ -50,19 +73,27 @@
  }
 
 void search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<int> *output){
-    Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
     if(((root->left_node==nullptr))&&((root->right_node==nullptr))){
+        Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
         if((B_root.ray_box_intersection(eye, d)==1)){        
             for (int i = 0; i<root->number_of_node_faces; i++){
+              //  std::cout<<root->number_of_node_faces<<"\n";
                 (*output).push_back( root->faces_in_node[i]);
             }         
         }   
     }
-    if ((root->right_node!=nullptr)||(root->left_node!=nullptr)) {
-        traverse_tree(root->right_node, eye, d, output);
-        traverse_tree(root->left_node, eye, d, output);
-    }     
-} 
+    if(((root->left_node!=nullptr))||((root->right_node!=nullptr))){
+        Bounding_box B_right(root->right_node->parameters[0],root->right_node->parameters[1], root->right_node->parameters[2],root->right_node->parameters[3],root->right_node->parameters[4],root->right_node->parameters[5]);
+        Bounding_box B_left(root->left_node->parameters[0],root->left_node->parameters[1], root->left_node->parameters[2],root->left_node->parameters[3],root->left_node->parameters[4],root->left_node->parameters[5]);
+
+        if ((root->right_node!=nullptr)&&(B_right.ray_box_intersection(eye, d)==1)) {
+            traverse_tree(root->right_node, eye, d, output);
+        }  
+        if ((root->left_node!=nullptr)&&(B_left.ray_box_intersection(eye, d)==1)){
+            traverse_tree(root->left_node, eye, d, output);
+        }   
+    } 
+}
 
 void search_tree::find_parameters(int i, float* vertices,int*faces, std::vector<float> *parameters, std::vector<float> initial_parameters){
     float xmin = initial_parameters[0], ymin = initial_parameters[1], zmin = initial_parameters[2], xmax=initial_parameters[3], ymax=initial_parameters[4], zmax = initial_parameters[5];
@@ -91,7 +122,7 @@ void search_tree::find_parameters(int i, float* vertices,int*faces, std::vector<
 
 void search_tree::leaf_nodes(float* vertices, int*faces, int number_of_faces,  std::vector<search_tree*> *leaf_nodes){
     std::vector<float> parameters;
-    std::vector<float> initial_parameters = {infinity, infinity, infinity, 0, 0, 0};
+    std::vector<float> initial_parameters = {infinity, infinity, infinity, -1*infinity, -1*infinity, -1*infinity};
     for(int i = 0; i<number_of_faces; i++){ // make list of leaf_nodes.
         search_tree* leaf = new search_tree;
         leaf->number_of_node_faces = 1; 
@@ -99,6 +130,7 @@ void search_tree::leaf_nodes(float* vertices, int*faces, int number_of_faces,  s
         leaf->faces_in_node[0]=i;
         parameters.clear();
         search_tree::find_parameters(i, vertices, faces, &parameters, initial_parameters);
+  //std::cout<<i<<" "<<parameters[0]<<" "<<parameters[1]<<" "<<parameters[2]<<" "<<parameters[3]<<" "<<parameters[4]<<" "<<parameters[5]<<"\n";
         for(int j =0; j<6;j++){
             leaf->parameters[j] = parameters[j];
         }
@@ -106,14 +138,17 @@ void search_tree::leaf_nodes(float* vertices, int*faces, int number_of_faces,  s
         leaf->right_node=nullptr;
         (*leaf_nodes).push_back(leaf);
     }
+    
 }
 
 void search_tree::build_tree(float* vertices, int* faces, std::vector<search_tree*> leaf_nodes, search_tree**root){
     std::vector<float> parameters;
+    int it=0;
     search_tree* first = new search_tree;
     search_tree* second = new search_tree;
 
     while(leaf_nodes.size()>1){
+        it=it+1;
         parameters.clear();
         search_tree* temp = new search_tree;
         first = leaf_nodes[0];
@@ -129,16 +164,18 @@ void search_tree::build_tree(float* vertices, int* faces, std::vector<search_tre
         for(int i = first->number_of_node_faces; i<first->number_of_node_faces+second->number_of_node_faces;i++){
             temp->faces_in_node[i] = second->faces_in_node[i-first->number_of_node_faces];
         }
-        std::vector<float> initial_parameters = {infinity, infinity, infinity, 0, 0, 0};
+        std::vector<float> initial_parameters = {infinity, infinity, infinity, -1*infinity, -1*infinity, -1*infinity};
         for(int i =0; i<temp->number_of_node_faces; i++){
             search_tree::find_parameters(temp->faces_in_node[i], vertices, faces, &parameters, initial_parameters);
             initial_parameters = {parameters[0],parameters[2],parameters[4], parameters[1], parameters[3], parameters[5]};              
         }
+    // std::cout<<" "<<parameters[0]<<" "<<parameters[1]<<" "<<parameters[2]<<" "<<parameters[3]<<"\n";
         for(int j =0; j<6;j++){
              temp->parameters[j] = parameters[j];
         }
         (leaf_nodes).push_back(temp);
     }
+
        *root = leaf_nodes[0];
         return;
 }
