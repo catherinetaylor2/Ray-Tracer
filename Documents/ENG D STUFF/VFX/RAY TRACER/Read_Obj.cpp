@@ -11,7 +11,7 @@ ObjFile::ObjFile(const char* name){
 	fn = name;
 }
 
- float* ObjFile::get_vertices(void){
+void ObjFile::get_vertices(float** V){
   char str[1000];
   float f1, f2, f3;
   std::string s = "a";
@@ -34,22 +34,20 @@ ObjFile::ObjFile(const char* name){
   int retval = fclose(myObject);
   myObject = fopen(fn.c_str(), "r");
   number_of_vertices = k_v;
-  float* V = new float[3*number_of_vertices];
-
+  *V = new float[3*number_of_vertices];
   while (s != "v"){
    t= fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
     s = str;  
   }
   for(int i=0; i<3*number_of_vertices; i+=3){
-    V[i] = f1;
-    V[i+1] = f2;
-    V[i+2]=f3; 
- t= fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
+    (*V)[i] = f1;
+    (*V)[i+1] = f2;
+    (*V)[i+2]=f3; 
+    t = fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
   }
-  return V;
  }
 
-float* ObjFile::get_normals(void){
+void ObjFile::get_normals(float** N){
   char str[1000];
   float f1, f2, f3;
   std::string s = "a";
@@ -74,7 +72,7 @@ float* ObjFile::get_normals(void){
   myObject = fopen(fn.c_str(), "r");
 
   number_of_normals = k_vn;
-  float* N = new float[3*number_of_normals];
+   *N = new float[3*number_of_normals];
 
   while (s != "vn"){
   t= fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
@@ -82,13 +80,11 @@ float* ObjFile::get_normals(void){
   }
 
   for(int i=0; i<3*number_of_normals; i+=3){
-    N[i] = f1;
-    N[i+1] = f2;
-    N[i+2]=f3;   
+    (*N)[i] = f1;
+    (*N)[i+1] = f2;
+    (*N)[i+2]=f3;   
     fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
   }
-
-return N;
 }
 
 float* ObjFile::get_texture(void){

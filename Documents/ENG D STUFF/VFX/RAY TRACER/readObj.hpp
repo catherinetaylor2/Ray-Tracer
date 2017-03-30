@@ -6,8 +6,8 @@
 class ObjFile{
     public:
         ObjFile(const char* name);
-        float* get_vertices(void);
-        float* get_normals(void);
+        void get_vertices(float** vertices);
+        void get_normals(float** normals);
         float* get_texture(void);
         int* get_faceN(void);
         int* get_faceV(void);

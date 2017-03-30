@@ -31,6 +31,6 @@ typedef struct BITMAP_INFO_HEADER {
 
 void fill_bitmap_headers(BITMAP_File_Header *file_header, BITMAP_Info_Header *info_header, int width, int height);
 void write_bitmap (BITMAP_File_Header *file_header, BITMAP_Info_Header *info_header, std::ofstream *image);
-unsigned char* readBMP(char* filename); //REF SOURCE.
+unsigned char* readBMP(char* filename, int* image_width, int* image_height); //REF SOURCE.
 
 #endif

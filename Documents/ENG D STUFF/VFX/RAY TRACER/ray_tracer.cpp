@@ -42,14 +42,16 @@ int main(int argc, char* argv[] ){
 	// 	std::cout<<"error opening texture \n";
 	// }
 unsigned char * data;
-data = readBMP("texture2.bmp");
-
+int texture_width, texture_height;
+data = readBMP("texture2.bmp", &texture_width, &texture_height);
 
 //initial inputs
     ObjFile mesh("sphere1.obj");
-    float* V = mesh.get_vertices();
+    float* V ;
+	float* N;
+	mesh.get_vertices(&V);
 	float* VT = mesh.get_texture();
-    float* N = mesh.get_normals();
+	mesh.get_normals(&N);
     int* FV = mesh.get_faceV();
     int* FN = mesh.get_faceN();
     int F = mesh.get_number_of_faces();
