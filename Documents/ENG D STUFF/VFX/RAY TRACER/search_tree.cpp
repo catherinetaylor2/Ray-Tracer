@@ -52,16 +52,6 @@
      if ((tmin >= tmax_z)||(tmin_z>=tmax)){
          return 0;
      }
-    //      if (tmin_z > tmin){
-    //     tmin = tmin_z;
-    //  }
-    // std::cout<<"min "<<parameters[4]<<" "<<parameters[5]<<" "<<tmin_z<<" "<<tmax_z<<" "<<tmin<<" "<<tmax<<"\n";
-    //  if (tmax_z < tmax){
-    //      tmax = tmax_z;
-    //  }  
-    //  if(tmax <=tmin){
-    //      return 0;
-    //  }
      return 1;     
  }
 
@@ -77,7 +67,6 @@ void search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::v
         Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
         if((B_root.ray_box_intersection(eye, d)==1)){        
             for (int i = 0; i<root->number_of_node_faces; i++){
-              //  std::cout<<root->number_of_node_faces<<"\n";
                 (*output).push_back( root->faces_in_node[i]);
             }         
         }   
@@ -130,7 +119,6 @@ void search_tree::leaf_nodes(float* vertices, int*faces, int number_of_faces,  s
         leaf->faces_in_node[0]=i;
         parameters.clear();
         search_tree::find_parameters(i, vertices, faces, &parameters, initial_parameters);
-  //std::cout<<i<<" "<<parameters[0]<<" "<<parameters[1]<<" "<<parameters[2]<<" "<<parameters[3]<<" "<<parameters[4]<<" "<<parameters[5]<<"\n";
         for(int j =0; j<6;j++){
             leaf->parameters[j] = parameters[j];
         }
@@ -169,13 +157,11 @@ void search_tree::build_tree(float* vertices, int* faces, std::vector<search_tre
             search_tree::find_parameters(temp->faces_in_node[i], vertices, faces, &parameters, initial_parameters);
             initial_parameters = {parameters[0],parameters[2],parameters[4], parameters[1], parameters[3], parameters[5]};              
         }
-    // std::cout<<" "<<parameters[0]<<" "<<parameters[1]<<" "<<parameters[2]<<" "<<parameters[3]<<"\n";
         for(int j =0; j<6;j++){
              temp->parameters[j] = parameters[j];
         }
         (leaf_nodes).push_back(temp);
     }
-
        *root = leaf_nodes[0];
         return;
 }
