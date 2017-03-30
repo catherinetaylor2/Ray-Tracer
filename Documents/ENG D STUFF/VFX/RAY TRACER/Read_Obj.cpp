@@ -91,6 +91,54 @@ float* ObjFile::get_normals(void){
 return N;
 }
 
+float* ObjFile::get_texture(void){
+  char str[1000];
+  float f1, f2, f3;
+  std::string s = "a";
+  FILE * myObject;
+  int k_vt = 0;
+  int t;
+  myObject = fopen(fn.c_str(), "r");
+  t= fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
+  s = str; 
+
+  while (s != "v"){
+    t= fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
+    s = str;  
+  }
+  for(int i=0; i< number_of_vertices-1; i++){
+    t=fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
+    s = str;
+  }
+  std::cout<<"s "<<s<<"\n";
+  do{  
+    t=fscanf(myObject, "%s %f %f ", str, &f1, &f2);
+    s = str;
+    k_vt=k_vt+1;
+  }while (s == "vt");
+
+  fclose(myObject);
+  myObject = fopen(fn.c_str(), "r");
+
+  int number_of_text = k_vt-1;
+  float* VT = new float[2*number_of_text];
+  while (s != "v"){
+    t= fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
+    s = str;  
+  }
+  for(int i=0; i< number_of_vertices-1; i++){
+    t=fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
+    s = str;
+  }
+  for(int i=0; i<2*number_of_text; i+=2){
+    t=fscanf(myObject, "%s %f %f ", str, &f1, &f2);
+    s=str;
+    VT[i] = f1;
+    VT[i+1]=f2;
+  }
+  return VT;
+}
+
 int* ObjFile::get_faceV(void){
   char str[1000], c1, c2, c3, c4, c5, c6;
   float f1, f2, f3;
@@ -100,7 +148,7 @@ int* ObjFile::get_faceV(void){
   int k_vf=0, t;
 
   myObject = fopen(fn.c_str(), "r");
- t= fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
+  t= fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
   s = str; 
   while (s != "vn"){
     t=fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);

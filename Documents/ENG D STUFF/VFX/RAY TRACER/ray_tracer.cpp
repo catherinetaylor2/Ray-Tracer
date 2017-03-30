@@ -39,6 +39,7 @@ int main(int argc, char* argv[] ){
 //initial inputs
     ObjFile mesh("sphere1.obj");
     float* V = mesh.get_vertices();
+	float* VT = mesh.get_texture();
     float* N = mesh.get_normals();
     int* FV = mesh.get_faceV();
     int* FN = mesh.get_faceN();
@@ -118,16 +119,16 @@ int main(int argc, char* argv[] ){
     // }
     // my_image.close();
 
-std::ofstream image2("./test.bmp", std::ios::out| std::ios::binary);
+std::ofstream image2("test.bmp", std::ios::out| std::ios::binary);
 BITMAP_File_Header file_header;
 BITMAP_Info_Header info_header;
 fill_bitmap_headers(&file_header, &info_header,  width, height);
 write_bitmap (&file_header, &info_header,&image2);
 
-    for(auto i = height-1; i>=0; i--){
-        for (auto j = 0; j < width; j++) {
-            for(auto k =2; k>=0; k--){
-               image2<<img[i*width*3 + k + j*3];
+    for(auto x = height-1; x>=0; x--){
+        for (auto y = 0; y < width; y++) {
+            for(auto z =2; z>=0; z--){
+               image2<<img[x*width*3 + y*3+ z];
             }
         }
     }
@@ -135,6 +136,7 @@ write_bitmap (&file_header, &info_header,&image2);
 
     delete FV;
     delete FN;
+	delete VT;
     delete V;
     delete N;
 	delete root;
