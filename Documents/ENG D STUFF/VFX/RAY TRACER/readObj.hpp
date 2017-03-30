@@ -8,7 +8,7 @@ class ObjFile{
         ObjFile(const char* name);
         void get_vertices(float** vertices);
         void get_normals(float** normals);
-        float* get_texture(void);
+        void get_texture(float** texture_coords);
         void get_face_data(int** face_vertex, int** face_normals, int** face_textures);
         int get_number_of_faces(void);
     private:

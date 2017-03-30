@@ -41,15 +41,16 @@ int texture_width, texture_height;
 data = readBMP("texture2.bmp", &texture_width, &texture_height);
 
 //initial inputs
-    ObjFile_novt mesh("s1.obj");
+    ObjFile_novt mesh("s3.obj");
     float* V ;
 	float* N;
 	int *FV;
 	int* FN;
 //	int* F_VT;
+//float VT;
 
 	mesh.get_vertices(&V);
-	//float* VT = mesh.get_texture();
+	//mesh.get_texture();
 	mesh.get_normals(&N);
 	mesh.get_face_data(&FV, &FN);
     int F = mesh.get_number_of_faces();
