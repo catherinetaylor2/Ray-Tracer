@@ -9,8 +9,7 @@ class ObjFile{
         void get_vertices(float** vertices);
         void get_normals(float** normals);
         float* get_texture(void);
-        int* get_faceN(void);
-        int* get_faceV(void);
+        void get_face_data(int** face_vertex, int** face_normals, int** face_textures);
         int get_number_of_faces(void);
     private:
 		std::string fn;
@@ -19,10 +18,9 @@ class ObjFile{
 class ObjFile_novt{
     public:
         ObjFile_novt(const char* name);
-        float* get_vertices(void);
-        float* get_normals(void);
-        int* get_faceN(void);
-        int* get_faceV(void);
+        void get_vertices(float** vertices);
+        void get_normals(float** normals);
+        void get_face_data(int** face_vertex, int**face_normals);
         int get_number_of_faces(void);
     private:
 		std::string fn;

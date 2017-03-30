@@ -36,24 +36,22 @@ int main(int argc, char* argv[] ){
 		height=1000;
 	}
 	
-	// std::string filename ="texture2.bmp";
-	// std::ifstream file(filename.c_str());
-	// if(!file.is_open()){
-	// 	std::cout<<"error opening texture \n";
-	// }
 unsigned char * data;
 int texture_width, texture_height;
 data = readBMP("texture2.bmp", &texture_width, &texture_height);
 
 //initial inputs
-    ObjFile mesh("sphere1.obj");
+    ObjFile_novt mesh("s1.obj");
     float* V ;
 	float* N;
+	int *FV;
+	int* FN;
+//	int* F_VT;
+
 	mesh.get_vertices(&V);
-	float* VT = mesh.get_texture();
+	//float* VT = mesh.get_texture();
 	mesh.get_normals(&N);
-    int* FV = mesh.get_faceV();
-    int* FN = mesh.get_faceN();
+	mesh.get_face_data(&FV, &FN);
     int F = mesh.get_number_of_faces();
 
 	search_tree* root;
@@ -94,7 +92,7 @@ data = readBMP("texture2.bmp", &texture_width, &texture_height);
 		j=(x/(3))/(myscene.get_x_res());
 
 		std::vector<vector3> colours;
-		TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, area, A, PURPLE, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0);
+		TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0);
 		
 		// 	vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*i*ratio,u), vector3::vec_scal_mult(-1*j*ratio,v) );
 		// 	vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
@@ -147,7 +145,8 @@ write_bitmap (&file_header, &info_header,&image2);
 
     delete FV;
     delete FN;
-	delete VT;
+//	delete VT;
+//	delete F_VT;
     delete V;
     delete N;
 	delete root;
