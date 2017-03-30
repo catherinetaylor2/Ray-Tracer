@@ -110,7 +110,6 @@ float* ObjFile::get_texture(void){
     t=fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
     s = str;
   }
-  std::cout<<"s "<<s<<"\n";
   do{  
     t=fscanf(myObject, "%s %f %f ", str, &f1, &f2);
     s = str;

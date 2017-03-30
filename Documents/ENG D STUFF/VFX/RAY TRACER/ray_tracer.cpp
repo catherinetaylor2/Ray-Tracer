@@ -36,6 +36,15 @@ int main(int argc, char* argv[] ){
 		height=1000;
 	}
 	
+	// std::string filename ="texture2.bmp";
+	// std::ifstream file(filename.c_str());
+	// if(!file.is_open()){
+	// 	std::cout<<"error opening texture \n";
+	// }
+unsigned char * data;
+data = readBMP("texture2.bmp");
+
+
 //initial inputs
     ObjFile mesh("sphere1.obj");
     float* V = mesh.get_vertices();
