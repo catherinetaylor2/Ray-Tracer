@@ -18,9 +18,9 @@ class TriangleColour{
     public:
        static void phong_areas(int*faces, int*face_normals, float*normals, float*vertices, float* areas, float *edges, int number_of_faces);
        static int shadows(int* triangle_intersections, int*faces, float*vertices, vector3 point, vector3 l, const int* sphere_colour);
-       static vector3 phong_normal(int triangle, float* vertices, float*normals, int*face, int*face_normals, float* areas, float*edges, vector3 point, vector3 eye);
-       static vector3 intersection_colour(vector3 direction, vector3 camera_origin, search_tree* root,  float* vertices, float*normals, int*face, int*face_normals, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene);
-       static void anti_aliasing(float ratio, vector3 u, vector3 v, vector3 camera_origin, search_tree* root,  float* vertices, float*normals, int*face, int*face_normals, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene, std::vector<vector3> *colours, vector3 L, float i, float j, int it);
+       static vector3 phong_normal(int triangle, float* vertices, float*normals, int*face, int*face_normals,  float* areas, float*edges, vector3 point, vector3 eye, float** barycentric);
+       static vector3 intersection_colour(vector3 direction, vector3 camera_origin, search_tree* root,  float* vertices, float*normals,  int*face, int*face_normals, int* face_texture, float *textures, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene, unsigned char* data, int texture_width, int texture_height);
+       static void anti_aliasing(float ratio, vector3 u, vector3 v, vector3 camera_origin, search_tree* root,  float* vertices, float*normals, int*face, int*face_normals,int* face_texture, float *textures, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene, std::vector<vector3> *colours, vector3 L, float i, float j, int it, unsigned char *data, int texture_width, int texture_height);
     private:
 
 };

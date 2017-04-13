@@ -39,7 +39,7 @@ unsigned char* readBMP(char* filename, int* image_width, int* image_height){
 
     // extract image height and width from header
     *image_width = *(int*)&info[18];
-    *image_height = *(int*)&info[22];
+    *image_height =abs(*(int*)&info[22]);
 
     int size = 3 * (*image_width) * (*image_height);
     unsigned char* data = new unsigned char[size]; // allocate 3 bytes per pixel

@@ -43,7 +43,7 @@ class triangle{
         void get_colour(std::vector<int>*tri_colour);
         float ray_triangle_intersection(vector3 ray_point, vector3 ray_direction);
         void set_lighting_constants(float DC, float SC, float AC, float SP);
-        vector3 determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow);
+        vector3 determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow, float* colours);
     private:
         float point_D;
         std::vector<int> colour;

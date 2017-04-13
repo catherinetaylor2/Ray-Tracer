@@ -5,6 +5,7 @@
 #include <cmath>
 #include <vector>
 #include <thread>
+#include <algorithm> 
 #include"colour.hpp"
 #include "vec3.hpp"
 #include "light.hpp"
@@ -47,7 +48,7 @@
 return s;
  }
 
-vector3 TriangleColour::phong_normal(int triangle, float* vertices, float*normals, int*face, int*face_normals, float* areas, float*edges, vector3 point, vector3 d){
+vector3 TriangleColour::phong_normal(int triangle, float* vertices, float*normals, int*face, int*face_normals, float* areas, float*edges, vector3 point, vector3 d, float **barycentric){
     float P_P1, P_P2, P_P3, semiPerimeter1, semiPerimeter2, semiPerimeter3, alpha1, alpha2, alpha3, denominator;
     int c_m1, c_m2, c_m3, n1, n2, n3;
     c_m1 = face[3*triangle] -1, c_m2 = face[3*triangle+1]-1, c_m3 = face[3*triangle+2] -1 ;
@@ -63,11 +64,19 @@ vector3 TriangleColour::phong_normal(int triangle, float* vertices, float*normal
     vector3 E2 = vector3::vec_add(point3, vector3::vec_scal_mult(-1, point1));
     denominator = vector3::dotproduct( vector3::crossproduct(d, E2), E1);
     vector3 M (vector3::dotproduct(vector3::crossproduct(T, E1), E2),vector3::dotproduct(vector3::crossproduct(d, E2), T),vector3::dotproduct( vector3::crossproduct(T, E1), d));
-    vector3 tuv = vector3::vec_scal_mult(1.0f/denominator, M);
-    vector3 N = vector3::vec_add3(vector3::vec_scal_mult((1-(tuv.get_y()+tuv.get_z())),N1),vector3::vec_scal_mult(tuv.get_y(),N2),vector3::vec_scal_mult(tuv.get_z(),N3));       
+    vector3 tuv = vector3::vec_scal_mult(1.0f/(float)denominator, M);
+    vector3 N = vector3::vec_add3(vector3::vec_scal_mult(std::max((float)(1-(tuv.get_y()+tuv.get_z())),0.0f),N1),vector3::vec_scal_mult(std::max(tuv.get_y(), 0.0f),N2),vector3::vec_scal_mult(std::max(tuv.get_z(),0.0f),N3));       
+    (*barycentric)[0] =1.0f-(tuv.get_y()+tuv.get_z());
+     (*barycentric)[1] =tuv.get_y();
+     (*barycentric)[2] = tuv.get_z();
+   //std::cout<<"barycentric coords "<<1-(tuv.get_y()+tuv.get_z())<<" "<<tuv.get_y()<<" "<<tuv.get_z()<<"\n";
+    // if(((1-(tuv.get_y()+tuv.get_z()))<0)||(tuv.get_y()<0)||(tuv.get_z()<0)){
+    //     std::cout<<"negative m8 "<<d.get_y()<<" "<<1-(tuv.get_y()+tuv.get_z())<<" "<<tuv.get_y()<<" "<<tuv.get_z()<<"\n";
+    // }
+
     return N;
 }
-vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree* root,  float* vertices, float*normals, int*faces, int*face_normals, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene){
+vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree* root,  float* vertices, float*normals, int*faces, int*face_normals, int* F_VT, float *VT, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene, unsigned char* data, int texture_width, int texture_height){
     Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
     int c1, c2,c3, c_m1, c_m2, c_m3;
     std::vector<int>  output;
@@ -111,8 +120,10 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree*
             return RGB;
         }
         else{
-            int m = k[min_value+1], s;
+            int m = k[min_value+1], s, vt1, vt2, vt3;
             c_m1 = faces[3*m] -1, c_m2 = faces[3*m+1]-1, c_m3 = faces[3*m+2] -1 ;
+            vt1 = F_VT[3*m]-1, vt2 = F_VT[3*m+1]-1, vt3 = F_VT[3*m+2]-1;
+            float vt_1x = VT[2*vt1], vt_1y = VT[2*vt1+1], vt_2x = VT[2*vt2], vt_2y = VT[2*vt2+1], vt_3x = VT[2*vt3], vt_3y = VT[2*vt3+1];
             triangle tri(vertices[3*c_m1], vertices[3*c_m1+1], vertices[3*c_m1+2], vertices[3*c_m2], vertices[3*c_m2+1],vertices[3*c_m2+2], vertices[3*c_m3], vertices[3*c_m3+1], vertices[3*c_m3+2], tri_colour);
             t = tri.ray_triangle_intersection(eye,d);
 
@@ -137,11 +148,65 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree*
                 }
                 s = TriangleColour::shadows(k2, faces, vertices, point, l, tri_colour);		
                 delete k2;
-                vector3 phong_normal = TriangleColour::phong_normal(m, vertices, normals, faces, face_normals, areas, edges, eye, d);
-                vector3 RGB = tri.determine_colour(point, l, d, sun, phong_normal, myscene,s);
+                float* barycentric = new float[3];
+                vector3 phong_normal = TriangleColour::phong_normal(m, vertices, normals, faces, face_normals, areas, edges, eye, d, &barycentric);
+
+//bilinear interpolation 
+                float u_coord, v_coord, alpha, beta, v12r, v12g, v12b, v34r, v34g, v34b;
+                int v1x,v1y, v2x, v4y;
+                u_coord = (barycentric[0]*vt_1x +barycentric[1]*vt_2x+barycentric[2]*vt_3x)*texture_width;
+                v_coord = (barycentric[0]*vt_1y +barycentric[1]*vt_2y+barycentric[2]*vt_3y)*texture_height;
+         //     std::cout<<"u "<<u_coord<<" v "<<v_coord<<"\n";
+            //std::cout<<barycentric[0]<<" "<<barycentric[1]<<" "<<barycentric[2]<<"\n";
+                v1x = floor(u_coord);
+                v1y = ceil(v_coord);
+                v2x = ceil(u_coord);
+                v4y = floor(v_coord);   
+//std::cout<<v1x<<" "<<v1y<<" "<<v2x<<" "<<v4y<<"\n ";
+                if (v1x<0){
+                    v1x=0;
+                }    
+                if (v2x<0){
+                    v2x=0;
+                }   
+                if (v1y<0){
+                    v1y=0;
+                }   
+                if (v4y<0){
+                    v4y=0;
+                }           
+
+                alpha = (float)(u_coord - (v2x - v1x)*v1x)/(float) (v2x - v1x);
+                beta = (float)(v_coord - (v1y - v4y)*v4y)/(float) (v1y - v4y);
+        //        std::cout<<"a "<<alpha<<" beta "<<beta<<"\n";
+
+                if (alpha >1){
+                    alpha=1;
+                }
+                if(beta>1){
+                    beta =1;
+                }
+        
+                v12r = (1-alpha)*data[v1y*texture_width*3 + 3*v1x] +  alpha*data[v1y*texture_width*3 + 3*v2x];
+                v12g = (1-alpha)*data[v1y*texture_width*3 + 3*v1x+1] +  alpha*data[v1y*texture_width*3 + 3*v2x+1];
+                v12b = (1-alpha)*data[v1y*texture_width*3 + 3*v1x+2] +  alpha*data[v1y*texture_width*3 + 3*v2x+2];
+
+                v34r =  (1-alpha)*data[v4y*texture_width*3 + 3*v1x] +  alpha*data[v4y*texture_width*3 + 3*v2x];
+                v34g =  (1-alpha)*data[v4y*texture_width*3 + 3*v1x+1] +  alpha*data[v4y*texture_width*3 + 3*v2x+1];
+                v34b =  (1-alpha)*data[v4y*texture_width*3 + 3*v1x+2] +  alpha*data[v4y*texture_width*3 + 3*v2x+2];
+
+           //  std::cout<<beta<<"\n";
+
+                float colour[] =  {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
+            
+            //   std::cout<<"r "<<(1-beta)*v12r + beta*v34r<<" g "<<(1-beta)*v12g + beta*v34g<<" b "<<(1-beta)*v12b + beta*v34b<<"\n";
+
+                vector3 RGB = tri.determine_colour(point, l, d, sun, phong_normal, myscene,s, colour);
                 delete t_values;
                 delete k;
+                delete barycentric;
                 return RGB;
+
             }	
         }
     }
@@ -152,14 +217,14 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree*
     }
 }
 
-void TriangleColour::anti_aliasing(float ratio, vector3 u, vector3 v, vector3 camera_origin, search_tree* root,  float* vertices, float*normals, int*face, int*face_normals, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene, std::vector<vector3> *colours, vector3 L, float i, float j, int it){
+void TriangleColour::anti_aliasing(float ratio, vector3 u, vector3 v, vector3 camera_origin, search_tree* root,  float* vertices, float*normals, int*face, int*face_normals, int* face_texture, float *textures, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene, std::vector<vector3> *colours, vector3 L, float i, float j, int it,unsigned char* data, int texture_width, int texture_height){
     float I,J;
     for (int k=0; k<4; k++){
         I = i+1*k%2/(pow(2,(it+1))), J = j-1*(k>2)/(pow(2,(it+1)));
         vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*(I)*ratio,u), vector3::vec_scal_mult(-1*(J)*ratio,v) );
         vector3 d(s.get_x()-camera_origin.get_x(),s.get_y()-camera_origin.get_y(),s.get_z()-camera_origin.get_z());
         d.normalize();
-        vector3 RGB = TriangleColour::intersection_colour(d, camera_origin, root, vertices, normals, face, face_normals, areas, edges, tri_colour, sun, myscene);
+        vector3 RGB = TriangleColour::intersection_colour(d, camera_origin, root, vertices, normals, face, face_normals, face_texture, textures, areas, edges, tri_colour, sun, myscene, data, texture_width,texture_height);
         (*colours).push_back(RGB);
     }
     int quadrant = -1;
@@ -206,6 +271,6 @@ void TriangleColour::anti_aliasing(float ratio, vector3 u, vector3 v, vector3 ca
             J =  j-1*(quadrant>2)/(pow(2,(it+1)))+1/(pow(2,(it+2)));
         }
         it=it+1;
-        TriangleColour::anti_aliasing( ratio, u,  v,  camera_origin,  root,  vertices,normals,face, face_normals,  areas, edges,tri_colour,sun, myscene, colours, L,I,J, it);
+        TriangleColour::anti_aliasing( ratio, u,  v,  camera_origin,  root,  vertices,normals,face, face_normals, face_texture, textures, areas, edges,tri_colour,sun, myscene, colours, L,I,J, it, data, texture_width,texture_height);
     }
 }

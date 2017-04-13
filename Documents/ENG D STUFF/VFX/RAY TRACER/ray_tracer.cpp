@@ -39,20 +39,21 @@ int main(int argc, char* argv[] ){
 unsigned char * data;
 int texture_width, texture_height;
 data = readBMP("texture2.bmp", &texture_width, &texture_height);
+std::cout<<"width "<<texture_width<<" height "<<texture_height<<"\n";
 
 //initial inputs
-    ObjFile_novt mesh("s3.obj");
+    ObjFile mesh("cube2.obj");
     float* V ;
 	float* N;
 	int *FV;
 	int* FN;
-//	int* F_VT;
-//float VT;
+	int* F_VT;
+	float* VT;
 
 	mesh.get_vertices(&V);
-	//mesh.get_texture();
+	mesh.get_texture(&VT);
 	mesh.get_normals(&N);
-	mesh.get_face_data(&FV, &FN);
+	mesh.get_face_data(&FV, &FN, &F_VT);
     int F = mesh.get_number_of_faces();
 
 	search_tree* root;
@@ -61,7 +62,7 @@ data = readBMP("texture2.bmp", &texture_width, &texture_height);
 	search_tree::build_tree(V, FV, leaf_nodes, &root);
 	std::cout<<"tree built \n";
 
-    vector3 eye(0,0,-14);
+    vector3 eye(0,0,-5);
     vector3 lookup(0,5,-8);
     vector3 lookat(0,0,1);
     Light sun(-5,5,-5,1);
@@ -93,7 +94,7 @@ data = readBMP("texture2.bmp", &texture_width, &texture_height);
 		j=(x/(3))/(myscene.get_x_res());
 
 		std::vector<vector3> colours;
-		TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, area, A, RED, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0);
+		TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, F_VT, VT, area, A, RED, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0, data, texture_width, texture_height);
 		
 		// 	vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*i*ratio,u), vector3::vec_scal_mult(-1*j*ratio,v) );
 		// 	vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
@@ -144,10 +145,25 @@ write_bitmap (&file_header, &info_header,&image2);
     }
 	image2.close();
 
+	// std::ofstream image3("test2.bmp", std::ios::out| std::ios::binary);
+	// BITMAP_File_Header file_header2;
+	// BITMAP_Info_Header info_header2;
+	// fill_bitmap_headers(&file_header2, &info_header2,  texture_width, texture_height);
+	// write_bitmap (&file_header2, &info_header2,&image3);
+
+    // for(auto x = texture_height-1; x>=0; x--){
+    //     for (auto y = 0; y < texture_width; y++) {
+    //         for(auto z =2; z>=0; z--){
+    //            image3<<data[x*texture_width*3 + y*3+ z];
+    //         }
+    //     }
+    // }
+	// image3.close();
+
     delete FV;
     delete FN;
-//	delete VT;
-//	delete F_VT;
+	delete VT;
+	delete F_VT;
     delete V;
     delete N;
 	delete root;

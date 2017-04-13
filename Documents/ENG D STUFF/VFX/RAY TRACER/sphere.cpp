@@ -123,9 +123,9 @@ float triangle::ray_triangle_intersection(vector3 ray_point, vector3 ray_directi
     vector3 V2(vertex2[0], vertex2[1], vertex2[2]);
     vector3 V3(vertex3[0], vertex3[1], vertex3[2]);
     if (
-    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V2, vector3::vec_scal_mult(-1, V1)), vector3::vec_add(intersection_point, vector3::vec_scal_mult(-1, V1))), normal)>=-0.0001f)&&
-    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V3, vector3::vec_scal_mult(-1, V2)), vector3::vec_add(intersection_point,vector3::vec_scal_mult(-1, V2))), normal)>=-0.0001f)&&
-    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V1, vector3::vec_scal_mult(-1, V3)), vector3::vec_add(intersection_point, vector3::vec_scal_mult(-1, V3))), normal)>=-0.0001f))
+    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V2, vector3::vec_scal_mult(-1, V1)), vector3::vec_add(intersection_point, vector3::vec_scal_mult(-1, V1))), normal)>=-0.0000001f)&&
+    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V3, vector3::vec_scal_mult(-1, V2)), vector3::vec_add(intersection_point,vector3::vec_scal_mult(-1, V2))), normal)>=-0.0000001f)&&
+    (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V1, vector3::vec_scal_mult(-1, V3)), vector3::vec_add(intersection_point, vector3::vec_scal_mult(-1, V3))), normal)>=-0.0000001f))
     {
             return t;
     }
@@ -135,13 +135,13 @@ float triangle::ray_triangle_intersection(vector3 ray_point, vector3 ray_directi
      lighting_coefficients = {DC, SC, AC, SP};
  }
 
-vector3 triangle::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow){
+vector3 triangle::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow, float* colours){
     float D, DD, Red_term, Green_term, Blue_term;
     D = myscene.DiffuseValue(normal, light_direction);
     DD = myscene.SpecularValue(normal,light_direction,ray_direction);
-    Red_term = (source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[0]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
-    Green_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[1]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
-    Blue_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colour[2]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
+    Red_term = (source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colours[0]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
+    Green_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colours[1]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
+    Blue_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colours[2]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
     if (Red_term > 255){
         Red_term =255;
     }
