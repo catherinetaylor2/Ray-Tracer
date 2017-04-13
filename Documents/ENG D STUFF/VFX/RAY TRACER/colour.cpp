@@ -67,13 +67,8 @@ vector3 TriangleColour::phong_normal(int triangle, float* vertices, float*normal
     vector3 tuv = vector3::vec_scal_mult(1.0f/(float)denominator, M);
     vector3 N = vector3::vec_add3(vector3::vec_scal_mult(std::max((float)(1-(tuv.get_y()+tuv.get_z())),0.0f),N1),vector3::vec_scal_mult(std::max(tuv.get_y(), 0.0f),N2),vector3::vec_scal_mult(std::max(tuv.get_z(),0.0f),N3));       
     (*barycentric)[0] =1.0f-(tuv.get_y()+tuv.get_z());
-     (*barycentric)[1] =tuv.get_y();
-     (*barycentric)[2] = tuv.get_z();
-   //std::cout<<"barycentric coords "<<1-(tuv.get_y()+tuv.get_z())<<" "<<tuv.get_y()<<" "<<tuv.get_z()<<"\n";
-    // if(((1-(tuv.get_y()+tuv.get_z()))<0)||(tuv.get_y()<0)||(tuv.get_z()<0)){
-    //     std::cout<<"negative m8 "<<d.get_y()<<" "<<1-(tuv.get_y()+tuv.get_z())<<" "<<tuv.get_y()<<" "<<tuv.get_z()<<"\n";
-    // }
-
+    (*barycentric)[1] =tuv.get_y();
+    (*barycentric)[2] = tuv.get_z();
     return N;
 }
 vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree* root,  float* vertices, float*normals, int*faces, int*face_normals, int* F_VT, float *VT, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene, unsigned char* data, int texture_width, int texture_height){
