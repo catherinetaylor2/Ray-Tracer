@@ -29,20 +29,19 @@ int main(int argc, char* argv[] ){
 	if(argc>1){
 		width = atoi(argv[1]);
 		height = atoi(argv[2]);
-		
 	}
 	else{
 		width=1000;
 		height=1000;
 	}
 	
-unsigned char * data;
-int texture_width, texture_height;
-data = readBMP("texture2.bmp", &texture_width, &texture_height);
-std::cout<<"width "<<texture_width<<" height "<<texture_height<<"\n";
+	unsigned char * data;
+	int texture_width, texture_height;
+	data = readBMP("texture.bmp", &texture_width, &texture_height);
+	std::cout<<"width "<<texture_width<<" height "<<texture_height<<"\n";
 
 //initial inputs
-    ObjFile mesh("cube2.obj");
+    ObjFile mesh("s2.obj");
     float* V ;
 	float* N;
 	int *FV;
@@ -62,10 +61,10 @@ std::cout<<"width "<<texture_width<<" height "<<texture_height<<"\n";
 	search_tree::build_tree(V, FV, leaf_nodes, &root);
 	std::cout<<"tree built \n";
 
-    vector3 eye(0,0,-5);
+    vector3 eye(0,0,-15); 
     vector3 lookup(0,5,-8);
     vector3 lookat(0,0,1);
-    Light sun(-5,5,-5,1);
+    Light sun(5,15,-20,1); 
     vector3 light = sun.get_position();
     scene myscene(width,height,90,3);
     float d = myscene.get_distance_to_image();
@@ -96,27 +95,16 @@ std::cout<<"width "<<texture_width<<" height "<<texture_height<<"\n";
 		std::vector<vector3> colours;
 		TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, F_VT, VT, area, A, RED, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0, data, texture_width, texture_height);
 		
-		// 	vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*i*ratio,u), vector3::vec_scal_mult(-1*j*ratio,v) );
-		// 	vector3 d(s.get_x()-eye.get_x(),s.get_y()-eye.get_y(),s.get_z()-eye.get_z());
-		// 	d.normalize();
-		// std::cout<<"d "<<d.get_x()<<" "<<d.get_y()<<" "<<d.get_z()<<" "<<eye.get_x()<<" "<<eye.get_y()<<" "<<eye.get_z()<<"\n";
-		// 	vector3 RGB = TriangleColour::intersection_colour(d, eye, root,  V, N, FV, FN, area, A, GREY, sun, myscene);
-		//	(colours).push_back(RGB);
-		
 		float R=0, G=0, B=0;
 		for (int k=0; k<colours.size(); k++){
-			R = R+colours[k].get_x();
-			G =  G+colours[k].get_y();
-			B = B+ colours[k].get_z();
+			R = R + colours[k].get_x();
+			G = G + colours[k].get_y();
+			B = B + colours[k].get_z();
 		}
 
 		img[x] = R/colours.size();  
 		img[x+1]=G/colours.size();
 		img[x+2]= B/colours.size();
-
-		// img[x] = RGB.get_x();  
-		// img[x+1]=RGB.get_y();
-		// img[x+2]=RGB.get_z();
 	}
 
     // std::ofstream my_image;
@@ -130,11 +118,11 @@ std::cout<<"width "<<texture_width<<" height "<<texture_height<<"\n";
     // }
     // my_image.close();
 
-std::ofstream image2("test.bmp", std::ios::out| std::ios::binary);
-BITMAP_File_Header file_header;
-BITMAP_Info_Header info_header;
-fill_bitmap_headers(&file_header, &info_header,  width, height);
-write_bitmap (&file_header, &info_header,&image2);
+	std::ofstream image2("test.bmp", std::ios::out| std::ios::binary);
+	BITMAP_File_Header file_header;
+	BITMAP_Info_Header info_header;
+	fill_bitmap_headers(&file_header, &info_header,  width, height);
+	write_bitmap (&file_header, &info_header,&image2);
 
     for(auto x = height-1; x>=0; x--){
         for (auto y = 0; y < width; y++) {
@@ -144,21 +132,6 @@ write_bitmap (&file_header, &info_header,&image2);
         }
     }
 	image2.close();
-
-	// std::ofstream image3("test2.bmp", std::ios::out| std::ios::binary);
-	// BITMAP_File_Header file_header2;
-	// BITMAP_Info_Header info_header2;
-	// fill_bitmap_headers(&file_header2, &info_header2,  texture_width, texture_height);
-	// write_bitmap (&file_header2, &info_header2,&image3);
-
-    // for(auto x = texture_height-1; x>=0; x--){
-    //     for (auto y = 0; y < texture_width; y++) {
-    //         for(auto z =2; z>=0; z--){
-    //            image3<<data[x*texture_width*3 + y*3+ z];
-    //         }
-    //     }
-    // }
-	// image3.close();
 
     delete FV;
     delete FN;

@@ -128,7 +128,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree*
             t = tri.ray_triangle_intersection(eye,d);
 
             if(t!=0){
-                tri.set_lighting_constants(0.5, 0.3*255, 0.3, 170);
+                tri.set_lighting_constants(0.5, 1*255, 0.3, 170);
                 vector3 point = vector3::vec_add(eye, vector3::vec_scal_mult(t-0.0035f,d));
                 vector3 l = sun.get_light_direction(point);
                 vector3 normal=tri.get_triangle_normal();  
@@ -151,18 +151,15 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree*
                 float* barycentric = new float[3];
                 vector3 phong_normal = TriangleColour::phong_normal(m, vertices, normals, faces, face_normals, areas, edges, eye, d, &barycentric);
 
-//bilinear interpolation 
+           //bilinear interpolation 
                 float u_coord, v_coord, alpha, beta, v12r, v12g, v12b, v34r, v34g, v34b;
                 int v1x,v1y, v2x, v4y;
                 u_coord = (barycentric[0]*vt_1x +barycentric[1]*vt_2x+barycentric[2]*vt_3x)*texture_width;
                 v_coord = (barycentric[0]*vt_1y +barycentric[1]*vt_2y+barycentric[2]*vt_3y)*texture_height;
-         //     std::cout<<"u "<<u_coord<<" v "<<v_coord<<"\n";
-            //std::cout<<barycentric[0]<<" "<<barycentric[1]<<" "<<barycentric[2]<<"\n";
                 v1x = floor(u_coord);
                 v1y = ceil(v_coord);
                 v2x = ceil(u_coord);
                 v4y = floor(v_coord);   
-//std::cout<<v1x<<" "<<v1y<<" "<<v2x<<" "<<v4y<<"\n ";
                 if (v1x<0){
                     v1x=0;
                 }    
@@ -178,7 +175,6 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree*
 
                 alpha = (float)(u_coord - (v2x - v1x)*v1x)/(float) (v2x - v1x);
                 beta = (float)(v_coord - (v1y - v4y)*v4y)/(float) (v1y - v4y);
-        //        std::cout<<"a "<<alpha<<" beta "<<beta<<"\n";
 
                 if (alpha >1){
                     alpha=1;
@@ -195,18 +191,13 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree*
                 v34g =  (1-alpha)*data[v4y*texture_width*3 + 3*v1x+1] +  alpha*data[v4y*texture_width*3 + 3*v2x+1];
                 v34b =  (1-alpha)*data[v4y*texture_width*3 + 3*v1x+2] +  alpha*data[v4y*texture_width*3 + 3*v2x+2];
 
-           //  std::cout<<beta<<"\n";
-
                 float colour[] =  {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
             
-            //   std::cout<<"r "<<(1-beta)*v12r + beta*v34r<<" g "<<(1-beta)*v12g + beta*v34g<<" b "<<(1-beta)*v12b + beta*v34b<<"\n";
-
                 vector3 RGB = tri.determine_colour(point, l, d, sun, phong_normal, myscene,s, colour);
                 delete t_values;
                 delete k;
                 delete barycentric;
                 return RGB;
-
             }	
         }
     }
