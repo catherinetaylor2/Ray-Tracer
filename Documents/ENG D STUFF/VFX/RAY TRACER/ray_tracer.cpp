@@ -35,14 +35,16 @@ int main(int argc, char* argv[] ){
 		height=1000;
 	}
 	
-	unsigned char * data;
-	int texture_width, texture_height;
-	data = readBMP("beach.bmp", &texture_width, &texture_height);
-	std::cout<<"width "<<texture_width<<" height "<<texture_height<<"\n";
+	unsigned char * data, * data2;
+	int texture_width, texture_height, texture_width2, texture_height2;
+	data = readBMP("texture2.bmp", &texture_width, &texture_height);
+	data2 = readBMP("beach.bmp", &texture_width2, &texture_height2);
+	int texture_data [] = {texture_width, texture_height, texture_width2, texture_height2};
+	std::vector<unsigned char*> texture_bmp = {data, data2};
 
 //initial inputs
-    ObjFile mesh("cube.obj");
-    float* V , *N , *VT;
+    ObjFile mesh("s2.obj");
+    float* V , *N, *VT;
 	int *FV, *FN, *F_VT;
 
 	mesh.get_vertices(&V);
@@ -120,8 +122,7 @@ int main(int argc, char* argv[] ){
 		std::vector<vector3> scene_pos = {u, v, eye};
 		
 		float current_pos [] = {i-1/2.0f, j+1/2.0f, 0, ratio};
-		int texture_data [] = {texture_width, texture_height};
-		TriangleColour::anti_aliasing(scene_pos, root_data, mesh_data_f, mesh_data_i, RED, sun, myscene, &colours, L, current_pos, data, texture_data);
+		TriangleColour::anti_aliasing(scene_pos, root_data, mesh_data_f, mesh_data_i, RED, sun, myscene, &colours, L, current_pos, texture_bmp, texture_data);
 		
 		float R=0, G=0, B=0;
 		for (int k=0; k<colours.size(); k++){
