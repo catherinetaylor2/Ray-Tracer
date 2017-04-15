@@ -37,17 +37,13 @@ int main(int argc, char* argv[] ){
 	
 	unsigned char * data;
 	int texture_width, texture_height;
-	data = readBMP("texture.bmp", &texture_width, &texture_height);
+	data = readBMP("beach.bmp", &texture_width, &texture_height);
 	std::cout<<"width "<<texture_width<<" height "<<texture_height<<"\n";
 
 //initial inputs
-    ObjFile mesh("s2.obj");
-    float* V ;
-	float* N;
-	int *FV;
-	int* FN;
-	int* F_VT;
-	float* VT;
+    ObjFile mesh("cube.obj");
+    float* V , *N , *VT;
+	int *FV, *FN, *F_VT;
 
 	mesh.get_vertices(&V);
 	mesh.get_texture(&VT);
@@ -60,6 +56,23 @@ int main(int argc, char* argv[] ){
 	search_tree::leaf_nodes(V, FV, F, &leaf_nodes);
 	search_tree::build_tree(V, FV, leaf_nodes, &root);
 	std::cout<<"tree built \n";
+
+	ObjFile mesh_sphere("sphere1.obj");
+	float* V_s, *N_s, *VT_s;
+	int* FV_s, *FN_s, *F_VT_s;
+	mesh_sphere.get_vertices(&V_s);
+	mesh_sphere.get_texture(&VT_s);
+	mesh_sphere.get_normals(&N_s);
+	mesh_sphere.get_face_data(&FV_s, &FN_s, &F_VT_s);
+    int F_s = mesh_sphere.get_number_of_faces();
+
+	search_tree* root_s;
+	std::vector<search_tree*> leaf_nodes_s;
+	search_tree::leaf_nodes(V_s, FV_s, F_s, &leaf_nodes_s);
+	search_tree::build_tree(V_s, FV_s, leaf_nodes_s, &root_s);
+	std::cout<<"sphere tree built \n";
+
+
 
     vector3 eye(0,0,-15); 
     vector3 lookup(0,5,-8);
@@ -85,6 +98,15 @@ int main(int argc, char* argv[] ){
 
 	std::thread t1(TriangleColour::phong_areas, FV, FN, N,V, area, A, F);
 	t1.join();
+	std::vector<float*> mesh_data_f = { V, N, VT, area, A};
+	std::vector<int*> mesh_data_i = {FV, FN, F_VT};
+
+	float* area_s = new float[F_s];
+	float* A_s = new float[3*F_s];
+	std::thread t2(TriangleColour::phong_areas, FV_s, FN_s, N_s,V_s, area_s, A_s, F_s);
+	t2.join();
+	std::vector<float*> mesh_data_f2 = { V_s, N_s, VT_s, area_s, A_s};
+	std::vector<int*> mesh_data_i2 = {FV_s, FN_s, F_VT_s};
 
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
 	for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
@@ -93,7 +115,11 @@ int main(int argc, char* argv[] ){
 		j=(x/(3))/(myscene.get_x_res());
 
 		std::vector<vector3> colours;
-		TriangleColour::anti_aliasing(ratio, u,  v, eye, root,  V, N, FV, FN, F_VT, VT, area, A, RED, sun, myscene, &colours, L, i-1/2.0f, j+1/2.0f, 0, data, texture_width, texture_height);
+		std::vector<vector3> scene_pos = {u, v, eye};
+		
+		float current_pos [] = {i-1/2.0f, j+1/2.0f, 0, ratio};
+		int texture_data [] = {texture_width, texture_height};
+		TriangleColour::anti_aliasing(scene_pos, root, mesh_data_f, mesh_data_i, RED, sun, myscene, &colours, L, current_pos, data, texture_data);
 		
 		float R=0, G=0, B=0;
 		for (int k=0; k<colours.size(); k++){
@@ -133,16 +159,13 @@ int main(int argc, char* argv[] ){
     }
 	image2.close();
 
-    delete FV;
-    delete FN;
-	delete VT;
-	delete F_VT;
-    delete V;
-    delete N;
-	delete root;
-	delete root->faces_in_node;
-	delete area;
-	delete A;
+    delete FV, FN, VT, F_VT, V, N;
+	delete root, root->faces_in_node;
+	delete area,  A;
+
+	delete FV_s, FN_s, VT_s, F_VT_s, V_s, N_s;
+	delete root_s, root_s->faces_in_node;
+	delete area_s,  A_s;
 
     return 0;
 }

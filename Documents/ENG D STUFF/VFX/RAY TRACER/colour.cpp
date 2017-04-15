@@ -203,8 +203,11 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, search_tree*
     }
 }
 
-void TriangleColour::anti_aliasing(float ratio, vector3 u, vector3 v, vector3 camera_origin, search_tree* root,  float* vertices, float*normals, int*face, int*face_normals, int* face_texture, float *textures, float* areas, float*edges, const int* tri_colour, Light sun, scene myscene, std::vector<vector3> *colours, vector3 L, float i, float j, int it,unsigned char* data, int texture_width, int texture_height){
-    float I,J;
+void TriangleColour::anti_aliasing(std::vector<vector3> scene_pos, search_tree* root,  std::vector<float*> mesh_data, std::vector<int*> mesh_data_i, const int* tri_colour, Light sun, scene myscene, std::vector<vector3> *colours, vector3 L, float* ijit,unsigned char* data, int* texture_data){
+    float I,J, i = ijit[0], j = ijit[1], it= ijit[2], ratio = ijit[3], *vertices = mesh_data[0], *normals = mesh_data[1], *textures = mesh_data[2], *areas = mesh_data[3], *edges = mesh_data[4];
+    int texture_width = texture_data[0], texture_height = texture_data[1],*face = mesh_data_i[0], *face_normals = mesh_data_i[1], *face_texture = mesh_data_i[2];
+    vector3 u = scene_pos[0], v = scene_pos[1], camera_origin = scene_pos[2];
+
     for (int k=0; k<4; k++){
         I = i+1*k%2/(pow(2,(it+1))), J = j-1*(k>2)/(pow(2,(it+1)));
         vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*(I)*ratio,u), vector3::vec_scal_mult(-1*(J)*ratio,v) );
@@ -257,6 +260,10 @@ void TriangleColour::anti_aliasing(float ratio, vector3 u, vector3 v, vector3 ca
             J =  j-1*(quadrant>2)/(pow(2,(it+1)))+1/(pow(2,(it+2)));
         }
         it=it+1;
-        TriangleColour::anti_aliasing( ratio, u,  v,  camera_origin,  root,  vertices,normals,face, face_normals, face_texture, textures, areas, edges,tri_colour,sun, myscene, colours, L,I,J, it, data, texture_width,texture_height);
+        ijit[0] = I;
+        ijit[1] = J;
+        ijit[2]=it;
+        ijit[3] = ratio;
+        TriangleColour::anti_aliasing(scene_pos,  root,  mesh_data,mesh_data_i,tri_colour,sun, myscene, colours, L,ijit, data, texture_data);
     }
 }
