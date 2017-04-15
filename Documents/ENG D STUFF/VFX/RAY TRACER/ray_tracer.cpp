@@ -73,7 +73,6 @@ int main(int argc, char* argv[] ){
 	std::cout<<"sphere tree built \n";
 
 
-
     vector3 eye(0,0,-15); 
     vector3 lookup(0,5,-8);
     vector3 lookat(0,0,1);
@@ -98,15 +97,18 @@ int main(int argc, char* argv[] ){
 
 	std::thread t1(TriangleColour::phong_areas, FV, FN, N,V, area, A, F);
 	t1.join();
-	std::vector<float*> mesh_data_f = { V, N, VT, area, A};
-	std::vector<int*> mesh_data_i = {FV, FN, F_VT};
+	
 
 	float* area_s = new float[F_s];
 	float* A_s = new float[3*F_s];
 	std::thread t2(TriangleColour::phong_areas, FV_s, FN_s, N_s,V_s, area_s, A_s, F_s);
 	t2.join();
-	std::vector<float*> mesh_data_f2 = { V_s, N_s, VT_s, area_s, A_s};
-	std::vector<int*> mesh_data_i2 = {FV_s, FN_s, F_VT_s};
+	// std::vector<float*> mesh_data_f2 = { V_s, N_s, VT_s, area_s, A_s};
+	// std::vector<int*> mesh_data_i2 = {FV_s, FN_s, F_VT_s};
+
+	std::vector<float*> mesh_data_f = { V, N, VT, area, A, V_s, N_s, VT_s, area_s, A_s};
+	std::vector<int*> mesh_data_i = {FV, FN, F_VT, FV_s, FN_s, F_VT_s};
+	std::vector<search_tree*> root_data = {root, root_s};
 
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
 	for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
@@ -119,7 +121,7 @@ int main(int argc, char* argv[] ){
 		
 		float current_pos [] = {i-1/2.0f, j+1/2.0f, 0, ratio};
 		int texture_data [] = {texture_width, texture_height};
-		TriangleColour::anti_aliasing(scene_pos, root, mesh_data_f, mesh_data_i, RED, sun, myscene, &colours, L, current_pos, data, texture_data);
+		TriangleColour::anti_aliasing(scene_pos, root_data, mesh_data_f, mesh_data_i, RED, sun, myscene, &colours, L, current_pos, data, texture_data);
 		
 		float R=0, G=0, B=0;
 		for (int k=0; k<colours.size(); k++){
