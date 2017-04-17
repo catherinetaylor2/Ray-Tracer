@@ -43,7 +43,7 @@ int main(int argc, char* argv[] ){
 	std::vector<unsigned char*> texture_bmp = {data, data2};
 
 //initial inputs
-    ObjFile mesh("s2.obj");
+    ObjFile mesh("cube.obj");
     float* V , *N, *VT;
 	int *FV, *FN, *F_VT;
 
@@ -59,9 +59,9 @@ int main(int argc, char* argv[] ){
 	search_tree::build_tree(V, FV, leaf_nodes, &root);
 	std::cout<<"tree built \n";
 
-	ObjFile mesh_sphere("sphere1.obj");
+	ObjFile mesh_sphere("sphere2.obj");
 	float* V_s, *N_s, *VT_s;
-	int* FV_s, *FN_s, *F_VT_s;
+	int* FV_s, *FN_s, *F_VT_s; 
 	mesh_sphere.get_vertices(&V_s);
 	mesh_sphere.get_texture(&VT_s);
 	mesh_sphere.get_normals(&N_s);
@@ -75,7 +75,7 @@ int main(int argc, char* argv[] ){
 	std::cout<<"sphere tree built \n";
 
 
-    vector3 eye(0,0,-15); 
+    vector3 eye(0,0,0); 
     vector3 lookup(0,5,-8);
     vector3 lookat(0,0,1);
     Light sun(5,15,-20,1); 
