@@ -35,24 +35,23 @@ int main(int argc, char* argv[] ){
 		height=1000;
 	}
 	
-	unsigned char * data, * data2;
-	int texture_width, texture_height, texture_width2, texture_height2;
+	unsigned char * data, * data2, *data3;
+	int texture_width, texture_height, texture_width2, texture_height2, texture_width3, texture_height3;
 	data = readBMP("metal.bmp", &texture_width, &texture_height);
 	data2 = readBMP("skye.bmp", &texture_width2, &texture_height2);
-	int texture_data [] = {texture_width, texture_height, texture_width2, texture_height2};
-	std::vector<unsigned char*> texture_bmp = {data, data2};
+	data3 = readBMP("wood.bmp", &texture_width3, &texture_height3);
+	int texture_data [] = {texture_width, texture_height, texture_width2, texture_height2, texture_width3, texture_height3};
+	std::vector<unsigned char*> texture_bmp = {data, data2, data3};
 
 //initial inputs
     ObjFile mesh("sword2.obj");
     float* V , *N, *VT;
 	int *FV, *FN, *F_VT;
-
 	mesh.get_vertices(&V);
 	mesh.get_texture(&VT);
 	mesh.get_normals(&N);
 	mesh.get_face_data(&FV, &FN, &F_VT);
     int F = mesh.get_number_of_faces();
-
 	search_tree* root;
 	std::vector<search_tree*> leaf_nodes;
 	search_tree::leaf_nodes(V, FV, F, &leaf_nodes);
@@ -67,12 +66,25 @@ int main(int argc, char* argv[] ){
 	mesh_sphere.get_normals(&N_s);
 	mesh_sphere.get_face_data(&FV_s, &FN_s, &F_VT_s);
     int F_s = mesh_sphere.get_number_of_faces();
-
 	search_tree* root_s;
 	std::vector<search_tree*> leaf_nodes_s;
 	search_tree::leaf_nodes(V_s, FV_s, F_s, &leaf_nodes_s);
 	search_tree::build_tree(V_s, FV_s, leaf_nodes_s, &root_s);
 	std::cout<<"sphere tree built \n";
+
+	ObjFile mesh_handle("handle.obj");
+	float *V_h, *N_h, *VT_h;
+	int *FV_h, *FN_h, *F_VT_h;
+	mesh_handle.get_vertices(&V_h);
+	mesh_handle.get_texture(&VT_h);
+	mesh_handle.get_normals(&N_h);
+	mesh_handle.get_face_data(&FV_h, &FN_h, &F_VT_h);
+    int F_h = mesh_handle.get_number_of_faces();
+	search_tree* root_h;
+	std::vector<search_tree*> leaf_nodes_h;
+	search_tree::leaf_nodes(V_h, FV_h, F_h, &leaf_nodes_h);
+	search_tree::build_tree(V_h, FV_h, leaf_nodes_h, &root_h);
+	std::cout<<"handle tree built \n";
 
 
     vector3 eye(0,0,-5); 
@@ -96,21 +108,23 @@ int main(int argc, char* argv[] ){
 
 	float* area = new float[F];
 	float* A = new float[3*F];
-
 	std::thread t1(TriangleColour::phong_areas, FV, FN, N,V, area, A, F);
-	t1.join();
-	
+	t1.join();	
 
 	float* area_s = new float[F_s];
 	float* A_s = new float[3*F_s];
 	std::thread t2(TriangleColour::phong_areas, FV_s, FN_s, N_s,V_s, area_s, A_s, F_s);
 	t2.join();
-	// std::vector<float*> mesh_data_f2 = { V_s, N_s, VT_s, area_s, A_s};
-	// std::vector<int*> mesh_data_i2 = {FV_s, FN_s, F_VT_s};
 
-	std::vector<float*> mesh_data_f = {V_s, N_s, VT_s, area_s, A_s,  V, N, VT, area, A};
-	std::vector<int*> mesh_data_i = { FV_s, FN_s, F_VT_s, FV, FN, F_VT};
-	std::vector<search_tree*> root_data = {root_s, root};
+	float* area_h = new float[F_h];
+	float* A_h = new float[3*F_h];
+	std::thread t3(TriangleColour::phong_areas, FV_h, FN_h, N_h,V_h, area_h, A_h, F_h);
+	t3.join();
+	
+
+	std::vector<float*> mesh_data_f = {V_s, N_s, VT_s, area_s, A_s,  V, N, VT, area, A, V_h, N_h, VT_h, area_h, A_h};
+	std::vector<int*> mesh_data_i = { FV_s, FN_s, F_VT_s, FV, FN, F_VT,  FV_h, FN_h, F_VT_h};
+	std::vector<search_tree*> root_data = {root_s, root, root_h};
 
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
 	for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
@@ -169,6 +183,10 @@ int main(int argc, char* argv[] ){
 	delete FV_s, FN_s, VT_s, F_VT_s, V_s, N_s;
 	delete root_s, root_s->faces_in_node;
 	delete area_s,  A_s;
+
+	delete FV_h, FN_h, VT_h, F_VT_h, V_h, N_h;
+	delete root_h, root_h->faces_in_node;
+	delete area_h,  A_h;
 
     return 0;
 }

@@ -118,14 +118,15 @@ float TriangleColour::find_intersection_point(search_tree* root, float*vertices,
 vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<search_tree*> root_data, std::vector<float*> mesh_data,std::vector<int*> mesh_data_i,  const int* tri_colour, Light sun, scene myscene, std::vector<unsigned char*> data_bmp, int* texture_data){
     int min_value1 = -1, min_value2 = -1, min_value, obj;
     int* k;
- //   int*k2 ;
-    float t1 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], eye, d, &min_value1, tri_colour, &k), t, t2 = 1000000;
-  //  float t2 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], eye, d, &min_value2, tri_colour, &k2);
+    int*k2 ;
+    float t1 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], eye, d, &min_value1, tri_colour, &k), t;
+    float t2 = TriangleColour::find_intersection_point(root_data[2], mesh_data[10], mesh_data_i[6], eye, d, &min_value2, tri_colour, &k2);
+  //  std::cout<<"line 124 \n";
     if ((t2 < t1 )){
         t=t2;
         min_value = min_value2;
-        obj = 0;
-     //   k = k2;
+        obj = 2;
+        k = k2;
     }
     else{
         t=t1;
@@ -136,8 +137,6 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
     int c1, c2,c3, c_m1, c_m2, c_m3, *faces = mesh_data_i[0+obj*3], *face_normals = mesh_data_i[1+obj*3], *F_VT = mesh_data_i[2+obj*3];
     float*vertices = mesh_data[0+obj*5], *normals = mesh_data[1+obj*5], *VT = mesh_data[2+obj*5], *areas = mesh_data[3+obj*5], *edges = mesh_data[4+obj*5];
     Bounding_box B_root(root_data[obj]->parameters[0],root_data[obj]->parameters[1], root_data[obj]->parameters[2],root_data[obj]->parameters[3],root_data[obj]->parameters[4],root_data[obj]->parameters[5]);
-    // Bounding_box B_root0(root_data[0]->parameters[0],root_data[0]->parameters[1], root_data[0]->parameters[2],root_data[0]->parameters[3],root_data[0]->parameters[4],root_data[0]->parameters[5]);
-    // Bounding_box B_root1(root_data[1]->parameters[0],root_data[1]->parameters[1], root_data[1]->parameters[2],root_data[1]->parameters[3],root_data[1]->parameters[4],root_data[1]->parameters[5]);
     unsigned char* data = data_bmp[obj];
     int texture_width = texture_data[0+obj*2], texture_height = texture_data[1+obj*2];
 
@@ -148,7 +147,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
             return RGB;
         }
         else{
-            int m = k[min_value+1], s, vt1, vt2, vt3;
+            int m = k[min_value+1], s, vt1, vt2, vt3, R,G,B;
             c_m1 = faces[3*m] -1, c_m2 = faces[3*m+1]-1, c_m3 = faces[3*m+2] -1 ;
             vt1 = F_VT[3*m]-1, vt2 = F_VT[3*m+1]-1, vt3 = F_VT[3*m+2]-1;
             float vt_1x = VT[2*vt1], vt_1y = VT[2*vt1+1], vt_2x = VT[2*vt2], vt_2y = VT[2*vt2+1], vt_3x = VT[2*vt3], vt_3y = VT[2*vt3+1];
@@ -180,81 +179,74 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
 
                 float r_g_b[3] = {0,0,0};
 
-                if(obj==1){
+                if(obj==1){ //reflective sword code.
                    int*k4;
                     min_value = -1;
+                    vector3 R = vector3::vec_scal_mult(2.0f*vector3::dotproduct(d, normal), normal);
+                    vector3 H = vector3::vec_add(d, vector3::vec_scal_mult(-1,R));
+                    H.normalize();
+                    float t3 = TriangleColour::find_intersection_point(root_data[0], mesh_data[0], mesh_data_i[0], point, H, &min_value, tri_colour, &k4);
+                    if (t3<infinity){
+                        m = k4[min_value+1];
+                        obj = 0;
+                        int *faces1 = mesh_data_i[0+obj*3], *face_normals1 = mesh_data_i[1+obj*3], *F_VT1 = mesh_data_i[2+obj*3];
+                        float *vertices1 = mesh_data[0+obj*5], *normals1 = mesh_data[1+obj*5], *VT1 = mesh_data[2+obj*5], *areas1 = mesh_data[3+obj*5], *edges1 = mesh_data[4+obj*5];
+                        unsigned char *data1 = data_bmp[obj];
+                        c_m1 = faces1[3*m] -1, c_m2 = faces1[3*m+1]-1, c_m3 = faces1[3*m+2] -1 ;
+                        triangle tri1(vertices1[3*c_m1], vertices1[3*c_m1+1], vertices1[3*c_m1+2], vertices1[3*c_m2], vertices1[3*c_m2+1],vertices1[3*c_m2+2], vertices1[3*c_m3], vertices1[3*c_m3+1], vertices1[3*c_m3+2], tri_colour);
+                        tri1.set_lighting_constants(0.5, 1*255, 0.3, 170);
+                        float *b2 = new float[3];
+                        vector3 phong_normal1 = TriangleColour::phong_normal(m, vertices1, normals1, faces1, face_normals1, areas1, edges1, point, H, &b2);
+                        delete b2;
 
-                vector3 R = vector3::vec_scal_mult(2.0f*vector3::dotproduct(d, normal), normal);
-                vector3 H = vector3::vec_add(d, vector3::vec_scal_mult(-1,R));
-            
-                H.normalize();
-                float t3 = TriangleColour::find_intersection_point(root_data[0], mesh_data[0], mesh_data_i[0], point, H, &min_value, tri_colour, &k4);
+                        int texture_width1 = texture_data[0+obj*2], texture_height1 = texture_data[1+obj*2];
+                        vector3 point1 = vector3::vec_add(point, vector3::vec_scal_mult(t3-0.05,H));
+                        vector3 l1 = sun.get_light_direction(point1);
 
-                if (t3<infinity){
+                        float u_coord, v_coord, alpha, beta, v12r, v12g, v12b, v34r, v34g, v34b;
+                        int v1x,v1y, v2x, v4y;
+                        u_coord = (barycentric[0]*vt_1x +barycentric[1]*vt_2x+barycentric[2]*vt_3x)*texture_width1;
+                        v_coord = (barycentric[0]*vt_1y +barycentric[1]*vt_2y+barycentric[2]*vt_3y)*texture_height1;
+                        v1x = floor(u_coord);
+                        v1y = ceil(v_coord);
+                        v2x = ceil(u_coord);
+                        v4y = floor(v_coord);
+                        if (v1x<0){
+                            v1x=0;
+                        }
+                        if (v2x<0){
+                            v2x=0;
+                        }
+                        if (v1y<0){
+                            v1y=0;
+                        }
+                        if (v4y<0){
+                            v4y=0;
+                        }
 
-                    m = k4[min_value+1];
+                        alpha = (float)(u_coord - (v2x - v1x)*v1x)/(float) (v2x - v1x);
+                        beta = (float)(v_coord - (v1y - v4y)*v4y)/(float) (v1y - v4y);
 
-                    obj = 0;
-                    int *faces1 = mesh_data_i[0+obj*3], *face_normals1 = mesh_data_i[1+obj*3], *F_VT1 = mesh_data_i[2+obj*3];
-                    float *vertices1 = mesh_data[0+obj*5], *normals1 = mesh_data[1+obj*5], *VT1 = mesh_data[2+obj*5], *areas1 = mesh_data[3+obj*5], *edges1 = mesh_data[4+obj*5];
-                    unsigned char *data1 = data_bmp[obj];
-                    c_m1 = faces1[3*m] -1, c_m2 = faces1[3*m+1]-1, c_m3 = faces1[3*m+2] -1 ;
-                    triangle tri1(vertices1[3*c_m1], vertices1[3*c_m1+1], vertices1[3*c_m1+2], vertices1[3*c_m2], vertices1[3*c_m2+1],vertices1[3*c_m2+2], vertices1[3*c_m3], vertices1[3*c_m3+1], vertices1[3*c_m3+2], tri_colour);
-                    tri1.set_lighting_constants(0.5, 1*255, 0.3, 170);
-                    float *b2 = new float[3];
-                    vector3 phong_normal1 = TriangleColour::phong_normal(m, vertices1, normals1, faces1, face_normals1, areas1, edges1, point, H, &b2);
-                    delete b2;
+                        if (alpha >1){
+                            alpha=1;
+                        }
+                        if(beta>1){
+                            beta =1;
+                        }
+                        v12r = (1-alpha)*data1[v1y*texture_width1*3 + 3*v1x] +  alpha*data1[v1y*texture_width1*3 + 3*v2x];
+                        v12g = (1-alpha)*data1[v1y*texture_width1*3 + 3*v1x+1] +  alpha*data1[v1y*texture_width1*3 + 3*v2x+1];
+                        v12b = (1-alpha)*data1[v1y*texture_width1*3 + 3*v1x+2] +  alpha*data1[v1y*texture_width1*3 + 3*v2x+2];
 
-                    int texture_width1 = texture_data[0+obj*2], texture_height1 = texture_data[1+obj*2];
-                    vector3 point1 = vector3::vec_add(point, vector3::vec_scal_mult(t3-0.05,H));
-                    vector3 l1 = sun.get_light_direction(point1);
-
-                    float u_coord, v_coord, alpha, beta, v12r, v12g, v12b, v34r, v34g, v34b;
-                    int v1x,v1y, v2x, v4y;
-                    u_coord = (barycentric[0]*vt_1x +barycentric[1]*vt_2x+barycentric[2]*vt_3x)*texture_width1;
-                    v_coord = (barycentric[0]*vt_1y +barycentric[1]*vt_2y+barycentric[2]*vt_3y)*texture_height1;
-                    v1x = floor(u_coord);
-                    v1y = ceil(v_coord);
-                    v2x = ceil(u_coord);
-                    v4y = floor(v_coord);
-                    if (v1x<0){
-                        v1x=0;
-                    }
-                    if (v2x<0){
-                        v2x=0;
-                    }
-                    if (v1y<0){
-                        v1y=0;
-                    }
-                    if (v4y<0){
-                        v4y=0;
-                    }
-
-                    alpha = (float)(u_coord - (v2x - v1x)*v1x)/(float) (v2x - v1x);
-                    beta = (float)(v_coord - (v1y - v4y)*v4y)/(float) (v1y - v4y);
-
-                    if (alpha >1){
-                        alpha=1;
-                    }
-                    if(beta>1){
-                        beta =1;
-                    }
-                    v12r = (1-alpha)*data1[v1y*texture_width1*3 + 3*v1x] +  alpha*data1[v1y*texture_width1*3 + 3*v2x];
-                    v12g = (1-alpha)*data1[v1y*texture_width1*3 + 3*v1x+1] +  alpha*data1[v1y*texture_width1*3 + 3*v2x+1];
-                    v12b = (1-alpha)*data1[v1y*texture_width1*3 + 3*v1x+2] +  alpha*data1[v1y*texture_width1*3 + 3*v2x+2];
-
-                    v34r =  (1-alpha)*data1[v4y*texture_width1*3 + 3*v1x] +  alpha*data1[v4y*texture_width1*3 + 3*v2x];
-                    v34g =  (1-alpha)*data1[v4y*texture_width1*3 + 3*v1x+1] +  alpha*data1[v4y*texture_width1*3 + 3*v2x+1];
-                    v34b =  (1-alpha)*data1[v4y*texture_width1*3 + 3*v1x+2] +  alpha*data1[v4y*texture_width1*3 + 3*v2x+2];
-                    float colour1[] =  {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
-                    vector3 RGB_1 = tri1.determine_colour(point1, l1, d, sun, phong_normal1, myscene,s, colour1);
-                    r_g_b [0] = RGB_1.get_x();
-                    r_g_b[1] = RGB_1.get_y();
-                    r_g_b[2]=RGB_1.get_z();
-                    }
-                  
-                   delete k4;
-                   
+                        v34r =  (1-alpha)*data1[v4y*texture_width1*3 + 3*v1x] +  alpha*data1[v4y*texture_width1*3 + 3*v2x];
+                        v34g =  (1-alpha)*data1[v4y*texture_width1*3 + 3*v1x+1] +  alpha*data1[v4y*texture_width1*3 + 3*v2x+1];
+                        v34b =  (1-alpha)*data1[v4y*texture_width1*3 + 3*v1x+2] +  alpha*data1[v4y*texture_width1*3 + 3*v2x+2];
+                        float colour1[] =  {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
+                        vector3 RGB_1 = tri1.determine_colour(point1, l1, d, sun, phong_normal1, myscene,s, colour1);
+                        r_g_b [0] = RGB_1.get_x();
+                        r_g_b[1] = RGB_1.get_y();
+                        r_g_b[2]=RGB_1.get_z();
+                    }                  
+                   delete k4;                   
                  }
                  vector3 RGB1( r_g_b [0],  r_g_b [1],  r_g_b [2]);
               
@@ -299,7 +291,6 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                 float colour[] =  {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
 
                 vector3 RGB2 = vector3::vec_add(tri.determine_colour(point, l, d, sun, phong_normal, myscene,s, colour), vector3::vec_scal_mult(0.75,RGB1));
-int R,G,B;
                 if (RGB2.get_x()>255){
                     R = 255;
                 }
