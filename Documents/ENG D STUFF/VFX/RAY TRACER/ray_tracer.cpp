@@ -37,13 +37,13 @@ int main(int argc, char* argv[] ){
 	
 	unsigned char * data, * data2;
 	int texture_width, texture_height, texture_width2, texture_height2;
-	data = readBMP("texture2.bmp", &texture_width, &texture_height);
-	data2 = readBMP("beach.bmp", &texture_width2, &texture_height2);
+	data = readBMP("metal.bmp", &texture_width, &texture_height);
+	data2 = readBMP("skye.bmp", &texture_width2, &texture_height2);
 	int texture_data [] = {texture_width, texture_height, texture_width2, texture_height2};
 	std::vector<unsigned char*> texture_bmp = {data, data2};
 
 //initial inputs
-    ObjFile mesh("cube.obj");
+    ObjFile mesh("sword2.obj");
     float* V , *N, *VT;
 	int *FV, *FN, *F_VT;
 
@@ -59,7 +59,7 @@ int main(int argc, char* argv[] ){
 	search_tree::build_tree(V, FV, leaf_nodes, &root);
 	std::cout<<"tree built \n";
 
-	ObjFile mesh_sphere("sphere2.obj");
+	ObjFile mesh_sphere("sphere3.obj");
 	float* V_s, *N_s, *VT_s;
 	int* FV_s, *FN_s, *F_VT_s; 
 	mesh_sphere.get_vertices(&V_s);
@@ -75,10 +75,10 @@ int main(int argc, char* argv[] ){
 	std::cout<<"sphere tree built \n";
 
 
-    vector3 eye(0,0,0); 
+    vector3 eye(0,0,-5); 
     vector3 lookup(0,5,-8);
     vector3 lookat(0,0,1);
-    Light sun(5,15,-20,1); 
+    Light sun(0,15,-20,1); 
     vector3 light = sun.get_position();
     scene myscene(width,height,90,3);
     float d = myscene.get_distance_to_image();
