@@ -290,7 +290,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                 v34b =  (1-alpha)*data[v4y*texture_width*3 + 3*v1x+2] +  alpha*data[v4y*texture_width*3 + 3*v2x+2];
                 float colour[] =  {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
 
-                vector3 RGB2 = vector3::vec_add(tri.determine_colour(point, l, d, sun, phong_normal, myscene,s, colour), vector3::vec_scal_mult(0.75,RGB1));
+                vector3 RGB2 = vector3::vec_add(tri.determine_colour(point, l, d, sun, phong_normal, myscene,s, colour), vector3::vec_scal_mult(1,RGB1));
                 if (RGB2.get_x()>255){
                     R = 255;
                 }

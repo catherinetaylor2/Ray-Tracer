@@ -38,10 +38,10 @@ int main(int argc, char* argv[] ){
 	unsigned char * data, * data2, *data3;
 	int texture_width, texture_height, texture_width2, texture_height2, texture_width3, texture_height3;
 	data = readBMP("metal.bmp", &texture_width, &texture_height);
-	data2 = readBMP("skye.bmp", &texture_width2, &texture_height2);
+	data2 = readBMP("beach.bmp", &texture_width2, &texture_height2);
 	data3 = readBMP("wood.bmp", &texture_width3, &texture_height3);
-	int texture_data [] = {texture_width, texture_height, texture_width2, texture_height2, texture_width3, texture_height3};
-	std::vector<unsigned char*> texture_bmp = {data, data2, data3};
+	int texture_data [] = {texture_width2, texture_height2, texture_width, texture_height, texture_width3, texture_height3};
+	std::vector<unsigned char*> texture_bmp = {data2, data, data3};
 
 //initial inputs
     ObjFile mesh("sword2.obj");
@@ -86,6 +86,7 @@ int main(int argc, char* argv[] ){
 	search_tree::build_tree(V_h, FV_h, leaf_nodes_h, &root_h);
 	std::cout<<"handle tree built \n";
 
+	// ObjFile mesh_skeleton("s2.obj");
 
     vector3 eye(0,0,-5); 
     vector3 lookup(0,5,-8);
