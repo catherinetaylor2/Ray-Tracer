@@ -119,18 +119,18 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
     int min_value1 = -1, min_value2 = -1, min_value, obj;
     int* k;
  //   int*k2 ;
-    float t1 = TriangleColour::find_intersection_point(root_data[0], mesh_data[0], mesh_data_i[0], eye, d, &min_value1, tri_colour, &k), t, t2 = 1000000;
+    float t1 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], eye, d, &min_value1, tri_colour, &k), t, t2 = 1000000;
   //  float t2 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], eye, d, &min_value2, tri_colour, &k2);
     if ((t2 < t1 )){
         t=t2;
         min_value = min_value2;
-        obj = 1;
+        obj = 0;
      //   k = k2;
     }
     else{
         t=t1;
         min_value = min_value1;
-        obj =0;
+        obj =1;
     }
 
     int c1, c2,c3, c_m1, c_m2, c_m3, *faces = mesh_data_i[0+obj*3], *face_normals = mesh_data_i[1+obj*3], *F_VT = mesh_data_i[2+obj*3];
@@ -180,7 +180,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
 
                 float r_g_b[3] = {0,0,0};
 
-                if(obj==0){
+                if(obj==1){
                    int*k4;
                     min_value = -1;
 
@@ -188,13 +188,13 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                 vector3 H = vector3::vec_add(d, vector3::vec_scal_mult(-1,R));
             
                 H.normalize();
-                float t3 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], point, H, &min_value, tri_colour, &k4);
+                float t3 = TriangleColour::find_intersection_point(root_data[0], mesh_data[0], mesh_data_i[0], point, H, &min_value, tri_colour, &k4);
 
                 if (t3<infinity){
 
                     m = k4[min_value+1];
 
-                    obj = 1;
+                    obj = 0;
                     int *faces1 = mesh_data_i[0+obj*3], *face_normals1 = mesh_data_i[1+obj*3], *F_VT1 = mesh_data_i[2+obj*3];
                     float *vertices1 = mesh_data[0+obj*5], *normals1 = mesh_data[1+obj*5], *VT1 = mesh_data[2+obj*5], *areas1 = mesh_data[3+obj*5], *edges1 = mesh_data[4+obj*5];
                     unsigned char *data1 = data_bmp[obj];

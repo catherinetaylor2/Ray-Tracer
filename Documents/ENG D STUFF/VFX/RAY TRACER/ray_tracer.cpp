@@ -108,9 +108,9 @@ int main(int argc, char* argv[] ){
 	// std::vector<float*> mesh_data_f2 = { V_s, N_s, VT_s, area_s, A_s};
 	// std::vector<int*> mesh_data_i2 = {FV_s, FN_s, F_VT_s};
 
-	std::vector<float*> mesh_data_f = { V, N, VT, area, A, V_s, N_s, VT_s, area_s, A_s};
-	std::vector<int*> mesh_data_i = {FV, FN, F_VT, FV_s, FN_s, F_VT_s};
-	std::vector<search_tree*> root_data = {root, root_s};
+	std::vector<float*> mesh_data_f = {V_s, N_s, VT_s, area_s, A_s,  V, N, VT, area, A};
+	std::vector<int*> mesh_data_i = { FV_s, FN_s, F_VT_s, FV, FN, F_VT};
+	std::vector<search_tree*> root_data = {root_s, root};
 
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
 	for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
