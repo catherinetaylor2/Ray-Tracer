@@ -45,7 +45,7 @@ int main(int argc, char* argv[] ){
 	std::vector<unsigned char*> texture_bmp = {data2, data, data3, data4};
 
 //initial inputs
-    ObjFile mesh("sword2.obj");
+    ObjFile mesh("sword.obj");
     float* V , *N, *VT;
 	int *FV, *FN, *F_VT;
 	mesh.get_vertices(&V);
@@ -67,7 +67,7 @@ int main(int argc, char* argv[] ){
 	mesh_sphere.get_normals(&N_s);
 	mesh_sphere.get_face_data(&FV_s, &FN_s, &F_VT_s);
     int F_s = mesh_sphere.get_number_of_faces();
-	search_tree* root_s;
+	search_tree* root_s; 
 	std::vector<search_tree*> leaf_nodes_s;
 	search_tree::leaf_nodes(V_s, FV_s, F_s, &leaf_nodes_s);
 	search_tree::build_tree(V_s, FV_s, leaf_nodes_s, &root_s);
