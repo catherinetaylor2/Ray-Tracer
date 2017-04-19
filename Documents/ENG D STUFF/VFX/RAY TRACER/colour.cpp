@@ -116,22 +116,29 @@ float TriangleColour::find_intersection_point(search_tree* root, float*vertices,
 
 
 vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<search_tree*> root_data, std::vector<float*> mesh_data,std::vector<int*> mesh_data_i,  const int* tri_colour, Light sun, scene myscene, std::vector<unsigned char*> data_bmp, int* texture_data){
-    int min_value1 = -1, min_value2 = -1, min_value, obj;
-    int* k;
-    int*k2 ;
+    int min_value1 = -1, min_value2 = -1, min_value, obj, min_value3 = -1;
+    int* k, *k2, *ks ;
+  //  std::cout<<"line 121 \n";
     float t1 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], eye, d, &min_value1, tri_colour, &k), t;
     float t2 = TriangleColour::find_intersection_point(root_data[2], mesh_data[10], mesh_data_i[6], eye, d, &min_value2, tri_colour, &k2);
-  //  std::cout<<"line 124 \n";
-    if ((t2 < t1 )){
+    float ts = TriangleColour::find_intersection_point(root_data[3], mesh_data[15], mesh_data_i[9], eye, d, &min_value3, tri_colour, &ks);
+   // std::cout<<"line 124 \n";
+    if ((t2 < t1 )&&(t2<ts)){
         t=t2;
         min_value = min_value2;
         obj = 2;
         k = k2;
     }
-    else{
+    else if((t1<t2)&&(t1<=ts)){
         t=t1;
         min_value = min_value1;
         obj =1;
+    }
+    else{
+        t=ts;
+        min_value = min_value3;
+        obj = 3;
+        k=ks;
     }
 
     int c1, c2,c3, c_m1, c_m2, c_m3, *faces = mesh_data_i[0+obj*3], *face_normals = mesh_data_i[1+obj*3], *F_VT = mesh_data_i[2+obj*3];
@@ -154,7 +161,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
             triangle tri(vertices[3*c_m1], vertices[3*c_m1+1], vertices[3*c_m1+2], vertices[3*c_m2], vertices[3*c_m2+1],vertices[3*c_m2+2], vertices[3*c_m3], vertices[3*c_m3+1], vertices[3*c_m3+2], tri_colour);
             t = tri.ray_triangle_intersection(eye,d);
             if((t!=0)){
-                tri.set_lighting_constants(0.5, 1*255, 0.3, 170);
+                tri.set_lighting_constants(0.5, 0.5*255, 0.3, 170);
                 vector3 point = vector3::vec_add(eye, vector3::vec_scal_mult(t-0.0035f,d));
                 vector3 l = sun.get_light_direction(point);
                 vector3 normal=tri.get_triangle_normal();
@@ -176,7 +183,6 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                 delete k3;
                 float* barycentric = new float[3];
                 vector3 phong_normal = TriangleColour::phong_normal(m, vertices, normals, faces, face_normals, areas, edges, eye, d, &barycentric);
-
                 float r_g_b[3] = {0,0,0};
 
                 if(obj==1){ //reflective sword code.
@@ -249,7 +255,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                    delete k4;                   
                  }
                  vector3 RGB1( r_g_b [0],  r_g_b [1],  r_g_b [2]);
-              
+
            //bilinear interpolation
                 float u_coord, v_coord, alpha, beta, v12r, v12g, v12b, v34r, v34g, v34b;
                 int v1x,v1y, v2x, v4y;

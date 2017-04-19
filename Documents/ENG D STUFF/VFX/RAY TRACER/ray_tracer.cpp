@@ -35,13 +35,14 @@ int main(int argc, char* argv[] ){
 		height=1000;
 	}
 	
-	unsigned char * data, * data2, *data3;
-	int texture_width, texture_height, texture_width2, texture_height2, texture_width3, texture_height3;
+	unsigned char * data, * data2, *data3, *data4;
+	int texture_width, texture_height, texture_width2, texture_height2, texture_width3, texture_height3, texture_width4, texture_height4;
 	data = readBMP("metal.bmp", &texture_width, &texture_height);
 	data2 = readBMP("beach.bmp", &texture_width2, &texture_height2);
 	data3 = readBMP("wood.bmp", &texture_width3, &texture_height3);
-	int texture_data [] = {texture_width2, texture_height2, texture_width, texture_height, texture_width3, texture_height3};
-	std::vector<unsigned char*> texture_bmp = {data2, data, data3};
+	data4 = readBMP("texture.bmp", &texture_width4, &texture_height4);
+	int texture_data [] = {texture_width2, texture_height2, texture_width, texture_height, texture_width3, texture_height3, texture_width4, texture_height4};
+	std::vector<unsigned char*> texture_bmp = {data2, data, data3, data4};
 
 //initial inputs
     ObjFile mesh("sword2.obj");
@@ -56,7 +57,7 @@ int main(int argc, char* argv[] ){
 	std::vector<search_tree*> leaf_nodes;
 	search_tree::leaf_nodes(V, FV, F, &leaf_nodes);
 	search_tree::build_tree(V, FV, leaf_nodes, &root);
-	std::cout<<"tree built \n";
+	std::cout<<"sword tree built \n";
 
 	ObjFile mesh_sphere("sphere3.obj");
 	float* V_s, *N_s, *VT_s;
@@ -72,7 +73,7 @@ int main(int argc, char* argv[] ){
 	search_tree::build_tree(V_s, FV_s, leaf_nodes_s, &root_s);
 	std::cout<<"sphere tree built \n";
 
-	ObjFile mesh_handle("handle.obj");
+	ObjFile mesh_handle("handle1.obj");
 	float *V_h, *N_h, *VT_h;
 	int *FV_h, *FN_h, *F_VT_h;
 	mesh_handle.get_vertices(&V_h);
@@ -86,10 +87,23 @@ int main(int argc, char* argv[] ){
 	search_tree::build_tree(V_h, FV_h, leaf_nodes_h, &root_h);
 	std::cout<<"handle tree built \n";
 
-	// ObjFile mesh_skeleton("s2.obj");
+	ObjFile mesh_skeleton("s1.obj");
+	float *V_sk, *N_sk, *VT_sk;
+	int *FV_sk, *FN_sk, *F_VT_sk;
+	mesh_skeleton.get_vertices(&V_sk);
+	mesh_skeleton.get_texture(&VT_sk);
+	mesh_skeleton.get_normals(&N_sk);
+	mesh_skeleton.get_face_data(&FV_sk, &FN_sk, &F_VT_sk);
+    int F_sk = mesh_skeleton.get_number_of_faces();
+	search_tree* root_sk;
+	std::vector<search_tree*> leaf_nodes_sk;
+	search_tree::leaf_nodes(V_sk, FV_sk, F_sk, &leaf_nodes_sk);
+	search_tree::build_tree(V_sk, FV_sk, leaf_nodes_sk, &root_sk);
+	std::cout<<"skeleton tree built \n";
 
-    vector3 eye(0,0,-5); 
-    vector3 lookup(0,5,-8);
+
+    vector3 eye(0,0,-15); 
+    vector3 lookup(0,5,-15);
     vector3 lookat(0,0,1);
     Light sun(0,15,-20,1); 
     vector3 light = sun.get_position();
@@ -121,11 +135,16 @@ int main(int argc, char* argv[] ){
 	float* A_h = new float[3*F_h];
 	std::thread t3(TriangleColour::phong_areas, FV_h, FN_h, N_h,V_h, area_h, A_h, F_h);
 	t3.join();
+
+	float* area_sk =  new float[F_sk];
+	float * A_sk = new float[3*F_sk];
+	std::thread t4(TriangleColour::phong_areas, FV_sk, FN_sk, N_sk,V_sk, area_sk, A_sk, F_sk);
+	t4.join();
 	
 
-	std::vector<float*> mesh_data_f = {V_s, N_s, VT_s, area_s, A_s,  V, N, VT, area, A, V_h, N_h, VT_h, area_h, A_h};
-	std::vector<int*> mesh_data_i = { FV_s, FN_s, F_VT_s, FV, FN, F_VT,  FV_h, FN_h, F_VT_h};
-	std::vector<search_tree*> root_data = {root_s, root, root_h};
+	std::vector<float*> mesh_data_f = {V_s, N_s, VT_s, area_s, A_s,  V, N, VT, area, A, V_h, N_h, VT_h, area_h, A_h, V_sk, N_sk, VT_sk, area_sk, A_sk};
+	std::vector<int*> mesh_data_i = { FV_s, FN_s, F_VT_s, FV, FN, F_VT,  FV_h, FN_h, F_VT_h, FV_sk, FN_sk,  F_VT_sk};
+	std::vector<search_tree*> root_data = {root_s, root, root_h, root_sk};
 
     unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
 	for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
@@ -188,6 +207,10 @@ int main(int argc, char* argv[] ){
 	delete FV_h, FN_h, VT_h, F_VT_h, V_h, N_h;
 	delete root_h, root_h->faces_in_node;
 	delete area_h,  A_h;
+	
+	delete FV_sk, FN_sk, VT_sk, F_VT_sk, V_sk, N_sk;
+	delete root_sk, root_sk->faces_in_node;
+	delete area_sk,  A_sk;
 
     return 0;
 }
