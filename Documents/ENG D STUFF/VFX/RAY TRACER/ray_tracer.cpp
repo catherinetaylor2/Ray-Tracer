@@ -45,7 +45,7 @@ int main(int argc, char* argv[] ){
 	std::vector<unsigned char*> texture_bmp = {data2, data, data3, data4};
 
 //initial inputs
-    ObjFile mesh("sword.obj");
+    ObjFile mesh("sword2.obj");
     float* V , *N, *VT;
 	int *FV, *FN, *F_VT;
 	mesh.get_vertices(&V);
