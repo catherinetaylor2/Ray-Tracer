@@ -5,7 +5,7 @@
 
 class ObjFile{
     public:
-        ObjFile(const char* name);
+        ObjFile(std::string name);
         void get_vertices(float** vertices);
         void get_normals(float** normals);
         void get_texture(float** texture_coords);

@@ -34,7 +34,7 @@ int main(int argc, char* argv[] ){
 		width=1920;
 		height=1080;
 	}
-	
+	for (int obj_file_input = 1; obj_file_input<3; obj_file_input++){
 	unsigned char * data, * data2, *data3, *data4;
 	int texture_width, texture_height, texture_width2, texture_height2, texture_width3, texture_height3, texture_width4, texture_height4;
 	data = readBMP("metal.bmp", &texture_width, &texture_height);
@@ -87,7 +87,8 @@ int main(int argc, char* argv[] ){
 	search_tree::build_tree(V_h, FV_h, leaf_nodes_h, &root_h);
 	std::cout<<"handle tree built \n";
 
-	ObjFile mesh_skeleton("objs/1.obj");
+
+	ObjFile mesh_skeleton("objs/" + std::to_string(obj_file_input)+".obj");
 	float *V_sk, *N_sk, *VT_sk;
 	int *FV_sk, *FN_sk, *F_VT_sk;
 	mesh_skeleton.get_vertices(&V_sk);
@@ -101,15 +102,11 @@ int main(int argc, char* argv[] ){
 	search_tree::build_tree(V_sk, FV_sk, leaf_nodes_sk, &root_sk);
 	std::cout<<"skeleton tree built \n";
 
-    vector3 eye(0,100,-350); 
-    vector3 lookup(0,500,-350);
-    vector3 lookat(0,100,1);
+    vector3 eye(-25,135,-290); 
+    vector3 lookup(-25,530,-290);
+    vector3 lookat(-25,135,1);
     Light sun(0,150,-400,1); 
 
-// vector3 eye(-10,120,-345); 
-//     vector3 lookup(-10,500,-345);
-//     vector3 lookat(-10,120,1);
-// 	Light sun(100,150,0,1);
     vector3 light = sun.get_position();
     scene myscene(width,height,90,3);
     float d = myscene.get_distance_to_image();
@@ -185,7 +182,19 @@ int main(int argc, char* argv[] ){
     // }
     // my_image.close();
 
-	std::ofstream image2("test.bmp", std::ios::out| std::ios::binary);
+	std::string j;
+
+	if(obj_file_input < 10){
+		j = "000"+std::to_string(obj_file_input);
+	}
+	else if ((obj_file_input>=10)&&(obj_file_input<100)){
+		j= "00" + std::to_string(obj_file_input);
+	}
+	else{
+		j= "0" + std::to_string(obj_file_input);
+	}
+
+	std::ofstream image2(j+".bmp", std::ios::out| std::ios::binary);
 	BITMAP_File_Header file_header;
 	BITMAP_Info_Header info_header;
 	fill_bitmap_headers(&file_header, &info_header,  width, height);
@@ -215,6 +224,6 @@ int main(int argc, char* argv[] ){
 	delete FV_sk, FN_sk, VT_sk, F_VT_sk, V_sk, N_sk;
 	delete root_sk, root_sk->faces_in_node;
 	delete area_sk,  A_sk;
-
+}
     return 0;
 }

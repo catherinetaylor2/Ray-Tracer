@@ -7,7 +7,7 @@
 #include"readObj.hpp"
 
 
-ObjFile::ObjFile(const char* name){
+ObjFile::ObjFile(std::string name){
 	fn = name;
 }
 std::string ObjFile::get_file_name(void){
