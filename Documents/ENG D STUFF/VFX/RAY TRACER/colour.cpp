@@ -161,7 +161,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
             triangle tri(vertices[3*c_m1], vertices[3*c_m1+1], vertices[3*c_m1+2], vertices[3*c_m2], vertices[3*c_m2+1],vertices[3*c_m2+2], vertices[3*c_m3], vertices[3*c_m3+1], vertices[3*c_m3+2], tri_colour);
             t = tri.ray_triangle_intersection(eye,d);
             if((t!=0)){
-                tri.set_lighting_constants(0.5, 0.5*255, 0.3, 170);
+                tri.set_lighting_constants(0.5, 1*255, 0.3, 170);
                 vector3 point = vector3::vec_add(eye, vector3::vec_scal_mult(t-0.0035f,d));
                 vector3 l = sun.get_light_direction(point);
                 vector3 normal=tri.get_triangle_normal();
@@ -200,7 +200,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                         unsigned char *data1 = data_bmp[obj];
                         c_m1 = faces1[3*m] -1, c_m2 = faces1[3*m+1]-1, c_m3 = faces1[3*m+2] -1 ;
                         triangle tri1(vertices1[3*c_m1], vertices1[3*c_m1+1], vertices1[3*c_m1+2], vertices1[3*c_m2], vertices1[3*c_m2+1],vertices1[3*c_m2+2], vertices1[3*c_m3], vertices1[3*c_m3+1], vertices1[3*c_m3+2], tri_colour);
-                        tri1.set_lighting_constants(0.5, 1*255, 0.3, 170);
+                        tri1.set_lighting_constants(0.75, 1*255, 0.3, 170);
                         float *b2 = new float[3];
                         vector3 phong_normal1 = TriangleColour::phong_normal(m, vertices1, normals1, faces1, face_normals1, areas1, edges1, point, H, &b2);
                         delete b2;

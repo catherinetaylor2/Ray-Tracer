@@ -31,8 +31,8 @@ int main(int argc, char* argv[] ){
 		height = atoi(argv[2]);
 	}
 	else{
-		width=1000;
-		height=1000;
+		width=1920;
+		height=1080;
 	}
 	
 	unsigned char * data, * data2, *data3, *data4;
@@ -87,7 +87,7 @@ int main(int argc, char* argv[] ){
 	search_tree::build_tree(V_h, FV_h, leaf_nodes_h, &root_h);
 	std::cout<<"handle tree built \n";
 
-	ObjFile mesh_skeleton("s1.obj");
+	ObjFile mesh_skeleton("objs/1.obj");
 	float *V_sk, *N_sk, *VT_sk;
 	int *FV_sk, *FN_sk, *F_VT_sk;
 	mesh_skeleton.get_vertices(&V_sk);
@@ -101,11 +101,15 @@ int main(int argc, char* argv[] ){
 	search_tree::build_tree(V_sk, FV_sk, leaf_nodes_sk, &root_sk);
 	std::cout<<"skeleton tree built \n";
 
+    vector3 eye(0,100,-350); 
+    vector3 lookup(0,500,-350);
+    vector3 lookat(0,100,1);
+    Light sun(0,150,-400,1); 
 
-    vector3 eye(0,0,-15); 
-    vector3 lookup(0,5,-15);
-    vector3 lookat(0,0,1);
-    Light sun(0,15,-20,1); 
+// vector3 eye(-10,120,-345); 
+//     vector3 lookup(-10,500,-345);
+//     vector3 lookat(-10,120,1);
+// 	Light sun(100,150,0,1);
     vector3 light = sun.get_position();
     scene myscene(width,height,90,3);
     float d = myscene.get_distance_to_image();

@@ -11,6 +11,7 @@ class ObjFile{
         void get_texture(float** texture_coords);
         void get_face_data(int** face_vertex, int** face_normals, int** face_textures);
         int get_number_of_faces(void);
+        std::string get_file_name(void);
     private:
 		std::string fn;
         int number_of_normals, number_of_vertices, number_of_faces;
