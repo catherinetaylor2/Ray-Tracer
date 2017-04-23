@@ -115,8 +115,8 @@ float TriangleColour::find_intersection_point(search_tree* root, float*vertices,
 
 
 vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<search_tree*> root_data, std::vector<float*> mesh_data,std::vector<int*> mesh_data_i,  const int* tri_colour, Light sun, scene myscene, std::vector<unsigned char*> data_bmp, int* texture_data){
-    int min_value1 = -1, min_value2 = -1, min_value, obj, min_value3 = -1, * k, *k2, *ks ;
-    float t1 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], eye, d, &min_value1, tri_colour, &k), t;
+    int min_value1 = -1, min_value2 = -1, min_value, obj, min_value3 = -1,*k, *k1, *k2, *ks ;
+    float t1 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], eye, d, &min_value1, tri_colour, &k1), t;
     float t2 = TriangleColour::find_intersection_point(root_data[2], mesh_data[10], mesh_data_i[6], eye, d, &min_value2, tri_colour, &k2);
     float ts = TriangleColour::find_intersection_point(root_data[3], mesh_data[15], mesh_data_i[9], eye, d, &min_value3, tri_colour, &ks);
 
@@ -124,18 +124,28 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
         t=t2;
         min_value = min_value2;
         obj = 2;
-        k = k2;
+        k = new int[k2[0]+1];
+        for(int ii = 0; ii<k2[0]+1; ii++){
+            k[ii]= k2[ii];
+        }
     }
     else if((t1<t2)&&(t1<=ts)){
         t=t1;
         min_value = min_value1;
         obj =1;
+        k = new int[k1[0]+1];
+        for(int ii = 0; ii<k1[0]+1; ii++){
+            k[ii]= k1[ii];
+        }
     }
     else{
         t=ts;
         min_value = min_value3;
         obj = 3;
-        k=ks;
+        k = new int[ks[0]+1];
+        for(int ii = 0; ii<ks[0]+1; ii++){
+            k[ii]= ks[ii];
+        }
     }
     int ref=0, c_m1, c_m2, c_m3, *faces = mesh_data_i[0+obj*3], *face_normals = mesh_data_i[1+obj*3], *F_VT = mesh_data_i[2+obj*3],  texture_width = texture_data[0+obj*2], texture_height = texture_data[1+obj*2];
     float*vertices = mesh_data[0+obj*5], *normals = mesh_data[1+obj*5], *VT = mesh_data[2+obj*5], *areas = mesh_data[3+obj*5], *edges = mesh_data[4+obj*5];
@@ -146,16 +156,9 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
         if (min_value == -1){
             vector3 RGB (0,0,0);
             delete k;
-            if ((t2 < t1 )&&(t2<ts)){
-                delete ks;
-            }
-            else if((t1<t2)&&(t1<=ts)){
-                delete k2;
-                delete ks;
-            }
-            else{
-                delete k2;
-            }
+            delete k1;
+            delete k2;
+            delete ks;
             return RGB;
         }
         else{
@@ -324,16 +327,9 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                 }
                 vector3 RGB(R,G,B);
                 delete k;
-                if ((t2 < t1 )&&(t2<ts)){
-                    delete ks;
-                }
-                else if((t1<t2)&&(t1<=ts)){
-                    delete k2;
-                    delete ks;
-                }
-                else{
-                    delete k2;
-                }
+                delete k1;
+                delete k2;
+                delete ks;
                 delete barycentric;
                 return RGB;
             }
@@ -342,20 +338,14 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
     else{
         vector3 RGB(0,0,0);
         delete k;
-        if ((t2 < t1 )&&(t2<ts)){
-            delete ks;
-        }
-        else if((t1<t2)&&(t1<=ts)){
-            delete k2;
-            delete ks;
-        }
-        else{
-            delete k2;
-        }
+        delete k1;
+        delete k2;
+        delete ks;
         return RGB;
     }
 	vector3 RGB(0, 0, 0);
     delete k;
+    delete k1;
     delete k2;
     delete ks;
 	return RGB;

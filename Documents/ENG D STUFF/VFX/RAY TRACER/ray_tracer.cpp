@@ -209,25 +209,18 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 		delete V;
 		delete N;
 		search_tree::delete_tree(root);
-		std::cout<<"root "<<root->left_node<<"\n";
 		delete area;
 		delete A;
-		//delete root->faces_in_node;
-	//	delete root;
-	//	std::cout<<"root2 "<<root<<"\n";
-	
-std::cout<<"line 219 \n";
+
 		delete FV_h;
 		delete FN_h;
 		delete VT_h;
 		delete F_VT_h;
 		delete V_h;
 		delete N_h;
-		//search_tree::delete_leaf_nodes(leaf_nodes_h);
 		search_tree::delete_tree(root_h);
 		delete area_h;
-		delete A_h; // root_h, root_h->faces_in_node;
-std::cout<<"line 224 \n";
+		delete A_h;
 
 		delete FV_sk;
 		delete FN_sk;
@@ -235,11 +228,10 @@ std::cout<<"line 224 \n";
 		delete F_VT_sk;
 		delete V_sk;
 		delete N_sk;
-		//search_tree::delete_leaf_nodes(leaf_nodes_sk);
 		search_tree::delete_tree(root_sk);
 		delete area_sk;
-		delete  A_sk; // root_sk, root_sk->faces_in_node;
-
+		delete  A_sk; 
+		
 		std::cout<<"done \n";
 }
 
