@@ -68,7 +68,7 @@ for (int obj_file_input =  1; obj_file_input<81; obj_file_input++){
 
 std::cout<<"image no "<<obj_file_input<<"\n";
 	//initial inputs
-		ObjFile mesh("sword2.obj");
+		ObjFile mesh("sword.obj");
 		float* V , *N, *VT;
 		int *FV, *FN, *F_VT;
 		mesh.get_vertices(&V);
@@ -231,7 +231,7 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 		search_tree::delete_tree(root_sk);
 		delete area_sk;
 		delete  A_sk; 
-		
+
 		std::cout<<"done \n";
 }
 
@@ -241,7 +241,6 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 	delete F_VT_s;
 	delete V_s;
 	delete N_s;
-	//search_tree::delete_leaf_nodes(leaf_nodes_s);
     search_tree::delete_tree(root_s);
 
 	delete area_s;
