@@ -46,6 +46,7 @@ void ObjFile::get_vertices(float** V){
     (*V)[i+2]=-f3; 
     t = fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
   }
+  fclose(myObject);
 }
 
 void ObjFile::get_normals(float** N){
@@ -80,6 +81,7 @@ void ObjFile::get_normals(float** N){
     (*N)[i+2]=-f3;   
     fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
   }
+   fclose(myObject);
 }
 
 void ObjFile::get_texture(float ** VT){
@@ -126,6 +128,7 @@ void ObjFile::get_texture(float ** VT){
     (*VT)[i] = f1;
     (*VT)[i+1]=f2;
   }
+   fclose(myObject);
 }
 
 void ObjFile::get_face_data(int** face_vertex, int** face_normals, int** face_textures){
@@ -184,6 +187,7 @@ void ObjFile::get_face_data(int** face_vertex, int** face_normals, int** face_te
     (*face_textures)[i+1]=i5;
     (*face_textures)[i+2]=i8;
   }
+   fclose(myObject);
 }
 
 int ObjFile::get_number_of_faces(void){
@@ -270,7 +274,7 @@ void ObjFile_novt::get_normals(float ** N){
 void ObjFile_novt::get_face_data(int** face_vertex, int**face_normals){
   char str[1000], c1, c2, c3, c4, c5, c6;
   float f1, f2, f3;
-  int i1, i2, i3, i4, i5, i6, i7, i8, i9;
+  int i1, i3, i4, i6, i7, i9;
   std::string s = "a";
   FILE * myObject;
   int k_vf=0, t;

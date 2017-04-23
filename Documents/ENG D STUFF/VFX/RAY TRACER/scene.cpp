@@ -5,7 +5,7 @@
 
 #define PI 3.141592654f
 
-scene::scene(int x, int y, int fov, int d){
+scene::scene(int x, int y, int fov, float d){
     x_res = x;
     y_res= y;
     height = 2*(float)d*tan((float)fov/360.0f *PI/2.0f );
@@ -27,21 +27,21 @@ float scene::get_height(void){
 float scene::get_distance_to_image(void){
     return distance_to_image;
 }
-double scene::DiffuseValue( vector3 normal, vector3 light_direction){
-    if (normal.dotproduct(normal,light_direction)>0){        
-        return normal.dotproduct(normal,light_direction);
+float scene::DiffuseValue( vector3 normal, vector3 light_direction){
+    if (vector3::dotproduct(normal,light_direction)>0){        
+        return vector3::dotproduct(normal,light_direction);
     }
     else{
         return 0;
     }
 }
-double scene::SpecularValue(vector3 normal, vector3 light_direction, vector3 ray_direction){
-    vector3 H =normal.vec_add(light_direction, normal.vec_scal_mult(-1,ray_direction));
+float scene::SpecularValue(vector3 normal, vector3 light_direction, vector3 ray_direction){
+    vector3 H =vector3::vec_add(light_direction, vector3::vec_scal_mult(-1,ray_direction));
     H.normalize();
-    if (normal.dotproduct(normal, H)<0){
+    if (vector3::dotproduct(normal, H)<0){
         return 0;
     }
     else{
-        return normal.dotproduct(normal, H);
+        return vector3::dotproduct(normal, H);
     }   
 }

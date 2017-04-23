@@ -74,7 +74,6 @@ void search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::v
     if(((root->left_node!=nullptr))||((root->right_node!=nullptr))){
         Bounding_box B_right(root->right_node->parameters[0],root->right_node->parameters[1], root->right_node->parameters[2],root->right_node->parameters[3],root->right_node->parameters[4],root->right_node->parameters[5]);
         Bounding_box B_left(root->left_node->parameters[0],root->left_node->parameters[1], root->left_node->parameters[2],root->left_node->parameters[3],root->left_node->parameters[4],root->left_node->parameters[5]);
-
         if ((root->right_node!=nullptr)&&(B_right.ray_box_intersection(eye, d)==1)) {
             traverse_tree(root->right_node, eye, d, output);
         }  
@@ -125,26 +124,27 @@ void search_tree::leaf_nodes(float* vertices, int*faces, int number_of_faces,  s
         leaf->left_node=nullptr;
         leaf->right_node=nullptr;
         (*leaf_nodes).push_back(leaf);
-    }
-    
+    }    
+}
+void search_tree::delete_leaf_nodes(std::vector<search_tree*> leaf_nodes){
+    delete (leaf_nodes)[0]->faces_in_node;
+   (leaf_nodes).clear();
 }
 
-void search_tree::build_tree(float* vertices, int* faces, std::vector<search_tree*> leaf_nodes, search_tree**root){
+void search_tree::build_tree(float* vertices, int* faces, std::vector<search_tree*>* leaf_nodes, search_tree**root){
     std::vector<float> parameters;
     int it=0;
-    search_tree* first = new search_tree;
-    search_tree* second = new search_tree;
-
-    while(leaf_nodes.size()>1){
+   
+    while((*leaf_nodes).size()>1){
         it=it+1;
         parameters.clear();
         search_tree* temp = new search_tree;
-        first = leaf_nodes[0];
-        second = leaf_nodes[1];
-        temp->left_node = first;
-        temp->right_node = second;
+        search_tree* first = (*leaf_nodes)[0];
+        search_tree* second = (*leaf_nodes)[1];
+        temp->left_node =(*leaf_nodes)[0];
+        temp->right_node = (*leaf_nodes)[1];
         temp->number_of_node_faces = first->number_of_node_faces+second->number_of_node_faces;
-        leaf_nodes.erase (leaf_nodes.begin(),leaf_nodes.begin()+2);
+        (*leaf_nodes).erase ((*leaf_nodes).begin(),(*leaf_nodes).begin()+2);
         temp->faces_in_node = new int [temp->number_of_node_faces];
         for(int i=0; i<first->number_of_node_faces; i++){
             temp->faces_in_node[i] = first->faces_in_node[i];
@@ -160,9 +160,20 @@ void search_tree::build_tree(float* vertices, int* faces, std::vector<search_tre
         for(int j =0; j<6;j++){
              temp->parameters[j] = parameters[j];
         }
-        (leaf_nodes).push_back(temp);
+        (*leaf_nodes).push_back(temp);
     }
-       *root = leaf_nodes[0];
+       *root = (*leaf_nodes)[0];
         return;
 }
 
+void search_tree::delete_tree(search_tree* root){
+    if((root->left_node)!=nullptr){
+        delete_tree((root)->left_node);
+    }
+     if((root->right_node)!=nullptr){
+        delete_tree((root)->right_node);
+     }
+    delete root->faces_in_node;
+    delete root;
+    root = nullptr;   
+}

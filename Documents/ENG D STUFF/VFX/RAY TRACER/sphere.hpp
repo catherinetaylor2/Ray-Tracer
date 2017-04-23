@@ -9,9 +9,9 @@
 
 class sphere{
     public:
-        sphere(int sphere_x, int sphere_y, int sphere_z, int sphere_radius, const int* sphere_colour);
+        sphere(float sphere_x, float sphere_y, float sphere_z, int sphere_radius, const int* sphere_colour);
         void set_lighting_constants(float DC, float SC, float AC, float SP);
-        void get_centre(std::vector<int>*sphere_centre);
+        void get_centre(std::vector<float>*sphere_centre);
         void get_colour(std::vector<int>*sphere_colour);
         void get_lighting_coefficients(std::vector<float>*sphere_coefficients);
         int get_radius(void);
@@ -20,8 +20,8 @@ class sphere{
         vector3 determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow);
     private:
         int radius;
-        std::vector<int> colour, centre;
-        std::vector<float> lighting_coefficients;
+        std::vector<int> colour;
+        std::vector<float> lighting_coefficients, centre;
 };
 class plane{
     public:

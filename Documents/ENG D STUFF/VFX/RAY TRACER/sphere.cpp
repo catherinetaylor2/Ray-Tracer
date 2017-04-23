@@ -11,11 +11,11 @@ const int RED[] = {255,0,0};
 const int GREEN[] ={0,255,0};
 const int BLUE[] = {0,0,255};
 
-sphere::sphere(int sphere_x, int sphere_y, int sphere_z, int sphere_radius,  const int* sphere_colour){
+sphere::sphere(float sphere_x, float sphere_y, float sphere_z, int sphere_radius,  const int* sphere_colour){
     centre = {sphere_x, sphere_y, sphere_z};
     colour = {sphere_colour[0], sphere_colour[1], sphere_colour[2]};
 }
-void sphere::get_centre(std::vector<int>*sphere_centre){
+void sphere::get_centre(std::vector<float>*sphere_centre){
     *sphere_centre = centre;
 }
 void sphere::get_colour(std::vector<int>*sphere_colour){

@@ -1,21 +1,25 @@
 #ifndef search_tree_hpp
 #define search_tree_hpp
-#include<iostream>
+
+#include <iostream>
 #include "vec3.hpp"
 #include <vector>
 
 class search_tree{
     public:
-        search_tree *left_node;
+            search_tree *left_node;
         search_tree *right_node;
-        int*faces_in_node;
         float parameters [6];
-        int number_of_node_faces;
-        static void build_tree(float* vertices, int* faces, std::vector<search_tree*> leaf_nodes, search_tree**root );
+        int*faces_in_node, number_of_node_faces;
+        static void build_tree(float* vertices, int* faces, std::vector<search_tree*> *leaf_nodes, search_tree**root );
         static void traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<int> *output);
         static void leaf_nodes(float* vertices, int*faces, int number_of_faces, std::vector<search_tree*> *leaf_nodes);
         static void find_parameters(int i, float* vertices, int*faces,  std::vector<float> *parameters, std::vector<float> initial_parameters);
+        static void delete_tree(search_tree* root);
+        static void delete_leaf_nodes(std::vector<search_tree*> leaf_nodes); 
     private:
+
+        
 };
 class Bounding_box{
     public:
@@ -24,10 +28,7 @@ class Bounding_box{
         float get_tmin(void);
         float get_tmax(void);
     private:
-        float parameters [6];
-        float tmin;
-        float tmax;
-
+        float parameters [6], tmin, tmax;
 };
 
 #endif
