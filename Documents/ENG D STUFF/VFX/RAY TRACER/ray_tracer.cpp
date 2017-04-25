@@ -38,7 +38,7 @@ int main(int argc, char* argv[] ){
 	unsigned char * data, * data2, *data3, *data4;
 	int texture_width, texture_height, texture_width2, texture_height2, texture_width3, texture_height3, texture_width4, texture_height4;
 	data = readBMP("metal.bmp", &texture_width, &texture_height);
-	data2 = readBMP("beach.bmp", &texture_width2, &texture_height2);
+	data2 = readBMP("scene.bmp", &texture_width2, &texture_height2);
 	data3 = readBMP("wood.bmp", &texture_width3, &texture_height3);
 	data4 = readBMP("texture.bmp", &texture_width4, &texture_height4);
 	int texture_data [] = {texture_width2, texture_height2, texture_width, texture_height, texture_width3, texture_height3, texture_width4, texture_height4};
@@ -64,7 +64,7 @@ int main(int argc, char* argv[] ){
 	std::thread t2(TriangleColour::phong_areas, FV_s, FN_s, N_s,V_s, area_s, A_s, F_s);
 	t2.join();
 
-for (int obj_file_input =  1; obj_file_input<81; obj_file_input++){
+for (int obj_file_input =  1; obj_file_input<2; obj_file_input++){
 
 std::cout<<"image no "<<obj_file_input<<"\n";
 	//initial inputs
@@ -110,9 +110,9 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 		search_tree::build_tree(V_sk, FV_sk, &leaf_nodes_sk, &root_sk);
 		std::cout<<"skeleton tree built \n";
 
-		vector3 eye(-25,135,-490); 
-		vector3 lookup(-25,530,-490);
-		vector3 lookat(-25,135,1);
+		vector3 eye(190,125,-220); 
+		vector3 lookup(190,530,-220);
+		vector3 lookat(-110,125,1);
 		Light sun(0,150,-400,1); 
 
 		vector3 light = sun.get_position();
@@ -150,7 +150,6 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 		std::vector<search_tree*> root_data = {root_s, root, root_h, root_sk};
 
 		unsigned char *img = new unsigned char[3*myscene.get_x_res()*myscene.get_y_res()];
-		std::cout<<"line 153 \n";
 		for (int x = 0; x<3*myscene.get_x_res()*myscene.get_y_res(); x+=3){
 			int i, j;
 			i=(x/(3))%(myscene.get_x_res());
@@ -158,8 +157,7 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 
 			std::vector<vector3> colours;
 			std::vector<vector3> scene_pos = {u, v, eye};
-			
-			float current_pos [] = {i-1/2.0f, j+1/2.0f, 0, ratio};
+			float current_pos [] = {i-1/2.0f, j+1/2.0f, 0, ratio, (float)i, (float)j} ;
 			TriangleColour::anti_aliasing(scene_pos, root_data, mesh_data_f, mesh_data_i, RED, sun, myscene, &colours, L, current_pos, texture_bmp, texture_data);
 			
 			float R=0, G=0, B=0;
@@ -168,10 +166,24 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 				G = G + colours[k].get_y();
 				B = B + colours[k].get_z();
 			}
-
-			img[x] = (unsigned char)(R/colours.size());
-			img[x+1]=(unsigned char)(G/colours.size());
-			img[x+2]= (unsigned char)(B/colours.size());
+			// if ((R/colours.size())==0){
+			// 	img[x] =data2[(3*(1080-j-1)*texture_width2+ 3*i+3)];
+			// }
+		//	else{
+				img[x] = (unsigned char)(R/colours.size());
+		//	}
+			// if ((G/colours.size())==0){
+			// 	img[x+1] =data2[(3*(1080-j-1)*texture_width2+ 3*i+3)+1];
+			// }
+		//	else{
+				img[x+1]=(unsigned char)(G/colours.size());
+		//	}
+		//	if ((B/colours.size())==0){
+		//		img[x+2] =data2[(3*(1080-j-1)*texture_width2+ 3*i+3)+2];
+		//	}
+		//	else{
+				img[x+2]= (unsigned char)(B/colours.size());
+		//	}
 		}
 
 		std::string j;
