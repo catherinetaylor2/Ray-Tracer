@@ -113,7 +113,7 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 		vector3 eye(190,125,-220); 
 		vector3 lookup(190,530,-220);
 		vector3 lookat(-110,125,1);
-		Light sun(0,150,-400,1); 
+		Light sun(400,150,-400,1); 
 
 		vector3 light = sun.get_position();
 		scene myscene(width,height,90,3);
@@ -166,24 +166,9 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 				G = G + colours[k].get_y();
 				B = B + colours[k].get_z();
 			}
-			// if ((R/colours.size())==0){
-			// 	img[x] =data2[(3*(1080-j-1)*texture_width2+ 3*i+3)];
-			// }
-		//	else{
-				img[x] = (unsigned char)(R/colours.size());
-		//	}
-			// if ((G/colours.size())==0){
-			// 	img[x+1] =data2[(3*(1080-j-1)*texture_width2+ 3*i+3)+1];
-			// }
-		//	else{
-				img[x+1]=(unsigned char)(G/colours.size());
-		//	}
-		//	if ((B/colours.size())==0){
-		//		img[x+2] =data2[(3*(1080-j-1)*texture_width2+ 3*i+3)+2];
-		//	}
-		//	else{
-				img[x+2]= (unsigned char)(B/colours.size());
-		//	}
+			img[x] = (unsigned char)(R/colours.size());
+			img[x+1]=(unsigned char)(G/colours.size());
+			img[x+2]= (unsigned char)(B/colours.size());
 		}
 
 		std::string j;
