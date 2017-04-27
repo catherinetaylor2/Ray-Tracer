@@ -155,7 +155,8 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
     if (t < infinity){
         if (min_value == -1){
           //  vector3 RGB (0,0,0);
-          vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
+        //  vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
+          vector3 RGB(0,0,255);
             delete k;
             delete k1;
             delete k2;
@@ -338,7 +339,8 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
     }
     else{
         //vector3 RGB(0,0,0);
-        vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
+        //vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
+          vector3 RGB(0,0,255);
         delete k;
         delete k1;
         delete k2;
@@ -346,7 +348,8 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
         return RGB;
     }
 //	vector3 RGB(0, 0, 0);
- vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
+// vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
+    vector3 RGB(0,0,255);
     delete k;
     delete k1;
     delete k2;

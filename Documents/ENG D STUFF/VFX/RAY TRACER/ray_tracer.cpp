@@ -64,11 +64,24 @@ int main(int argc, char* argv[] ){
 	std::thread t2(TriangleColour::phong_areas, FV_s, FN_s, N_s,V_s, area_s, A_s, F_s);
 	t2.join();
 
-for (int obj_file_input =  1; obj_file_input<2; obj_file_input++){
+	for (int obj_file_input =  1; obj_file_input<263; obj_file_input++){
 
-std::cout<<"image no "<<obj_file_input<<"\n";
+		std::cout<<"image no "<<obj_file_input<<"\n";
+		std::string j;
+
+		if(obj_file_input < 10){
+			j = "000"+std::to_string(obj_file_input);
+		}
+		else if ((obj_file_input>=10)&&(obj_file_input<100)){
+			j= "00" + std::to_string(obj_file_input);
+		}
+		else{
+			j= "0" + std::to_string(obj_file_input);
+		}
+
+
 	//initial inputs
-		ObjFile mesh("sword.obj");
+		ObjFile mesh("sword_OBJ_Seq/sword."+j+ ".obj");
 		float* V , *N, *VT;
 		int *FV, *FN, *F_VT;
 		mesh.get_vertices(&V);
@@ -82,7 +95,7 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 		search_tree::build_tree(V, FV, &leaf_nodes, &root);
 		std::cout<<"sword tree built \n";
 
-		ObjFile mesh_handle("handle1.obj");
+		ObjFile mesh_handle("handle_OBJ_Seq/handle."+j+ ".obj");
 		float *V_h, *N_h, *VT_h;
 		int *FV_h, *FN_h, *F_VT_h;
 		mesh_handle.get_vertices(&V_h);
@@ -96,7 +109,8 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 		search_tree::build_tree(V_h, FV_h, &leaf_nodes_h, &root_h);
 		std::cout<<"handle tree built \n";
 	
-		ObjFile mesh_skeleton("objs/" +std::to_string(obj_file_input)+ ".obj");
+	//"objs/" +std::to_string(obj_file_input)+ ".obj"
+		ObjFile mesh_skeleton("skeleton_OBJ_Seq/skeleton."+j+ ".obj");
 		float *V_sk, *N_sk, *VT_sk;
 		int *FV_sk, *FN_sk, *F_VT_sk;
 		mesh_skeleton.get_vertices(&V_sk);
@@ -110,11 +124,16 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 		search_tree::build_tree(V_sk, FV_sk, &leaf_nodes_sk, &root_sk);
 		std::cout<<"skeleton tree built \n";
 
-		vector3 eye(190,125,-220); 
-		vector3 lookup(190,530,-220);
-		vector3 lookat(-110,125,1);
-		Light sun(400,150,-400,1); 
 
+		// vector3 eye(190,125,-220); 
+		// vector3 lookup(190,530,-220);
+		// vector3 lookat(-110,125,1);
+
+		vector3 eye(-55,125,-150); 
+		vector3 lookup(20,530,-150);
+		vector3 lookat(-55,125,1);
+
+		Light sun(-500,350,-400,1);  
 		vector3 light = sun.get_position();
 		scene myscene(width,height,90,3);
 		float d = myscene.get_distance_to_image();
@@ -171,17 +190,6 @@ std::cout<<"image no "<<obj_file_input<<"\n";
 			img[x+2]= (unsigned char)(B/colours.size());
 		}
 
-		std::string j;
-
-		if(obj_file_input < 10){
-			j = "000"+std::to_string(obj_file_input);
-		}
-		else if ((obj_file_input>=10)&&(obj_file_input<100)){
-			j= "00" + std::to_string(obj_file_input);
-		}
-		else{
-			j= "0" + std::to_string(obj_file_input);
-		}
 
 		std::ofstream image2(j+".bmp", std::ios::out| std::ios::binary);
 		BITMAP_File_Header file_header;
