@@ -17,6 +17,7 @@ class search_tree{
         static void find_parameters(int i, float* vertices, int*faces,  std::vector<float> *parameters, std::vector<float> initial_parameters);
         static void delete_tree(search_tree* root);
         static void delete_leaf_nodes(std::vector<search_tree*> leaf_nodes); 
+        void get_tree_data(float* vertices, int* faces, std::vector<search_tree*> *leaf_nodes, search_tree**root );
     private:
 
         

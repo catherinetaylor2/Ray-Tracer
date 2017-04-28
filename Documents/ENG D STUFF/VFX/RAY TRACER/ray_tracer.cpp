@@ -12,6 +12,7 @@
 #include "readObj.hpp"
 #include "search_tree.hpp"
 #include "BITMAP.hpp"
+#include "tri_mesh.hpp"
 #include <omp.h> 
 
 const int RED[] = {255,0,0};
@@ -44,17 +45,14 @@ int main(int argc, char* argv[] ){
 	int texture_data [] = {texture_width2, texture_height2, texture_width, texture_height, texture_width3, texture_height3, texture_width4, texture_height4};
 	std::vector<unsigned char*> texture_bmp = {data2, data, data3, data4};
 
-
-	ObjFile mesh_sphere("sphere3.obj");
 	float* V_s, *N_s, *VT_s;
-	int* FV_s, *FN_s, *F_VT_s; 
-	mesh_sphere.get_vertices(&V_s);
-	mesh_sphere.get_texture(&VT_s);
-	mesh_sphere.get_normals(&N_s);
-	mesh_sphere.get_face_data(&FV_s, &FN_s, &F_VT_s);
-    int F_s = mesh_sphere.get_number_of_faces();
+	int* FV_s, *FN_s, *F_VT_s, F_s;
 	search_tree* root_s; 
 	std::vector<search_tree*> leaf_nodes_s;
+
+	ObjFile mesh_sphere("sphere3.obj");
+	mesh_sphere.get_mesh_data(mesh_sphere, &FV_s, &FN_s, &F_VT_s, &VT_s, &N_s, &V_s, &F_s);
+
 	search_tree::leaf_nodes(V_s, FV_s, F_s, &leaf_nodes_s);
 	search_tree::build_tree(V_s, FV_s, &leaf_nodes_s, &root_s);
 	std::cout<<"sphere tree built \n";
@@ -64,8 +62,9 @@ int main(int argc, char* argv[] ){
 	std::thread t2(TriangleColour::phong_areas, FV_s, FN_s, N_s,V_s, area_s, A_s, F_s);
 	t2.join();
 
-	for (int obj_file_input =  1; obj_file_input<263; obj_file_input++){
-
+	for (int obj_file_input =  2; obj_file_input<263; obj_file_input++){
+float * V , *N, *VT, *V_h, *N_h, *VT_h, *V_sk, *N_sk, *VT_sk;
+int* FV, *FN, *F_VT, F, *FV_h, *FN_h, *F_VT_h, F_h, *FV_sk, *FN_sk, *F_VT_sk, F_sk; 
 		std::cout<<"image no "<<obj_file_input<<"\n";
 		std::string j;
 
@@ -81,43 +80,28 @@ int main(int argc, char* argv[] ){
 
 
 	//initial inputs
-		ObjFile mesh("sword_OBJ_Seq/sword."+j+ ".obj");
-		float* V , *N, *VT;
-		int *FV, *FN, *F_VT;
-		mesh.get_vertices(&V);
-		mesh.get_texture(&VT);
-		mesh.get_normals(&N);
-		mesh.get_face_data(&FV, &FN, &F_VT);
-		int F = mesh.get_number_of_faces();
+		ObjFile mesh1("sword_OBJ_Seq/sword."+j+ ".obj");
+		mesh sword_mesh(mesh1);
 		search_tree* root;
 		std::vector<search_tree*> leaf_nodes;
+		mesh1.get_mesh_data(mesh1, &FV, &FN, &F_VT, &VT, &N, &V, &F);
 		search_tree::leaf_nodes(V, FV, F, &leaf_nodes);
 		search_tree::build_tree(V, FV, &leaf_nodes, &root);
 		std::cout<<"sword tree built \n";
+		//std::cout<<"v "<<V[0]<<" "<<sword_mesh vertices[0]<<"\n";
 
 		ObjFile mesh_handle("handle_OBJ_Seq/handle."+j+ ".obj");
-		float *V_h, *N_h, *VT_h;
-		int *FV_h, *FN_h, *F_VT_h;
-		mesh_handle.get_vertices(&V_h);
-		mesh_handle.get_texture(&VT_h);
-		mesh_handle.get_normals(&N_h);
-		mesh_handle.get_face_data(&FV_h, &FN_h, &F_VT_h);
-		int F_h = mesh_handle.get_number_of_faces();
+		mesh_handle.get_mesh_data(mesh_handle, &FV_h, &FN_h, &F_VT_h, &VT_h, &N_h, &V_h, &F_h);
 		search_tree* root_h;
 		std::vector<search_tree*> leaf_nodes_h;
 		search_tree::leaf_nodes(V_h, FV_h, F_h, &leaf_nodes_h);
 		search_tree::build_tree(V_h, FV_h, &leaf_nodes_h, &root_h);
 		std::cout<<"handle tree built \n";
 	
-	//"objs/" +std::to_string(obj_file_input)+ ".obj"
-		ObjFile mesh_skeleton("skeleton_OBJ_Seq/skeleton."+j+ ".obj");
-		float *V_sk, *N_sk, *VT_sk;
-		int *FV_sk, *FN_sk, *F_VT_sk;
-		mesh_skeleton.get_vertices(&V_sk);
-		mesh_skeleton.get_texture(&VT_sk);
-		mesh_skeleton.get_normals(&N_sk);
-		mesh_skeleton.get_face_data(&FV_sk, &FN_sk, &F_VT_sk);
-		int F_sk = mesh_skeleton.get_number_of_faces();
+
+//		ObjFile mesh_skeleton("skeleton_OBJ_Seq/skeleton."+j+ ".obj");
+		ObjFile mesh_skeleton("handle1.obj");
+		mesh_skeleton.get_mesh_data(mesh_skeleton, &FV_sk, &FN_sk, &F_VT_sk, &VT_sk, &N_sk, &V_sk, &F_sk);
 		search_tree* root_sk;
 		std::vector<search_tree*> leaf_nodes_sk;
 		search_tree::leaf_nodes(V_sk, FV_sk, F_sk, &leaf_nodes_sk);
@@ -129,9 +113,9 @@ int main(int argc, char* argv[] ){
 		// vector3 lookup(190,530,-220);
 		// vector3 lookat(-110,125,1);
 
-		vector3 eye(-55,125,-150); 
-		vector3 lookup(20,530,-150);
-		vector3 lookat(-55,125,1);
+		vector3 eye(-55,115,-140); 
+		vector3 lookup(10,530,-140);
+		vector3 lookat(-55,115,1);
 
 		Light sun(-500,350,-400,1);  
 		vector3 light = sun.get_position();
@@ -206,50 +190,50 @@ int main(int argc, char* argv[] ){
 		}
 		image2.close();
 
-		delete img;
-		delete FV;
-		delete FN;
-		delete VT;
-		delete F_VT;
-		delete V;
-		delete N;
+		delete[] img;
+		delete[] FV;
+		delete[] FN;
+		delete []VT;
+		delete[] F_VT;
+		delete[] V;
+		delete[] N;
 		search_tree::delete_tree(root);
-		delete area;
-		delete A;
+		delete[] area;
+		delete[] A;
 
-		delete FV_h;
-		delete FN_h;
-		delete VT_h;
-		delete F_VT_h;
-		delete V_h;
-		delete N_h;
+		delete[] FV_h;
+		delete[] FN_h;
+		delete[] VT_h;
+		delete[] F_VT_h;
+		delete[] V_h;
+		delete[] N_h;
 		search_tree::delete_tree(root_h);
-		delete area_h;
-		delete A_h;
+		delete[] area_h;
+		delete[] A_h;
 
-		delete FV_sk;
-		delete FN_sk;
-		delete VT_sk;
-		delete F_VT_sk;
-		delete V_sk;
-		delete N_sk;
+		delete[] FV_sk;
+		delete[] FN_sk;
+		delete[] VT_sk;
+		delete[] F_VT_sk;
+		delete[] V_sk;
+		delete[] N_sk;
 		search_tree::delete_tree(root_sk);
-		delete area_sk;
-		delete  A_sk; 
+		delete[] area_sk;
+		delete[]  A_sk; 
 
 		std::cout<<"done \n";
 }
 
-	delete FV_s;
-	delete FN_s;
-	delete VT_s;
-	delete F_VT_s;
-	delete V_s;
-	delete N_s;
+	delete[] FV_s;
+	delete[] FN_s;
+	delete[] VT_s;
+	delete[] F_VT_s;
+	delete[] V_s;
+	delete[] N_s;
     search_tree::delete_tree(root_s);
 
-	delete area_s;
-	delete A_s;
+	delete[] area_s;
+	delete[] A_s;
 
     return 0;
 }
