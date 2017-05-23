@@ -111,14 +111,14 @@ vector3 triangle::get_triangle_normal(void){
 void triangle::get_colour(std::vector<int>*tri_colour){
    *tri_colour = colour;
 }
-float triangle::ray_triangle_intersection(vector3 ray_point, vector3 ray_direction){
+float triangle::ray_triangle_intersection(Ray R){
     vector3 normal(normal[0], normal[1], normal[2]);
-    float r = vector3::dotproduct(normal,ray_direction);
+    float r = vector3::dotproduct(normal, R.get_direction());
     if (fabs(r) < 0.000000001f){
               return 0;
     }
-    float t=(point_D - vector3::dotproduct(normal,ray_point) )/r;
-    vector3 intersection_point = vector3::vec_add(ray_point, vector3::vec_scal_mult(t, ray_direction));
+    float t=(point_D - vector3::dotproduct(normal,R.get_origin()) )/r;
+    vector3 intersection_point = vector3::vec_add(R.get_origin(), vector3::vec_scal_mult(t,  R.get_direction()));
     vector3 V1(vertex1[0],vertex1[1],vertex1[2]);
     vector3 V2(vertex2[0], vertex2[1], vertex2[2]);
     vector3 V3(vertex3[0], vertex3[1], vertex3[2]);
@@ -135,10 +135,10 @@ float triangle::ray_triangle_intersection(vector3 ray_point, vector3 ray_directi
      lighting_coefficients = {DC, SC, AC, SP};
  }
 
-vector3 triangle::determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow, float* colours){
+vector3 triangle::determine_colour(vector3 point, vector3 light_direction, Ray R, Light source, vector3 normal, scene myscene, int shadow, float* colours){
     float D, DD, Red_term, Green_term, Blue_term;
     D = myscene.DiffuseValue(normal, light_direction);
-    DD = myscene.SpecularValue(normal,light_direction,ray_direction);
+    DD = myscene.SpecularValue(normal,light_direction, R.get_direction());
     Red_term = (source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colours[0]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
     Green_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colours[1]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);
     Blue_term =(source.get_light_intensity())*((shadow*lighting_coefficients[0]*D+lighting_coefficients[2])*colours[2]+shadow*pow(DD,lighting_coefficients[3])*lighting_coefficients[1]);

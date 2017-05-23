@@ -39,7 +39,8 @@
             index = triangle_intersections[z];
             c1 = faces[3*index] -1, c2 = faces[3*index+1]-1, c3 = faces[3*index+2] -1 ;
             triangle tri2(vertices[3*c1], vertices[3*c1+1], vertices[3*c1+2], vertices[3*c2], vertices[3*c2+1],vertices[3*c2+2], vertices[3*c3], vertices[3*c3+1], vertices[3*c3+2], sphere_colour);
-            float ss = tri2.ray_triangle_intersection( point, l);
+            Ray shadowRay(point,l);
+            float ss = tri2.ray_triangle_intersection(shadowRay);
             if ((ss)> 0){
                 s = 0;
             }
@@ -48,7 +49,7 @@
     return s;
  }
 
-vector3 TriangleColour::phong_normal(int triangle, float* vertices, float*normals, int*face, int*face_normals, float* areas, float*edges, vector3 point, vector3 d, float **barycentric){
+vector3 TriangleColour::phong_normal(int triangle, float* vertices, float*normals, int*face, int*face_normals, float* areas, float*edges, Ray R, float **barycentric){
     float denominator;
     int c_m1, c_m2, c_m3, n1, n2, n3;
     c_m1 = face[3*triangle] -1, c_m2 = face[3*triangle+1]-1, c_m3 = face[3*triangle+2] -1 ;
@@ -59,11 +60,11 @@ vector3 TriangleColour::phong_normal(int triangle, float* vertices, float*normal
     vector3 N1(normals[3*n1], normals[3*n1+1], normals[3*n1+2]);
     vector3 N2(normals[3*n2], normals[3*n2+1], normals[3*n2+2]);
     vector3 N3(normals[3*n3], normals[3*n3+1], normals[3*n3+2]);
-    vector3 T = vector3::vec_add(point, vector3::vec_scal_mult(-1, point1));
+    vector3 T = vector3::vec_add(R.get_origin(), vector3::vec_scal_mult(-1, point1));
     vector3 E1 = vector3::vec_add(point2, vector3::vec_scal_mult(-1, point1));
     vector3 E2 = vector3::vec_add(point3, vector3::vec_scal_mult(-1, point1));
-    denominator = vector3::dotproduct( vector3::crossproduct(d, E2), E1);
-    vector3 M (vector3::dotproduct(vector3::crossproduct(T, E1), E2),vector3::dotproduct(vector3::crossproduct(d, E2), T),vector3::dotproduct( vector3::crossproduct(T, E1), d));
+    denominator = vector3::dotproduct( vector3::crossproduct(R.get_direction(), E2), E1);
+    vector3 M (vector3::dotproduct(vector3::crossproduct(T, E1), E2),vector3::dotproduct(vector3::crossproduct(R.get_direction(), E2), T),vector3::dotproduct( vector3::crossproduct(T, E1), R.get_direction()));
     vector3 tuv = vector3::vec_scal_mult(1.0f/(float)denominator, M);
     vector3 N = vector3::vec_add3(vector3::vec_scal_mult(std::max((float)(1-(tuv.get_y()+tuv.get_z())),0.0f),N1),vector3::vec_scal_mult(std::max(tuv.get_y(), 0.0f),N2),vector3::vec_scal_mult(std::max(tuv.get_z(),0.0f),N3));
     (*barycentric)[0] =1.0f-(tuv.get_y()+tuv.get_z());
@@ -71,14 +72,14 @@ vector3 TriangleColour::phong_normal(int triangle, float* vertices, float*normal
     (*barycentric)[2] = tuv.get_z();
     return N;
 }
-float TriangleColour::find_intersection_point(search_tree* root, float*vertices, int* faces, vector3 eye, vector3 d, int* min_value, const int* tri_colour, int**k){
+float TriangleColour::find_intersection_point(search_tree* root, float*vertices, int* faces, Ray R, int* min_value, const int* tri_colour, int**k){
     Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
     std::vector<int>  output;
     float t_min = infinity;
 	int c1, c2, c3;
     output.clear();
-    if(B_root.ray_box_intersection(eye, d)==1){
-        search_tree::traverse_tree(root, eye, d, &output);
+    if(B_root.ray_box_intersection(R.get_origin(), R.get_direction())==1){
+        search_tree::traverse_tree(root, R.get_origin(), R.get_direction(), &output);
     }
     *k=new int[output.size()+1];
     (*k)[0]=-1;
@@ -95,12 +96,12 @@ float TriangleColour::find_intersection_point(search_tree* root, float*vertices,
             index = (*k)[z];
             c1 = faces[3*index] -1, c2 = faces[3*index+1]-1, c3 = faces[3*index+2] -1 ;
             triangle tri(vertices[3*c1], vertices[3*c1+1], vertices[3*c1+2], vertices[3*c2], vertices[3*c2+1], vertices[3*c2+2], vertices[3*c3], vertices[3*c3+1], vertices[3*c3+2], tri_colour);
-            t = tri.ray_triangle_intersection(eye,d);
+            t = tri.ray_triangle_intersection(R);
             t_values[z-1]=t;
         }
         for (int z=0; z<(*k)[0]; z++){
             if ((t_values[z]>0)){
-                vector3 xyz = vector3::vec_add( eye , vector3::vec_scal_mult(t_values[z],d));
+                vector3 xyz = vector3::vec_add( R.get_origin() , vector3::vec_scal_mult(t_values[z],R.get_direction()));
                 if (xyz.get_z()<t_min){
                     t_min = xyz.get_z();
                     *min_value = z;
@@ -114,11 +115,11 @@ float TriangleColour::find_intersection_point(search_tree* root, float*vertices,
 
 
 
-vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<search_tree*> root_data, std::vector<float*> mesh_data,std::vector<int*> mesh_data_i,  const int* tri_colour, Light sun, scene myscene, std::vector<unsigned char*> data_bmp, int* texture_data, int pixel_x,int pixel_y){
+vector3 TriangleColour::intersection_colour(Ray R, std::vector<search_tree*> root_data, std::vector<float*> mesh_data,std::vector<int*> mesh_data_i,  const int* tri_colour, Light sun, scene myscene, std::vector<unsigned char*> data_bmp, int* texture_data, int pixel_x,int pixel_y){
     int min_value1 = -1, min_value2 = -1, min_value, obj, min_value3 = -1,*k, *k1, *k2, *ks ;
-    float t1 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], eye, d, &min_value1, tri_colour, &k1), t;
-    float t2 = TriangleColour::find_intersection_point(root_data[2], mesh_data[10], mesh_data_i[6], eye, d, &min_value2, tri_colour, &k2);
-    float ts = TriangleColour::find_intersection_point(root_data[3], mesh_data[15], mesh_data_i[9], eye, d, &min_value3, tri_colour, &ks);
+    float t1 = TriangleColour::find_intersection_point(root_data[1], mesh_data[5], mesh_data_i[3], R, &min_value1, tri_colour, &k1), t;
+    float t2 = TriangleColour::find_intersection_point(root_data[2], mesh_data[10], mesh_data_i[6], R, &min_value2, tri_colour, &k2);
+    float ts = TriangleColour::find_intersection_point(root_data[3], mesh_data[15], mesh_data_i[9], R, &min_value3, tri_colour, &ks);
 
     if ((t2 < t1 )&&(t2<ts)){
         t=t2;
@@ -156,7 +157,6 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
         if (min_value == -1){
             vector3 RGB (0,0,0);
      // vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
-    //      vector3 RGB(0,0,255);
             delete k;
             delete k1;
             delete k2;
@@ -167,12 +167,12 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
             int m = k[min_value+1], s, vt1, vt2, vt3;
             c_m1 = faces[3*m] -1, c_m2 = faces[3*m+1]-1, c_m3 = faces[3*m+2] -1 ;
             vt1 = F_VT[3*m]-1, vt2 = F_VT[3*m+1]-1, vt3 = F_VT[3*m+2]-1;
-            float vt_1x = VT[2*vt1], vt_1y = VT[2*vt1+1], vt_2x = VT[2*vt2], vt_2y = VT[2*vt2+1], vt_3x = VT[2*vt3], vt_3y = VT[2*vt3+1], R,G,B;
+            float vt_1x = VT[2*vt1], vt_1y = VT[2*vt1+1], vt_2x = VT[2*vt2], vt_2y = VT[2*vt2+1], vt_3x = VT[2*vt3], vt_3y = VT[2*vt3+1], R1,G,B;
             triangle tri(vertices[3*c_m1], vertices[3*c_m1+1], vertices[3*c_m1+2], vertices[3*c_m2], vertices[3*c_m2+1],vertices[3*c_m2+2], vertices[3*c_m3], vertices[3*c_m3+1], vertices[3*c_m3+2], tri_colour);
-            t = tri.ray_triangle_intersection(eye,d);
+            t = tri.ray_triangle_intersection(R);
             if((t!=0)){
                 tri.set_lighting_constants((float)0.4f,255.0f, (float)0.3f, (float)170);
-                vector3 point = vector3::vec_add(eye, vector3::vec_scal_mult(t-0.35f,d));
+                vector3 point = vector3::vec_add(R.get_origin(), vector3::vec_scal_mult(t-0.35f,R.get_direction()));
                 vector3 l = sun.get_light_direction(point);
                 vector3 normal=tri.get_triangle_normal();
 
@@ -192,7 +192,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                 s = TriangleColour::shadows(k3, faces, vertices, point, l, tri_colour);
                 delete k3;
                 float* barycentric = new float[3];
-                vector3 phong_normal = TriangleColour::phong_normal(m, vertices, normals, faces, face_normals, areas, edges, eye, d, &barycentric);
+                vector3 phong_normal = TriangleColour::phong_normal(m, vertices, normals, faces, face_normals, areas, edges, R, &barycentric);
                 float r_g_b[3] = {0,0,0};
 
                 if(obj==1){ //reflective sword code.
@@ -201,9 +201,10 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                     // vector3 R = vector3::vec_scal_mult(2.0f*vector3::dotproduct(d, normal), normal);
                     // vector3 H = vector3::vec_add(d, vector3::vec_scal_mult(-1,R));
                     // H.normalize();
-                        vector3 H =vector3::vec_add(l, vector3::vec_scal_mult(-1,d));
+                        vector3 H =vector3::vec_add(l, vector3::vec_scal_mult(-1,R.get_direction()));
                         H.normalize();
-                    float t3 = TriangleColour::find_intersection_point(root_data[0], mesh_data[0], mesh_data_i[0], point, H, &min_value, tri_colour, &k4);
+                        Ray reflectionRay(point, H);
+                    float t3 = TriangleColour::find_intersection_point(root_data[0], mesh_data[0], mesh_data_i[0], reflectionRay, &min_value, tri_colour, &k4);
                     if (t3<infinity){
                         m = k4[min_value+1];
                         obj = 0;
@@ -215,7 +216,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                         triangle tri1(vertices1[3*c_m1], vertices1[3*c_m1+1], vertices1[3*c_m1+2], vertices1[3*c_m2], vertices1[3*c_m2+1],vertices1[3*c_m2+2], vertices1[3*c_m3], vertices1[3*c_m3+1], vertices1[3*c_m3+2], tri_colour);
                         tri1.set_lighting_constants((float)0.5, (float)0.5*255, (float)0.3, (float)170);
                         float *b2 = new float[3];
-                        vector3 phong_normal1 = TriangleColour::phong_normal(m, vertices1, normals1, faces1, face_normals1, areas1, edges1, point, H, &b2);
+                        vector3 phong_normal1 = TriangleColour::phong_normal(m, vertices1, normals1, faces1, face_normals1, areas1, edges1, reflectionRay, &b2);
                         delete b2;
 
                         int texture_width1 = texture_data[0+obj*2], texture_height1 = texture_data[1+obj*2];
@@ -261,7 +262,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                         v34b =  (1-alpha)*data1[v4y*texture_width1*3 + 3*v1x+2] +  alpha*data1[v4y*texture_width1*3 + 3*v2x+2];
                         float colour1[] = {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
               
-                        vector3 RGB_1 = tri1.determine_colour(point1, l1, d, sun, phong_normal1, myscene,s, colour1);
+                        vector3 RGB_1 = tri1.determine_colour(point1, l1, R, sun, phong_normal1, myscene,s, colour1);
                         r_g_b [0] = RGB_1.get_x();
                         r_g_b[1] = RGB_1.get_y();
                         r_g_b[2]=RGB_1.get_z();
@@ -310,12 +311,12 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                 v34b =  (1-alpha)*data[v4y*texture_width*3 + 3*v1x+2] +  alpha*data[v4y*texture_width*3 + 3*v2x+2];
                 float colour[] = {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
 
-                vector3 RGB2 = vector3::vec_add(tri.determine_colour(point, l, d, sun, phong_normal, myscene,s, colour), vector3::vec_scal_mult(0.5f,RGB1));
+                vector3 RGB2 = vector3::vec_add(tri.determine_colour(point, l, R, sun, phong_normal, myscene,s, colour), vector3::vec_scal_mult(0.5f,RGB1));
                 if (RGB2.get_x()>255){
-                    R = 255;
+                    R1= 255;
                 }
                 else{
-                    R = RGB2.get_x();
+                    R1 = RGB2.get_x();
                 }
                     if (RGB2.get_y()>255){
                      G = 255;
@@ -329,7 +330,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                 else{
                     B = RGB2.get_z();
                 }
-                vector3 RGB(R,G,B);
+                vector3 RGB(R1,G,B);
                 delete k;
                 delete k1;
                 delete k2;
@@ -369,7 +370,8 @@ void TriangleColour::anti_aliasing(std::vector<vector3> scene_pos, std::vector<s
         vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(1*(I)*ratio,u), vector3::vec_scal_mult(-1*(J)*ratio,v) );
         vector3 d(s.get_x()-camera_origin.get_x(),s.get_y()-camera_origin.get_y(),s.get_z()-camera_origin.get_z());
         d.normalize();
-        vector3 RGB = TriangleColour::intersection_colour(d, camera_origin, root_data, mesh_data, mesh_data_i, tri_colour, sun, myscene, data_bmp, texture_data, (int)ijit[4], (int)ijit[5]);
+        Ray R(camera_origin, d);
+        vector3 RGB = TriangleColour::intersection_colour(R, root_data, mesh_data, mesh_data_i, tri_colour, sun, myscene, data_bmp, texture_data, (int)ijit[4], (int)ijit[5]);
         (*colours).push_back(RGB);
     }
     int quadrant = -1;

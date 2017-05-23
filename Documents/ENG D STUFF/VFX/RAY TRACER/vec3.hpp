@@ -1,6 +1,7 @@
 #ifndef vec3_hpp
 #define vec3_hpp
-#include<iostream>
+
+#include <iostream>
 #include <vector>
 
 class vector3{
@@ -57,14 +58,11 @@ class Ray{
         Ray(vector3 origin, vector3 direction);
         vector3 origin;
         vector3 direction;
-        float x(vector3 vec){
-            return vec.get_x();
+        vector3 get_origin(void){
+            return origin;
         }
-        float y(vector3 vec){
-            return vec.get_y();
+        vector3 get_direction(void){
+            return direction;
         }
-        float z(vector3 vec){
-            return vec.get_z();
-        }
- };
+};
 #endif

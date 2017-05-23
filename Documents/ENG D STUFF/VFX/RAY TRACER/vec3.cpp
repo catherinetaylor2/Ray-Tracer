@@ -1,12 +1,17 @@
 #include <cstdlib>
 #include <iostream>
 #include <cmath>
-#include"vec3.hpp"
+#include "vec3.hpp"
 
 vector3::vector3(float x, float y, float z){
     x_val=x;
     y_val=y;
     z_val=z;
+}
+vector3::vector3(){
+    x_val=0.0f;
+    y_val=0.0f;
+    z_val=0.0f;
 }
 float vector3::get_x(void){
     return x_val;
@@ -27,4 +32,8 @@ void vector3::normalize(void){
     x_val/= sum;
     y_val /= sum;
     z_val /=sum;
+}
+Ray::Ray(vector3 o, vector3 d){
+    origin.setValue(o.get_x(), o.get_y(), o.get_z());
+    direction.setValue(d.get_x(), d.get_y(), d.get_z());
 }

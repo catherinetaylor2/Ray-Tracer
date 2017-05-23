@@ -131,7 +131,7 @@ int main(int argc, char* argv[] ){
 		float half_width= (float)myscene.get_width()/2.0f, half_height = (float)myscene.get_height()/2.0f;
 		vector3 L = vector3::vec_add3(C, vector3::vec_scal_mult(-half_width,u), vector3::vec_scal_mult(half_height,v) );
 		float ratio = (myscene.get_width())/((float)myscene.get_x_res());
-
+		
 		float* area = new float[F];
 		float* A = new float[3*F];
 		std::thread t1(TriangleColour::phong_areas, FV, FN, N,V, area, A, F);

@@ -41,9 +41,9 @@ class triangle{
         triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z, const int* sphere_colour);
         void get_vertex(std::vector<float> *vertex, int vertex_number);
         void get_colour(std::vector<int>*tri_colour);
-        float ray_triangle_intersection(vector3 ray_point, vector3 ray_direction);
+        float ray_triangle_intersection(Ray R);
         void set_lighting_constants(float DC, float SC, float AC, float SP);
-        vector3 determine_colour(vector3 point, vector3 light_direction, vector3 ray_direction, Light source, vector3 normal, scene myscene, int shadow, float* colours);
+        vector3 determine_colour(vector3 point, vector3 light_direction, Ray R, Light source, vector3 normal, scene myscene, int shadow, float* colours);
     private:
         float point_D;
         std::vector<int> colour;
