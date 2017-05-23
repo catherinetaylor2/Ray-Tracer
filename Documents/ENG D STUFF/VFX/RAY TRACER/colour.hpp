@@ -8,7 +8,7 @@
 #include <cmath>
 #include <vector>
 #include"vec3.hpp"
-#include"sphere.hpp"
+#include "Triangle.hpp"
 #include "search_tree.hpp"
 #include "light.hpp"
 #include "scene.hpp"

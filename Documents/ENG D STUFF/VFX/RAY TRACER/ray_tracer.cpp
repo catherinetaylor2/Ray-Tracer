@@ -11,7 +11,7 @@
 #include <thread>
 #include "vec3.hpp"
 #include "scene.hpp"
-#include "sphere.hpp"
+#include "Triangle.hpp"
 #include "light.hpp"
 #include "colour.hpp"
 #include "Read_Obj.hpp"

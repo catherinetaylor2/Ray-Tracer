@@ -2,10 +2,10 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include"sphere.hpp"
-#include"vec3.hpp"
-#include"light.hpp"
-#include"scene.hpp"
+#include "Triangle.hpp"
+#include "vec3.hpp"
+#include "light.hpp"
+#include "scene.hpp"
 
 const int RED[] = {255,0,0};
 const int GREEN[] ={0,255,0};
