@@ -6,6 +6,7 @@
 class vector3{
     public:        
         vector3(float x, float y, float z);
+        vector3();
         float get_x(void);
         float get_y(void);
         float get_z(void);
@@ -51,4 +52,19 @@ class vector3{
         float y_val;
         float z_val;
 };
+class Ray{
+    public:
+        Ray(vector3 origin, vector3 direction);
+        vector3 origin;
+        vector3 direction;
+        float x(vector3 vec){
+            return vec.get_x();
+        }
+        float y(vector3 vec){
+            return vec.get_y();
+        }
+        float z(vector3 vec){
+            return vec.get_z();
+        }
+ };
 #endif

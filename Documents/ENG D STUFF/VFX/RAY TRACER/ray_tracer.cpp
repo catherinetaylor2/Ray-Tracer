@@ -1,3 +1,8 @@
+//--------------------------------------------------------- RAY-TRACER ----------------------------------------------------------------------------------------------
+//CREATED BY CATHERINE TAYLOR
+//
+//Began Feb 2017
+
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -9,10 +14,9 @@
 #include "sphere.hpp"
 #include "light.hpp"
 #include "colour.hpp"
-#include "readObj.hpp"
+#include "Read_Obj.hpp"
 #include "search_tree.hpp"
 #include "BITMAP.hpp"
-#include "tri_mesh.hpp"
 #include <omp.h> 
 
 const int RED[] = {255,0,0};
@@ -22,6 +26,7 @@ const int PURPLE[]= {255,0,255};
 const int YELLOW[]={255,255,0};
 const int GREY []={200,200,200};
 const int SKELETON[] = {250,230,200};
+
 #define infinity FLT_MAX
 
 int main(int argc, char* argv[] ){
@@ -36,6 +41,7 @@ int main(int argc, char* argv[] ){
 		height=1080;
 	}
 
+//Input images for texture mapping.
 	unsigned char * data, * data2, *data3, *data4;
 	int texture_width, texture_height, texture_width2, texture_height2, texture_width3, texture_height3, texture_width4, texture_height4;
 	data = readBMP("metal.bmp", &texture_width, &texture_height);
@@ -62,9 +68,10 @@ int main(int argc, char* argv[] ){
 	std::thread t2(TriangleColour::phong_areas, FV_s, FN_s, N_s,V_s, area_s, A_s, F_s);
 	t2.join();
 
-	for (int obj_file_input =  2; obj_file_input<263; obj_file_input++){
-float * V , *N, *VT, *V_h, *N_h, *VT_h, *V_sk, *N_sk, *VT_sk;
-int* FV, *FN, *F_VT, F, *FV_h, *FN_h, *F_VT_h, F_h, *FV_sk, *FN_sk, *F_VT_sk, F_sk; 
+	for (int obj_file_input =  1; obj_file_input<2; obj_file_input++){
+
+		float * V , *N, *VT, *V_h, *N_h, *VT_h, *V_sk, *N_sk, *VT_sk;
+		int* FV, *FN, *F_VT, F, *FV_h, *FN_h, *F_VT_h, F_h, *FV_sk, *FN_sk, *F_VT_sk, F_sk; 
 		std::cout<<"image no "<<obj_file_input<<"\n";
 		std::string j;
 
@@ -80,27 +87,24 @@ int* FV, *FN, *F_VT, F, *FV_h, *FN_h, *F_VT_h, F_h, *FV_sk, *FN_sk, *F_VT_sk, F_
 
 
 	//initial inputs
-		ObjFile mesh1("sword_OBJ_Seq/sword."+j+ ".obj");
-		mesh sword_mesh(mesh1);
+		ObjFile mesh1("sword.obj"); //("sword_OBJ_Seq/sword."+j+ ".obj");
 		search_tree* root;
 		std::vector<search_tree*> leaf_nodes;
 		mesh1.get_mesh_data(mesh1, &FV, &FN, &F_VT, &VT, &N, &V, &F);
 		search_tree::leaf_nodes(V, FV, F, &leaf_nodes);
 		search_tree::build_tree(V, FV, &leaf_nodes, &root);
 		std::cout<<"sword tree built \n";
-		//std::cout<<"v "<<V[0]<<" "<<sword_mesh vertices[0]<<"\n";
 
-		ObjFile mesh_handle("handle_OBJ_Seq/handle."+j+ ".obj");
+		ObjFile mesh_handle("handle.obj"); //("handle_OBJ_Seq/handle."+j+ ".obj");
 		mesh_handle.get_mesh_data(mesh_handle, &FV_h, &FN_h, &F_VT_h, &VT_h, &N_h, &V_h, &F_h);
 		search_tree* root_h;
 		std::vector<search_tree*> leaf_nodes_h;
 		search_tree::leaf_nodes(V_h, FV_h, F_h, &leaf_nodes_h);
 		search_tree::build_tree(V_h, FV_h, &leaf_nodes_h, &root_h);
 		std::cout<<"handle tree built \n";
-	
 
-//		ObjFile mesh_skeleton("skeleton_OBJ_Seq/skeleton."+j+ ".obj");
-		ObjFile mesh_skeleton("handle1.obj");
+
+		ObjFile mesh_skeleton("skeleton.obj"); //("skeleton_OBJ_Seq/skeleton."+j+ ".obj");
 		mesh_skeleton.get_mesh_data(mesh_skeleton, &FV_sk, &FN_sk, &F_VT_sk, &VT_sk, &N_sk, &V_sk, &F_sk);
 		search_tree* root_sk;
 		std::vector<search_tree*> leaf_nodes_sk;
@@ -108,14 +112,9 @@ int* FV, *FN, *F_VT, F, *FV_h, *FN_h, *F_VT_h, F_h, *FV_sk, *FN_sk, *F_VT_sk, F_
 		search_tree::build_tree(V_sk, FV_sk, &leaf_nodes_sk, &root_sk);
 		std::cout<<"skeleton tree built \n";
 
-
-		// vector3 eye(190,125,-220); 
-		// vector3 lookup(190,530,-220);
-		// vector3 lookat(-110,125,1);
-
-		vector3 eye(-55,115,-140); 
-		vector3 lookup(10,530,-140);
-		vector3 lookat(-55,115,1);
+		vector3 eye(50,115,-275); 
+		vector3 lookup(0,530,-275);
+		vector3 lookat(50,100,1);
 
 		Light sun(-500,350,-400,1);  
 		vector3 light = sun.get_position();
@@ -130,7 +129,7 @@ int* FV, *FN, *F_VT, F, *FV_h, *FN_h, *F_VT_h, F_h, *FV_sk, *FN_sk, *F_VT_sk, F_
 		vector3 v = vector3::crossproduct(w,u); 
 		vector3 C = vector3::vec_add(eye,vector3::vec_scal_mult(-d,w));     
 		float half_width= (float)myscene.get_width()/2.0f, half_height = (float)myscene.get_height()/2.0f;
-		vector3 L = vector3::vec_add3(C, vector3::vec_scal_mult(half_width,u), vector3::vec_scal_mult(half_height,v) );
+		vector3 L = vector3::vec_add3(C, vector3::vec_scal_mult(-half_width,u), vector3::vec_scal_mult(half_height,v) );
 		float ratio = (myscene.get_width())/((float)myscene.get_x_res());
 
 		float* area = new float[F];
@@ -191,45 +190,25 @@ int* FV, *FN, *F_VT, F, *FV_h, *FN_h, *F_VT_h, F_h, *FV_sk, *FN_sk, *F_VT_sk, F_
 		image2.close();
 
 		delete[] img;
-		delete[] FV;
-		delete[] FN;
-		delete []VT;
-		delete[] F_VT;
-		delete[] V;
-		delete[] N;
+		ObjFile::clean_up(V,N, VT, FV, FN, F_VT);
 		search_tree::delete_tree(root);
 		delete[] area;
 		delete[] A;
 
-		delete[] FV_h;
-		delete[] FN_h;
-		delete[] VT_h;
-		delete[] F_VT_h;
-		delete[] V_h;
-		delete[] N_h;
+		ObjFile::clean_up(V_h,N_h, VT_h, FV_h, FN_h, F_VT_h);
 		search_tree::delete_tree(root_h);
 		delete[] area_h;
 		delete[] A_h;
 
-		delete[] FV_sk;
-		delete[] FN_sk;
-		delete[] VT_sk;
-		delete[] F_VT_sk;
-		delete[] V_sk;
-		delete[] N_sk;
+		ObjFile::clean_up(V_sk,N_sk, VT_sk, FV_sk, FN_sk, F_VT_sk);
 		search_tree::delete_tree(root_sk);
 		delete[] area_sk;
 		delete[]  A_sk; 
 
 		std::cout<<"done \n";
-}
+	}
 
-	delete[] FV_s;
-	delete[] FN_s;
-	delete[] VT_s;
-	delete[] F_VT_s;
-	delete[] V_s;
-	delete[] N_s;
+	ObjFile::clean_up(V_s,N_s, VT_s, FV_s, FN_s, F_VT_s);
     search_tree::delete_tree(root_s);
 
 	delete[] area_s;

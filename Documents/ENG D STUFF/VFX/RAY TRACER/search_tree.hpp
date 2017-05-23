@@ -7,7 +7,7 @@
 
 class search_tree{
     public:
-            search_tree *left_node;
+        search_tree *left_node;
         search_tree *right_node;
         float parameters [6];
         int*faces_in_node, number_of_node_faces;

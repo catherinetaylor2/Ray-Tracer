@@ -10,6 +10,7 @@ class ObjFile{
         void get_normals(float** normals);
         void get_texture(float** texture_coords);
         void get_face_data(int** face_vertex, int** face_normals, int** face_textures);
+        static void clean_up(float*vertices, float* normals, float* texture_coords,int* face_vertex, int* face_normals, int* face_textures);
         int get_number_of_faces(void){
             return number_of_faces;
         }

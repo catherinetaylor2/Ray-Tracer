@@ -4,7 +4,7 @@
 #include <cmath>
 #include <string>
 #include <stdio.h>
-#include"readObj.hpp"
+#include"Read_Obj.hpp"
 
 
 ObjFile::ObjFile(std::string name){
@@ -38,7 +38,7 @@ void ObjFile::get_vertices(float** V){
     s = str;  
   }
   for(int i=0; i<3*number_of_vertices; i+=3){
-    (*V)[i] = -f1;
+    (*V)[i] = f1;
     (*V)[i+1] = f2;
     (*V)[i+2]=f3; 
     t = fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
@@ -73,7 +73,7 @@ void ObjFile::get_normals(float** N){
     s = str;  
   }
   for(int i=0; i<3*number_of_normals; i+=3){
-    (*N)[i] = -f1;
+    (*N)[i] = f1;
     (*N)[i+1] = f2;
     (*N)[i+2]=f3;   
     fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
@@ -192,4 +192,12 @@ void ObjFile::get_mesh_data(ObjFile mesh,int** face_vertex, int** face_normals, 
 		mesh.get_normals(normals);
 		mesh.get_face_data(face_vertex, face_normals, face_textures);
 	  *number_of_faces = mesh.get_number_of_faces();
+}
+void ObjFile::clean_up(float*vertices, float* normals, float* texture_coords,int* face_vertex, int* face_normals, int* face_textures){
+  delete [] vertices;
+  delete [] normals;
+  delete [] texture_coords;
+  delete [] face_vertex;
+  delete [] face_normals;
+  delete [] face_textures;
 }

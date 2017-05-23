@@ -18,10 +18,10 @@
  int Bounding_box::ray_box_intersection(vector3 ray_point, vector3 ray_direction){
     float tmin_y, tmax_y, tmin_z, tmax_z;
     vector3 inv_direction(1/ray_direction.get_x(), 1/ray_direction.get_y(), 1/ray_direction.get_z());
-     tmin = (parameters[0]- ray_point.get_x())*inv_direction.get_x();
-     tmax = (parameters[1]- ray_point.get_x())*inv_direction.get_x();
-     tmin_y = (parameters[2]- ray_point.get_y())*inv_direction.get_y();
-     tmax_y = (parameters[3]- ray_point.get_y())*inv_direction.get_y();
+    tmin = (parameters[0]- ray_point.get_x())*inv_direction.get_x();
+    tmax = (parameters[1]- ray_point.get_x())*inv_direction.get_x();
+    tmin_y = (parameters[2]- ray_point.get_y())*inv_direction.get_y();
+    tmax_y = (parameters[3]- ray_point.get_y())*inv_direction.get_y();
 
     if((ray_direction.get_x()==0)&&(ray_point.get_x()<parameters[0])&&(ray_point.get_x()>parameters[1])){
          return 0;
@@ -33,7 +33,7 @@
 
      if (tmin > tmax)std::swap(tmin, tmax); 
      if (tmin_y > tmax_y)std::swap(tmin_y, tmax_y);  
-     if ((tmin >= tmax_y)||(tmin_y>=tmax)){
+     if ((tmin > tmax_y)||(tmin_y>tmax)){
          return 0;
      }
      if (tmin_y > tmin){
@@ -44,14 +44,15 @@
      }        
      tmin_z = (parameters[4]- ray_point.get_z())*inv_direction.get_z();
      tmax_z = (parameters[5]- ray_point.get_z())*inv_direction.get_z();
-         if((ray_direction.get_z()==0)&&(ray_point.get_z()<parameters[4])&&(ray_point.get_z()>parameters[5])){
+    if((ray_direction.get_z()==0)&&(ray_point.get_z()<parameters[4])&&(ray_point.get_z()>parameters[5])){
          return 0;
      }
      if (tmin_z > tmax_z)std::swap(tmin_z, tmax_z);
 
-     if ((tmin >= tmax_z)||(tmin_z>=tmax)){
+     if ((tmin > tmax_z)||(tmin_z>tmax)){
          return 0;
      }
+     
      return 1;     
  }
 
@@ -63,14 +64,6 @@
  }
 
 void search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<int> *output){
-    if(((root->left_node==nullptr))&&((root->right_node==nullptr))){
-        Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
-        if((B_root.ray_box_intersection(eye, d)==1)){        
-            for (int i = 0; i<root->number_of_node_faces; i++){
-                (*output).push_back( root->faces_in_node[i]);
-            }         
-        }   
-    }
     if(((root->left_node!=nullptr))||((root->right_node!=nullptr))){
         Bounding_box B_right(root->right_node->parameters[0],root->right_node->parameters[1], root->right_node->parameters[2],root->right_node->parameters[3],root->right_node->parameters[4],root->right_node->parameters[5]);
         Bounding_box B_left(root->left_node->parameters[0],root->left_node->parameters[1], root->left_node->parameters[2],root->left_node->parameters[3],root->left_node->parameters[4],root->left_node->parameters[5]);
@@ -81,6 +74,14 @@ void search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::v
             traverse_tree(root->left_node, eye, d, output);
         }   
     } 
+       if(((root->left_node==nullptr))&&((root->right_node==nullptr))){
+        Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
+        if((B_root.ray_box_intersection(eye, d)==1)){        
+            for (int i = 0; i<root->number_of_node_faces; i++){
+                (*output).push_back( root->faces_in_node[i]);
+            }         
+        }   
+    }
 }
 
 void search_tree::find_parameters(int i, float* vertices,int*faces, std::vector<float> *parameters, std::vector<float> initial_parameters){

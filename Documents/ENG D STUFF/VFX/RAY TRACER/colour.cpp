@@ -154,9 +154,9 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
 
     if (t < infinity){
         if (min_value == -1){
-          //  vector3 RGB (0,0,0);
-        //  vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
-          vector3 RGB(0,0,255);
+            vector3 RGB (0,0,0);
+     // vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
+    //      vector3 RGB(0,0,255);
             delete k;
             delete k1;
             delete k2;
@@ -171,8 +171,8 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
             triangle tri(vertices[3*c_m1], vertices[3*c_m1+1], vertices[3*c_m1+2], vertices[3*c_m2], vertices[3*c_m2+1],vertices[3*c_m2+2], vertices[3*c_m3], vertices[3*c_m3+1], vertices[3*c_m3+2], tri_colour);
             t = tri.ray_triangle_intersection(eye,d);
             if((t!=0)){
-                tri.set_lighting_constants((float)0.5, (float)0.3*255, (float)0.3, (float)170);
-                vector3 point = vector3::vec_add(eye, vector3::vec_scal_mult(t-0.0035f,d));
+                tri.set_lighting_constants((float)0.4f,255.0f, (float)0.3f, (float)170);
+                vector3 point = vector3::vec_add(eye, vector3::vec_scal_mult(t-0.35f,d));
                 vector3 l = sun.get_light_direction(point);
                 vector3 normal=tri.get_triangle_normal();
 
@@ -198,9 +198,11 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                 if(obj==1){ //reflective sword code.
                    int*k4;
                     min_value = -1;
-                    vector3 R = vector3::vec_scal_mult(2.0f*vector3::dotproduct(d, normal), normal);
-                    vector3 H = vector3::vec_add(d, vector3::vec_scal_mult(-1,R));
-                    H.normalize();
+                    // vector3 R = vector3::vec_scal_mult(2.0f*vector3::dotproduct(d, normal), normal);
+                    // vector3 H = vector3::vec_add(d, vector3::vec_scal_mult(-1,R));
+                    // H.normalize();
+                        vector3 H =vector3::vec_add(l, vector3::vec_scal_mult(-1,d));
+                        H.normalize();
                     float t3 = TriangleColour::find_intersection_point(root_data[0], mesh_data[0], mesh_data_i[0], point, H, &min_value, tri_colour, &k4);
                     if (t3<infinity){
                         m = k4[min_value+1];
@@ -257,7 +259,7 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                         v34r =  (1-alpha)*data1[v4y*texture_width1*3 + 3*v1x] +  alpha*data1[v4y*texture_width1*3 + 3*v2x];
                         v34g =  (1-alpha)*data1[v4y*texture_width1*3 + 3*v1x+1] +  alpha*data1[v4y*texture_width1*3 + 3*v2x+1];
                         v34b =  (1-alpha)*data1[v4y*texture_width1*3 + 3*v1x+2] +  alpha*data1[v4y*texture_width1*3 + 3*v2x+2];
-                        float colour1[] =  {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
+                        float colour1[] = {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
               
                         vector3 RGB_1 = tri1.determine_colour(point1, l1, d, sun, phong_normal1, myscene,s, colour1);
                         r_g_b [0] = RGB_1.get_x();
@@ -306,9 +308,9 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
                 v34r =  (1-alpha)*data[v4y*texture_width*3 + 3*v1x] +  alpha*data[v4y*texture_width*3 + 3*v2x];
                 v34g =  (1-alpha)*data[v4y*texture_width*3 + 3*v1x+1] +  alpha*data[v4y*texture_width*3 + 3*v2x+1];
                 v34b =  (1-alpha)*data[v4y*texture_width*3 + 3*v1x+2] +  alpha*data[v4y*texture_width*3 + 3*v2x+2];
-                float colour[] =  {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
+                float colour[] = {(1-beta)*v12r + beta*v34r, (1-beta)*v12g + beta*v34g, (1-beta)*v12b + beta*v34b} ;
 
-                vector3 RGB2 = vector3::vec_add(tri.determine_colour(point, l, d, sun, phong_normal, myscene,s, colour), vector3::vec_scal_mult(0.7,RGB1));
+                vector3 RGB2 = vector3::vec_add(tri.determine_colour(point, l, d, sun, phong_normal, myscene,s, colour), vector3::vec_scal_mult(0.5f,RGB1));
                 if (RGB2.get_x()>255){
                     R = 255;
                 }
@@ -338,18 +340,18 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
         }
     }
     else{
-        //vector3 RGB(0,0,0);
-        //vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
-          vector3 RGB(0,0,255);
+     vector3 RGB(0,0,0);
+   //  vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
+       //   vector3 RGB(0,0,255);
         delete k;
         delete k1;
         delete k2;
         delete ks;
         return RGB;
     }
-//	vector3 RGB(0, 0, 0);
-// vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
-    vector3 RGB(0,0,255);
+ vector3 RGB(0, 0, 0);
+//vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
+   // vector3 RGB(0,0,255);
     delete k;
     delete k1;
     delete k2;
@@ -359,11 +361,12 @@ vector3 TriangleColour::intersection_colour(vector3 d, vector3 eye, std::vector<
 
 void TriangleColour::anti_aliasing(std::vector<vector3> scene_pos, std::vector<search_tree*> root_data,  std::vector<float*> mesh_data, std::vector<int*> mesh_data_i, const int* tri_colour, Light sun, scene myscene, std::vector<vector3> *colours, vector3 L, float* ijit, std::vector<unsigned char*> data_bmp, int* texture_data){
     float I,J, i = ijit[0], j = ijit[1], it= ijit[2], ratio = ijit[3];
+    it=it++;
     vector3 u = scene_pos[0], v = scene_pos[1], camera_origin = scene_pos[2];
     search_tree* root = root_data[0];
     for (int k=0; k<4; k++){
         I = (float)(i+1*k%2/(pow(2,(it+1)))), J = (float)(j-1*(k>2)/(pow(2,(it+1))));
-        vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(-1*(I)*ratio,u), vector3::vec_scal_mult(-1*(J)*ratio,v) );
+        vector3 s = vector3::vec_add3(L, vector3::vec_scal_mult(1*(I)*ratio,u), vector3::vec_scal_mult(-1*(J)*ratio,v) );
         vector3 d(s.get_x()-camera_origin.get_x(),s.get_y()-camera_origin.get_y(),s.get_z()-camera_origin.get_z());
         d.normalize();
         vector3 RGB = TriangleColour::intersection_colour(d, camera_origin, root_data, mesh_data, mesh_data_i, tri_colour, sun, myscene, data_bmp, texture_data, (int)ijit[4], (int)ijit[5]);
@@ -386,13 +389,13 @@ void TriangleColour::anti_aliasing(std::vector<vector3> scene_pos, std::vector<s
         }
         else{
             for(int k=0; k<4;k++){
-                if((*colours)[k].get_x()/sum >0.75){
+                if((*colours)[k].get_x()/sum >0.7){
                     quadrant = k;
                 }
             }
         }
     }
-    if ((quadrant==-1)||(it>8)){
+    if ((quadrant==-1)||(it>20)){
         return;
     }
     else{
@@ -404,11 +407,11 @@ void TriangleColour::anti_aliasing(std::vector<vector3> scene_pos, std::vector<s
             I = (float)(i+1*quadrant%2/(pow(2,(it+1)))-1/(pow(2,(it+2))));
             J = (float)(j-1*(quadrant>2)/(pow(2,(it+1))));
         }
-        if(quadrant==2){
+      if(quadrant==2){
             I = (float)(i+1*quadrant%2/(pow(2,(it+1))));
             J = (float)(j-1*(quadrant>2)/(pow(2,(it+1)))+1/(pow(2,(it+2))));
         }
-        if(quadrant==3){
+         if(quadrant==3){
             I = (float)(i+1*quadrant%2/(pow(2,(it+1)))-1/(pow(2,(it+2))));
             J = (float)(j-1*(quadrant>2)/(pow(2,(it+1)))+1/(pow(2,(it+2))));
         }

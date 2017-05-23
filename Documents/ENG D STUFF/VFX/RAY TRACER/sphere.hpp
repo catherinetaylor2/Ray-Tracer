@@ -49,4 +49,5 @@ class triangle{
         std::vector<int> colour;
         std::vector<float> lighting_coefficients, vertex1, vertex2, vertex3, normal;
 };
+
 #endif
