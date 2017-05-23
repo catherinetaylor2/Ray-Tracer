@@ -1,5 +1,6 @@
 #ifndef light_hpp
 #define light_hpp
+
 #include<iostream>
 #include"vec3.hpp"
 

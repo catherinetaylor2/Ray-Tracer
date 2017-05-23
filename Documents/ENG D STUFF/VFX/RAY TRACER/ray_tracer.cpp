@@ -85,7 +85,6 @@ int main(int argc, char* argv[] ){
 			j= "0" + std::to_string(obj_file_input);
 		}
 
-
 	//initial inputs
 		ObjFile mesh1("sword.obj"); //("sword_OBJ_Seq/sword."+j+ ".obj");
 		search_tree* root;
@@ -102,7 +101,6 @@ int main(int argc, char* argv[] ){
 		search_tree::leaf_nodes(V_h, FV_h, F_h, &leaf_nodes_h);
 		search_tree::build_tree(V_h, FV_h, &leaf_nodes_h, &root_h);
 		std::cout<<"handle tree built \n";
-
 
 		ObjFile mesh_skeleton("skeleton.obj"); //("skeleton_OBJ_Seq/skeleton."+j+ ".obj");
 		mesh_skeleton.get_mesh_data(mesh_skeleton, &FV_sk, &FN_sk, &F_VT_sk, &VT_sk, &N_sk, &V_sk, &F_sk);
@@ -173,13 +171,11 @@ int main(int argc, char* argv[] ){
 			img[x+2]= (unsigned char)(B/colours.size());
 		}
 
-
 		std::ofstream image2(j+".bmp", std::ios::out| std::ios::binary);
 		BITMAP_File_Header file_header;
 		BITMAP_Info_Header info_header;
 		fill_bitmap_headers(&file_header, &info_header,  width, height);
 		write_bitmap (&file_header, &info_header,&image2);
-
 		for(auto x = height-1; x>=0; x--){
 			for (auto y = 0; y < width; y++) {
 				for(auto z =2; z>=0; z--){
@@ -210,7 +206,6 @@ int main(int argc, char* argv[] ){
 
 	ObjFile::clean_up(V_s,N_s, VT_s, FV_s, FN_s, F_VT_s);
     search_tree::delete_tree(root_s);
-
 	delete[] area_s;
 	delete[] A_s;
 

@@ -1,5 +1,6 @@
 #ifndef colour_hpp
 #define colour_hpp
+
 #include <iostream>
 #include <cstdlib>
 #include <fstream>

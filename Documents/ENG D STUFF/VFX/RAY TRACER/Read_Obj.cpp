@@ -26,7 +26,7 @@ void ObjFile::get_vertices(float** V){
   do{  
     t= fscanf(myObject, "%s %f %f %f" , str, &f1, &f2, &f3);
     s = str;
-    k_v=k_v+1;
+    k_v = k_v+1;
   }while (s != "vt");
 
   fclose(myObject);

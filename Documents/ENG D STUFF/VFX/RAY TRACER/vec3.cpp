@@ -30,8 +30,8 @@ void vector3::setValue(float x, float y, float z){
 void vector3::normalize(void){
     float sum = sqrt(x_val*x_val + y_val*y_val + z_val*z_val);
     x_val/= sum;
-    y_val /= sum;
-    z_val /=sum;
+    y_val/= sum;
+    z_val/= sum;
 }
 Ray::Ray(vector3 o, vector3 d){
     origin.setValue(o.get_x(), o.get_y(), o.get_z());

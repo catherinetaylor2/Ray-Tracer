@@ -6,7 +6,7 @@
 #include <vector>
 #include <thread>
 #include <algorithm>
-#include"colour.hpp"
+#include "colour.hpp"
 #include "vec3.hpp"
 #include "light.hpp"
 #include "scene.hpp"
@@ -16,7 +16,7 @@
 
  void TriangleColour::phong_areas(int*faces, int* face_normals, float*normals, float*vertices, float* areas, float *edges, int number_of_faces){
 	for (int i=0; i<number_of_faces; i++){
-		int c1 = faces[3*i] -1, c2 = faces[3*i+1]-1, c3 = faces[3*i+2] -1, n1 = face_normals[3*i]-1, n2 = face_normals[3*i+1]-1, n3= face_normals[3*i+2]-1;
+		int c1 = faces[3*i]-1, c2 = faces[3*i+1]-1, c3 = faces[3*i+2] -1, n1 = face_normals[3*i]-1, n2 = face_normals[3*i+1]-1, n3= face_normals[3*i+2]-1;
 		float semiPerimeter;
 		vector3 point1(vertices[3*c1], vertices[3*c1+1], vertices[3*c1+2]);
 		vector3 point2(vertices[3*c2], vertices[3*c2+1], vertices[3*c2+2]);
@@ -67,22 +67,22 @@ vector3 TriangleColour::phong_normal(int triangle, float* vertices, float*normal
     vector3 M (vector3::dotproduct(vector3::crossproduct(T, E1), E2),vector3::dotproduct(vector3::crossproduct(R.get_direction(), E2), T),vector3::dotproduct( vector3::crossproduct(T, E1), R.get_direction()));
     vector3 tuv = vector3::vec_scal_mult(1.0f/(float)denominator, M);
     vector3 N = vector3::vec_add3(vector3::vec_scal_mult(std::max((float)(1-(tuv.get_y()+tuv.get_z())),0.0f),N1),vector3::vec_scal_mult(std::max(tuv.get_y(), 0.0f),N2),vector3::vec_scal_mult(std::max(tuv.get_z(),0.0f),N3));
-    (*barycentric)[0] =1.0f-(tuv.get_y()+tuv.get_z());
-    (*barycentric)[1] =tuv.get_y();
+    (*barycentric)[0] = 1.0f-(tuv.get_y()+tuv.get_z());
+    (*barycentric)[1] = tuv.get_y();
     (*barycentric)[2] = tuv.get_z();
     return N;
 }
 float TriangleColour::find_intersection_point(search_tree* root, float*vertices, int* faces, Ray R, int* min_value, const int* tri_colour, int**k){
     Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
-    std::vector<int>  output;
+    std::vector<int> output;
     float t_min = infinity;
 	int c1, c2, c3;
     output.clear();
     if(B_root.ray_box_intersection(R.get_origin(), R.get_direction())==1){
         search_tree::traverse_tree(root, R.get_origin(), R.get_direction(), &output);
     }
-    *k=new int[output.size()+1];
-    (*k)[0]=-1;
+    *k = new int[output.size()+1];
+    (*k)[0] = -1;
     if (output.size()>1){
         (*k)[0]=output.size();
         for(int g=1; g<(*k)[0]+1;g++){
@@ -101,7 +101,7 @@ float TriangleColour::find_intersection_point(search_tree* root, float*vertices,
         }
         for (int z=0; z<(*k)[0]; z++){
             if ((t_values[z]>0)){
-                vector3 xyz = vector3::vec_add( R.get_origin() , vector3::vec_scal_mult(t_values[z],R.get_direction()));
+                vector3 xyz = vector3::vec_add( R.get_origin(), vector3::vec_scal_mult(t_values[z],R.get_direction()));
                 if (xyz.get_z()<t_min){
                     t_min = xyz.get_z();
                     *min_value = z;
@@ -156,7 +156,7 @@ vector3 TriangleColour::intersection_colour(Ray R, std::vector<search_tree*> roo
     if (t < infinity){
         if (min_value == -1){
             vector3 RGB (0,0,0);
-     // vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
+            // vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
             delete k;
             delete k1;
             delete k2;
@@ -171,7 +171,7 @@ vector3 TriangleColour::intersection_colour(Ray R, std::vector<search_tree*> roo
             triangle tri(vertices[3*c_m1], vertices[3*c_m1+1], vertices[3*c_m1+2], vertices[3*c_m2], vertices[3*c_m2+1],vertices[3*c_m2+2], vertices[3*c_m3], vertices[3*c_m3+1], vertices[3*c_m3+2], tri_colour);
             t = tri.ray_triangle_intersection(R);
             if((t!=0)){
-                tri.set_lighting_constants((float)0.4f,255.0f, (float)0.3f, (float)170);
+                tri.set_lighting_constants(0.4f, 255.0f, 0.3f, 170.0f);
                 vector3 point = vector3::vec_add(R.get_origin(), vector3::vec_scal_mult(t-0.35f,R.get_direction()));
                 vector3 l = sun.get_light_direction(point);
                 vector3 normal=tri.get_triangle_normal();
@@ -196,14 +196,11 @@ vector3 TriangleColour::intersection_colour(Ray R, std::vector<search_tree*> roo
                 float r_g_b[3] = {0,0,0};
 
                 if(obj==1){ //reflective sword code.
-                   int*k4;
+                   int* k4;
                     min_value = -1;
-                    // vector3 R = vector3::vec_scal_mult(2.0f*vector3::dotproduct(d, normal), normal);
-                    // vector3 H = vector3::vec_add(d, vector3::vec_scal_mult(-1,R));
-                    // H.normalize();
-                        vector3 H =vector3::vec_add(l, vector3::vec_scal_mult(-1,R.get_direction()));
-                        H.normalize();
-                        Ray reflectionRay(point, H);
+                    vector3 H =vector3::vec_add(l, vector3::vec_scal_mult(-1,R.get_direction()));
+                    H.normalize();
+                    Ray reflectionRay(point, H);
                     float t3 = TriangleColour::find_intersection_point(root_data[0], mesh_data[0], mesh_data_i[0], reflectionRay, &min_value, tri_colour, &k4);
                     if (t3<infinity){
                         m = k4[min_value+1];
@@ -215,7 +212,7 @@ vector3 TriangleColour::intersection_colour(Ray R, std::vector<search_tree*> roo
                         c_m1 = faces1[3*m] -1, c_m2 = faces1[3*m+1]-1, c_m3 = faces1[3*m+2] -1 ;
                         triangle tri1(vertices1[3*c_m1], vertices1[3*c_m1+1], vertices1[3*c_m1+2], vertices1[3*c_m2], vertices1[3*c_m2+1],vertices1[3*c_m2+2], vertices1[3*c_m3], vertices1[3*c_m3+1], vertices1[3*c_m3+2], tri_colour);
                         tri1.set_lighting_constants((float)0.5, (float)0.5*255, (float)0.3, (float)170);
-                        float *b2 = new float[3];
+                        float* b2 = new float[3];
                         vector3 phong_normal1 = TriangleColour::phong_normal(m, vertices1, normals1, faces1, face_normals1, areas1, edges1, reflectionRay, &b2);
                         delete b2;
 
@@ -341,18 +338,16 @@ vector3 TriangleColour::intersection_colour(Ray R, std::vector<search_tree*> roo
         }
     }
     else{
-     vector3 RGB(0,0,0);
-   //  vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
-       //   vector3 RGB(0,0,255);
+        vector3 RGB(0,0,0);
+        //vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
         delete k;
         delete k1;
         delete k2;
         delete ks;
         return RGB;
     }
- vector3 RGB(0, 0, 0);
-//vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
-   // vector3 RGB(0,0,255);
+    vector3 RGB(0, 0, 0);
+    //vector3 RGB((data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+1],(data_bmp[0])[(3*(1080-pixel_y-1)*texture_data[0]+ 3*pixel_x+3)+2]);
     delete k;
     delete k1;
     delete k2;
@@ -362,7 +357,7 @@ vector3 TriangleColour::intersection_colour(Ray R, std::vector<search_tree*> roo
 
 void TriangleColour::anti_aliasing(std::vector<vector3> scene_pos, std::vector<search_tree*> root_data,  std::vector<float*> mesh_data, std::vector<int*> mesh_data_i, const int* tri_colour, Light sun, scene myscene, std::vector<vector3> *colours, vector3 L, float* ijit, std::vector<unsigned char*> data_bmp, int* texture_data){
     float I,J, i = ijit[0], j = ijit[1], it= ijit[2], ratio = ijit[3];
-    it=it++;
+    //it=it++;
     vector3 u = scene_pos[0], v = scene_pos[1], camera_origin = scene_pos[2];
     search_tree* root = root_data[0];
     for (int k=0; k<4; k++){
@@ -397,7 +392,7 @@ void TriangleColour::anti_aliasing(std::vector<vector3> scene_pos, std::vector<s
             }
         }
     }
-    if ((quadrant==-1)||(it>20)){
+    if ((quadrant==-1)||(it>8)){
         return;
     }
     else{
@@ -422,6 +417,6 @@ void TriangleColour::anti_aliasing(std::vector<vector3> scene_pos, std::vector<s
         ijit[1] = J;
         ijit[2]=it;
         ijit[3] = ratio;
-        TriangleColour::anti_aliasing(scene_pos,  root_data,  mesh_data,mesh_data_i,tri_colour,sun, myscene, colours, L,ijit, data_bmp, texture_data);
+        TriangleColour::anti_aliasing(scene_pos,  root_data, mesh_data,mesh_data_i,tri_colour,sun, myscene, colours, L,ijit, data_bmp, texture_data);
     }
 }

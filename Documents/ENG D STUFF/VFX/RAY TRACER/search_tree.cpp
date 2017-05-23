@@ -29,8 +29,6 @@
     if((ray_direction.get_y()==0)&&(ray_point.get_y()<parameters[2])&&(ray_point.get_y()>parameters[3])){
          return 0;
      }
-
-
      if (tmin > tmax)std::swap(tmin, tmax); 
      if (tmin_y > tmax_y)std::swap(tmin_y, tmax_y);  
      if ((tmin > tmax_y)||(tmin_y>tmax)){
@@ -52,15 +50,7 @@
      if ((tmin > tmax_z)||(tmin_z>tmax)){
          return 0;
      }
-     
      return 1;     
- }
-
- float Bounding_box::get_tmax(void){
-     return tmax;
- }
- float Bounding_box::get_tmin(void){
-     return tmin;
  }
 
 void search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::vector<int> *output){
@@ -74,7 +64,7 @@ void search_tree::traverse_tree(search_tree*root, vector3 eye, vector3 d, std::v
             traverse_tree(root->left_node, eye, d, output);
         }   
     } 
-       if(((root->left_node==nullptr))&&((root->right_node==nullptr))){
+    if(((root->left_node==nullptr))&&((root->right_node==nullptr))){
         Bounding_box B_root(root->parameters[0],root->parameters[1], root->parameters[2],root->parameters[3],root->parameters[4],root->parameters[5]);
         if((B_root.ray_box_intersection(eye, d)==1)){        
             for (int i = 0; i<root->number_of_node_faces; i++){
@@ -109,7 +99,7 @@ void search_tree::find_parameters(int i, float* vertices,int*faces, std::vector<
     *parameters = {xmin, xmax, ymin, ymax, zmin, zmax};
 }
 
-void search_tree::leaf_nodes(float* vertices, int*faces, int number_of_faces,  std::vector<search_tree*> *leaf_nodes){
+void search_tree::leaf_nodes(float* vertices, int*faces, int number_of_faces, std::vector<search_tree*> *leaf_nodes){
     std::vector<float> parameters;
     std::vector<float> initial_parameters = {infinity, infinity, infinity, -1*infinity, -1*infinity, -1*infinity};
     for(int i = 0; i<number_of_faces; i++){ // make list of leaf_nodes.
@@ -126,10 +116,6 @@ void search_tree::leaf_nodes(float* vertices, int*faces, int number_of_faces,  s
         leaf->right_node=nullptr;
         (*leaf_nodes).push_back(leaf);
     }    
-}
-void search_tree::delete_leaf_nodes(std::vector<search_tree*> leaf_nodes){
-    delete (leaf_nodes)[0]->faces_in_node;
-   (leaf_nodes).clear();
 }
 
 void search_tree::build_tree(float* vertices, int* faces, std::vector<search_tree*>* leaf_nodes, search_tree**root){
