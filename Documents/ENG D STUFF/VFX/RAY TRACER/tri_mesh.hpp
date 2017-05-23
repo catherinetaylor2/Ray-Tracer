@@ -1,7 +1,7 @@
 #ifndef tri_mesh_hpp
 #define tri_mesh_pp
 
-#include "readObj.hpp"
+#include "Read_Obj.hpp"
 #include "search_tree.hpp"
 
 class mesh{

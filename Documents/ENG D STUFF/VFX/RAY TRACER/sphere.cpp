@@ -12,50 +12,24 @@ const int GREEN[] ={0,255,0};
 const int BLUE[] = {0,0,255};
 
 triangle::triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z, const int* triangle_colour ){
-    vertex1 = {v1x, v1y, v1z};
-    vertex2 = {v2x, v2y, v2z};
-    vertex3 = {v3x, v3y, v3z};
-    vector3 V1(v1x,v1y,v1z);
-    vector3 V2(v2x, v2y, v2z);
-    vector3 V3(v3x, v3y, v3z);
+    V1.setValue(v1x, v1y, v1z);
+    V2.setValue(v2x, v2y, v2z);
+    V3.setValue(v3x, v3y, v3z);
     vector3 N = vector3::crossproduct(vector3::vec_add(V2, vector3::vec_scal_mult(-1, V1)), vector3::vec_add(V3, vector3::vec_scal_mult(-1, V1)));
     N.normalize();
-    normal = {N.get_x(), N.get_y(), N.get_z()}; 
+    normal.setValue(N.get_x(), N.get_y(), N.get_z()); 
     point_D = vector3::dotproduct(N, V1);
-    colour = {triangle_colour[0], triangle_colour[1], triangle_colour[2]};
+    colour.setValue(triangle_colour[0], triangle_colour[1], triangle_colour[2]);
 }
-void triangle::get_vertex(std::vector<float>*vertex,  int vertex_number){
-    if(vertex_number ==1){
-       *vertex = vertex1;
-    }
-    else if(vertex_number==2){
-       *vertex = vertex2;
-    }
-    else if (vertex_number==3){
-      *vertex = vertex3;
-    }
-    else{
-        std::cout<<"Not valid input \n";
-    }
-}
-vector3 triangle::get_triangle_normal(void){
-    vector3 N (normal[0], normal[1], normal[2]);
-    return N;
-}
-void triangle::get_colour(std::vector<int>*tri_colour){
-   *tri_colour = colour;
-}
+
 float triangle::ray_triangle_intersection(Ray R){
-    vector3 normal(normal[0], normal[1], normal[2]);
     float r = vector3::dotproduct(normal, R.get_direction());
     if (fabs(r) < 0.000000001f){
               return 0;
     }
     float t=(point_D - vector3::dotproduct(normal,R.get_origin()) )/r;
     vector3 intersection_point = vector3::vec_add(R.get_origin(), vector3::vec_scal_mult(t,  R.get_direction()));
-    vector3 V1(vertex1[0],vertex1[1],vertex1[2]);
-    vector3 V2(vertex2[0], vertex2[1], vertex2[2]);
-    vector3 V3(vertex3[0], vertex3[1], vertex3[2]);
+
     if (
     (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V2, vector3::vec_scal_mult(-1, V1)), vector3::vec_add(intersection_point, vector3::vec_scal_mult(-1, V1))), normal)>=-0.0000001f)&&
     (vector3::dotproduct(vector3::crossproduct(vector3::vec_add(V3, vector3::vec_scal_mult(-1, V2)), vector3::vec_add(intersection_point,vector3::vec_scal_mult(-1, V2))), normal)>=-0.0000001f)&&

@@ -1,5 +1,5 @@
 #include "tri_mesh.hpp"
-#include "readObj.hpp"
+#include "Read_Obj.hpp"
 #include "search_tree.hpp"
 #include <cstdlib>
 #include <fstream>
