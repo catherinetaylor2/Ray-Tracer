@@ -11,7 +11,7 @@ const int RED[] = {255,0,0};
 const int GREEN[] ={0,255,0};
 const int BLUE[] = {0,0,255};
 
-triangle::triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z, const int* triangle_colour ){
+triangle::triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z){
     V1.setValue(v1x, v1y, v1z);
     V2.setValue(v2x, v2y, v2z);
     V3.setValue(v3x, v3y, v3z);
@@ -19,7 +19,6 @@ triangle::triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float 
     N.normalize();
     normal.setValue(N.get_x(), N.get_y(), N.get_z()); 
     point_D = vector3::dotproduct(N, V1);
-    colour.setValue(triangle_colour[0], triangle_colour[1], triangle_colour[2]);
 }
 
 float triangle::ray_triangle_intersection(Ray R){

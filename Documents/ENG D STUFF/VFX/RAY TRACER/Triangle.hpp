@@ -9,12 +9,9 @@
 
 class triangle{
     public:
-        triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z, const int* sphere_colour);
+        triangle(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z, float v3x, float v3y, float v3z);
         vector3 get_triangle_normal(void){
             return normal;
-        }
-        vector3 get_colour(void){
-            return colour;
         }
         float ray_triangle_intersection(Ray R);
         void set_lighting_constants(float DC, float SC, float AC, float SP);

@@ -158,7 +158,7 @@ int main(int argc, char* argv[] ){
 			std::vector<vector3> colours;
 			std::vector<vector3> scene_pos = {u, v, eye};
 			float current_pos [] = {i-1/2.0f, j+1/2.0f, 0, ratio, (float)i, (float)j} ;
-			TriangleColour::anti_aliasing(scene_pos, root_data, mesh_data_f, mesh_data_i, RED, sun, myscene, &colours, L, current_pos, texture_bmp, texture_data);
+			TriangleColour::anti_aliasing(scene_pos, root_data, mesh_data_f, mesh_data_i, sun, myscene, &colours, L, current_pos, texture_bmp, texture_data);
 			
 			float R=0, G=0, B=0;
 			for (int k=0; k<(signed)colours.size(); k++){

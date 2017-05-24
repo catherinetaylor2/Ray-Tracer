@@ -22,7 +22,7 @@ class scene{
         float get_distance_to_image(void){
             return distance_to_image;
         }
-        float DiffuseValue( vector3 normal, vector3 light_direction);
+        float DiffuseValue(vector3 normal, vector3 light_direction);
         float scene::SpecularValue(vector3 normal, vector3 light_direction, vector3 ray_direction);
     private:
         int x_res;
