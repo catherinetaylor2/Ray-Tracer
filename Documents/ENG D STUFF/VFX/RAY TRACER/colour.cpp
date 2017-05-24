@@ -358,7 +358,6 @@ vector3 TriangleColour::intersection_colour(Ray R, std::vector<search_tree*> roo
 
 void TriangleColour::anti_aliasing(std::vector<vector3> scene_pos, std::vector<search_tree*> root_data,  std::vector<float*> mesh_data, std::vector<int*> mesh_data_i, Light sun, scene myscene, std::vector<vector3> *colours, vector3 L, float* ijit, std::vector<unsigned char*> data_bmp, int* texture_data){
     float I,J, i = ijit[0], j = ijit[1], it= ijit[2], ratio = ijit[3];
-    //it=it++;
     vector3 u = scene_pos[0], v = scene_pos[1], camera_origin = scene_pos[2];
     search_tree* root = root_data[0];
     for (int k=0; k<4; k++){
