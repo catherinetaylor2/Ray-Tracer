@@ -21,5 +21,6 @@ This raytracing model contains:
 ### How to Compile
 
 CL:
-     cl /O2 /MP ray_tracer.cpp light.cpp scene.cpp Triangle.cpp vec3.cpp search_tree.cpp colour.cpp read_obj.cpp  BITMAP.cpp /openmp /EHsc 
+
+     cl /O2 /MP ray_tracer.cpp light.cpp scene.cpp Triangle.cpp vec3.cpp search_tree.cpp colour.cpp read_obj.cpp  BITMAP.cpp /openmp /EHsc  
 
