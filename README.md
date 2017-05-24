@@ -23,4 +23,7 @@ This raytracing model contains:
 CL:
 
      cl /O2 /MP ray_tracer.cpp light.cpp scene.cpp Triangle.cpp vec3.cpp search_tree.cpp colour.cpp read_obj.cpp  BITMAP.cpp /openmp /EHsc  
-
+### Future Improvements:
+* Soft shadows
+* mesh class
+* multi-threading
