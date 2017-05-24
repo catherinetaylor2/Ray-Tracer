@@ -2,7 +2,7 @@
 
 Course work for EngD VFX module. Aim: render skeleton fight scene from 1963 film 'Jason and the argonauts'.
 
-![textured](https://cloud.githubusercontent.com/assets/25514442/25014785/1a3a2d36-2071-11e7-9c47-9bbecb2e3909.PNG)
+![capture](https://cloud.githubusercontent.com/assets/25514442/26422519/20e50f90-40c2-11e7-9433-e1fa3674817d.PNG)
 
 ### Input
 The objects in the scene and the textures must be have the following format:
