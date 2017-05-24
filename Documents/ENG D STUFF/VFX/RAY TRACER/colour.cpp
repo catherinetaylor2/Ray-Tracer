@@ -273,6 +273,7 @@ vector3 TriangleColour::intersection_colour(Ray R, std::vector<search_tree*> roo
                 int v1x,v1y, v2x, v4y;
                 u_coord = (barycentric[0]*vt_1x +barycentric[1]*vt_2x+barycentric[2]*vt_3x)*texture_width;
                 v_coord = (barycentric[0]*vt_1y +barycentric[1]*vt_2y+barycentric[2]*vt_3y)*texture_height;
+        
 				v1x = (int)floor(u_coord);
                 v1y = (int)ceil(v_coord);
                 v2x = (int)ceil(u_coord);

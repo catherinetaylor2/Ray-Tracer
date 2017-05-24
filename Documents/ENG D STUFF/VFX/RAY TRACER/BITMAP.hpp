@@ -1,5 +1,8 @@
+//Adapted from SOURCE: https://stackoverflow.com/questions/5751749/how-can-i-read-bmp-pixel-values-into-an-array
+//
 #ifndef BITMAP_hpp
 #define BITMAP_hpp
+
 #include<iostream>
 #include <fstream>
 

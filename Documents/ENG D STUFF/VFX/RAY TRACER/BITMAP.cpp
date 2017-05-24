@@ -1,3 +1,6 @@
+//Adapted from SOURCE: https://stackoverflow.com/questions/5751749/how-can-i-read-bmp-pixel-values-into-an-array
+//
+
 #include "BITMAP.hpp"
 #include <iostream>
 #include <fstream>

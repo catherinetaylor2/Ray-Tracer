@@ -171,7 +171,7 @@ int main(int argc, char* argv[] ){
 			img[x+2]= (unsigned char)(B/colours.size());
 		}
 
-		std::ofstream image2(j+".bmp", std::ios::out| std::ios::binary);
+		std::ofstream image2(j+".bmp", std::ios::out| std::ios::binary); 
 		BITMAP_File_Header file_header;
 		BITMAP_Info_Header info_header;
 		fill_bitmap_headers(&file_header, &info_header,  width, height);
